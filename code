@@ -1,6 +1,16 @@
+
+## how to do filters
 from pyspark.sql.functions import col
 # join empDF ,deptData and addData
 mainDF=empDF.join(deptDF,empDF.emp_dept_id==deptDF.dept_id).join(addDF,empDF.emp_id==addDF.emp_id)\
 .select(empDF.emp_id.alias("emp_name"),addDF.emp_id,empDF.name,deptDF.dept_name,addDF.addline1,addDF.city)\
 .filter( (addDF.state  == "CA") & (addDF.city  == "SFO") ) 
 mainDF.show()
+
+print(pivoteentitlementdf.select(pivoteentitlementdf["entitlement_id"]).distinct().count())
+##
+from pyspark.sql.functions import distinct
+
+distinct number and count 
+## print count of unique pivoteentitlementdf values and show the table result aswell 
+pivoteentitlementdf.select(pivoteentitlementdf["INDEPENT PRES"]).distinct().count()
