@@ -14,3 +14,24 @@ from pyspark.sql.functions import distinct
 distinct number and count 
 ## print count of unique pivoteentitlementdf values and show the table result aswell 
 pivoteentitlementdf.select(pivoteentitlementdf["INDEPENT PRES"]).distinct().count()
+
+
+
+
+if len(mainDF.columns)>2 and len(mainDF.columns)<5:
+    print("good")
+else:
+    print("data frame lenght is bad")
+if mainDF.select(mainDF.emp_id).distinct().count()==1:
+    print("good")
+elif mainDF.select(mainDF.emp_id).distinct().count()>1:
+    print("bad")
+elif mainDF.select(mainDF.emp_id).distinct().count()<1:
+    print("bad")
+if mainDF.select(mainDF.dept_name).distinct().count()==1:
+    print("good")
+elif mainDF.select(mainDF.dept_name).distinct().count()>1:
+    print("bad")
+elif mainDF.select(mainDF.dept_name).distinct().count()<1:
+    print("bad")
+
