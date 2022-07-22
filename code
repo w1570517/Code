@@ -37,7 +37,18 @@ elif mainDF.select(mainDF.dept_name).distinct().count()<1:
     
     
     
-    
+    columns_name=mainDF1.columns
+
+if columns_name == addDF2.columns:
+    print("Columns matched")
+else:
+    print("Columns not matched")
+    print("Columns not matched are:")
+    for i in columns_name:
+        if i not in addDF2.columns:  # if i not in mainDF1.columns then print i else print nothing 
+            print(i)
+
+
     
     
     
