@@ -62,3 +62,38 @@ mainDF=(empDF.join( deptDF,empDF.emp_dept_id==deptDF.dept_id).join(addDF,empDF.e
 mainDF.show()
 
 
+
+
+
+from pyspark.sql.types import StructType, IntegerType, StringType
+## transform the use indexer to encode the alphanumarical column guid_column
+from pyspark.ml.feature import StringIndexer
+indexer = StringIndexer(inputCol="guid_column", outputCol="indexed")
+indexerModel = indexer.fit(empDF)
+indexed = indexerModel.transform(empDF)
+#indexed.show()
+
+
+# change indexed column from decimal to integer column type
+#indexed.select(col("indexed").cast(IntegerType())).show()
+
+# change indexed column from decimal to integer column type and select all columns
+indexed.select("*",col("indexed").cast(IntegerType())).show()
+
+
+
+
+https://towardsdatascience.com/adding-sequential-ids-to-a-spark-dataframe-fa0df5566ff6
+
+
+
+
+
+
+
+
+
+
+
+
+
