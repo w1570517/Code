@@ -85,7 +85,7 @@ indexed.select("*",col("indexed").cast(IntegerType())).show()
 
 https://towardsdatascience.com/adding-sequential-ids-to-a-spark-dataframe-fa0df5566ff6
 
-
+https://stackoverflow.com/questions/45035940/how-to-pivot-on-multiple-columns-in-spark-sql
 
 
 
