@@ -96,6 +96,8 @@ https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-ex
 empDF.select("*").where(col("DATE") == empDF.agg({"DATE":"max"}).first()["max(DATE)"]).show()
 
 
+solving ambiguity 
+empDF.alias("a").join(addDF.alias("b"),empDF.emp_id==addDF.emp_id).select(col('a.emp_id').alias('1'),'b.*').show()
 
 
 
