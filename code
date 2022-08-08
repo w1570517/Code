@@ -120,3 +120,6 @@ sequence = ["addline1", "city", "state", "emp_id"]
 
 addDF.select(sequence + [col for col in addDF.columns if col not in sequence]).show()
 
+# column reorder
+addDF.select(sorted(addDF.columns,reverse=True)).show()
+
