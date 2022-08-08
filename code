@@ -93,6 +93,7 @@ https://docs.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-ex
 
 
 
+empDF.select("*").where(col("DATE") == empDF.agg({"DATE":"max"}).first()["max(DATE)"]).show()
 
 
 
