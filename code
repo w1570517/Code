@@ -100,4 +100,12 @@ solving ambiguity
 empDF.alias("a").join(addDF.alias("b"),empDF.emp_id==addDF.emp_id).select(col('a.emp_id').alias('1'),'b.*').show()
 
 
+# write a function to sort the columns by alphabetical order
+def sortColumns(df):
+    return df.select([col(c).alias(c) for c in sorted(df.columns)])
+comboDF.show()
+sortColumns(comboDF).show()
+
+# test the function
+comboDF.select(sortColumns(comboDF)).show()
 
