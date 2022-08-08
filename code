@@ -123,3 +123,27 @@ addDF.select(sequence + [col for col in addDF.columns if col not in sequence]).s
 # column reorder
 addDF.select(sorted(addDF.columns,reverse=True)).show()
 
+
+
+
+#
+
+SELECT 
+ *
+FROM orders
+GROUP BY OrderID having max(OrderDate)
+
+
+##
+SELECT report_id, computer_id, MAX(CAST(date_entered AS CHAR))
+FROM reports
+GROUP BY report_id, computer_id
+
+##
+SELECT 
+ *
+FROM orders
+GROUP BY OrderID having max(OrderDate)
+##
+select *, max(cast(OrderDate as date)) from orders
+group by orderID
