@@ -98,6 +98,10 @@ empDF.select("*").where(col("DATE") == empDF.agg({"DATE":"max"}).first()["max(DA
 
 solving ambiguity 
 empDF.alias("a").join(addDF.alias("b"),empDF.emp_id==addDF.emp_id).select(col('a.emp_id').alias('1'),'b.*').show()
+comboDF=empDF.alias("a").join(addDF.alias("b"),empDF.emp_id==addDF.emp_id).select(col('a.emp_id').alias('emd'),'a.*','b.*').drop('emp_id')
+
+
+
 
 
 # write a function to sort the columns by alphabetical order
