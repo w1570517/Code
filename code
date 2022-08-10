@@ -147,3 +147,26 @@ GROUP BY OrderID having max(OrderDate)
 ##
 select *, max(cast(OrderDate as date)) from orders
 group by orderID
+
+
+import pgeocode
+import pandas as pd
+
+def get_place_name(df):
+    for index, row in df.iterrows():
+        postcode = row['postcode']
+        nomi = pgeocode.Nominatim('GB')
+        postal_code = nomi.query_postal_code(postcode)
+        df.loc[index, ['postal_code']] = postal_code
+    return df
+
+df = get_place_name(df)
+df.head()
+
+
+
+
+
+
+
+
