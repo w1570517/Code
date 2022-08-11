@@ -166,7 +166,13 @@ df.head()
 
 
 
+def get_place_name(df):
+    df.loc[:, 'place_name'] = df['postcode'].apply(lambda x: pgeocode.Nominatim('GB').query_postal_code(x))
+    return df
 
+
+df = get_place_name(df)
+df.head()
 
 
 
