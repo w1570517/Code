@@ -215,6 +215,15 @@ https://www.youtube.com/watch?v=2xndDUXMnlc
 
 
 
+# remove the character 'w7' use regrex pattern matching to remove the character 'w7' from the place_name column 
+# import re
+# def remove_w7(df):
+#     df['place_name'] = df['place_name'].apply(lambda x: re.sub(r'W71HS', '', x))
+#     return df
+
+
+# df = remove_w7(df)
+# df.head()
 
 
 
