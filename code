@@ -254,3 +254,30 @@ https://support.timextender.com/hc/en-us/articles/4423621859613-Create-VIEWS-bas
 
 append_df.write.mode('append').format('parquet').save('/mnt/adls/covid/base/Covid19_Cases')
 
+
+
+
+
+
+
+
+
+
+
+
+import pgeocode
+import pandas as pd
+
+
+df = pd.DataFrame(test_list, columns=columns)
+df.head()
+
+
+def get_place_name(df):
+    df.loc[:, 'postal_code'] = df['postcode'].apply(lambda x: pgeocode.Nominatim('GB').query_postal_code(x))
+    return df
+
+
+df = get_place_name(df)
+df.head()
+
