@@ -251,3 +251,6 @@ https://www.youtube.com/watch?v=jNfR864_ZZQ
 ## creating view from data lake example
 
 https://support.timextender.com/hc/en-us/articles/4423621859613-Create-VIEWS-based-on-Azure-Data-Lake-data-with-Azure-Synapse-Workspace
+
+append_df.write.mode('append').format('parquet').save('/mnt/adls/covid/base/Covid19_Cases')
+
