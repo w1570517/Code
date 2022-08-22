@@ -281,3 +281,8 @@ def get_place_name(df):
 df = get_place_name(df)
 df.head()
 
+
+# convert df to pyspark dataframe
+df_spark = spark.createDataFrame(df)
+df_spark.show()
+
