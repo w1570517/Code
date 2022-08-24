@@ -286,3 +286,13 @@ df.head()
 df_spark = spark.createDataFrame(df)
 df_spark.show()
 
+
+
+
+
+
+
+empDF.filter(~col("post_code")
+    .rlike("^[0-9]*$")
+  ).show()
+
