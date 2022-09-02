@@ -296,3 +296,13 @@ empDF.filter(~col("post_code")
     .rlike("^[0-9]*$")
   ).show()
 
+
+
+
+
+
+
+https://www.getthedata.com/open-postcode-geo-api
+https://www.getthedata.com/open-postcode-geo
+https://geoportal.statistics.gov.uk/
+https://geoportal.statistics.gov.uk/datasets/national-statistics-postcode-lookup-2021-census-august-2022/about
