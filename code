@@ -320,3 +320,10 @@ https://github.com/topics/postcode?l=python
 
 ################power bi change source link################
 https://businessintelligist.com/2020/07/09/how-to-switch-your-power-bi-table-to-a-different-data-source-type-without-breaking-anything/
+
+
+lastmonth = CALCULATE(SUM(Sales[Sales]),DATESBETWEEN('Date'[Date],DATEADD('Date'[Date],-1,MONTH),MAX('Date'[Date])))
+RETURN
+CALCULATE(lastmonth,Products[Product Name]="Milk")
+
+-- Power BI  dax function to calculate sum of sales in the last month and where product name is milk
