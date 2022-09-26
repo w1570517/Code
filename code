@@ -330,3 +330,17 @@ https://businessintelligist.com/2020/07/09/how-to-switch-your-power-bi-table-to-
             'Table'[Month] = DATEADD('Table'[Date], -1, MONTH)
         )
     )
+    
+    
+    
+    # stored procedure 
+    
+    
+    
+CREATE OR REPLACE PROCEDURE CREATE_VIEWS AS
+BEGIN
+EXECUTE IMMEDIATE 'CREATE VIEW V1 AS SELECT * FROM TABLE1';
+EXECUTE IMMEDIATE 'CREATE VIEW V2 AS SELECT * FROM TABLE2';
+EXECUTE IMMEDIATE 'CREATE VIEW V3 AS SELECT * FROM TABLE3';
+END;
+/
