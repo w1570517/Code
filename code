@@ -3,10 +3,10 @@ SELECT e.department, dt.FiscalYear as Year ,count(e.StudentId) as total_enrollme
 
 From 
 rm_Enrollment.StudentMajorEnrolled_C_F e 
-LEFT JOIN  edw.Term t   ON e.TermId=t.TermId
-LEFT JOIN edw.DegreeFlat d ON e.DegreeCode=d.DegreeAbbreviationLevelCode
+
+left join rm_Dimension_dim_TermLast5Years dt ON e.Termid=dt.Termid
 left join edw.TermType tp ON t.TermTypeId=tp.TermTypeId
-left join rm_Dimension_dim_TermLast5Years dt ON tp.TermTypeId=dt.TermTypeId
+
 WHERE 
 e.Degreecode='BS' AND e.department='nursing'
 AND  
