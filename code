@@ -7,7 +7,7 @@ left join edw.TermType tp on t.TermTypeId=tp.TermTypeId
 WHERE 
 e.Degreecode='BS' AND e.department='nursing'
 AND  
-dt.FiscalYear IN ('2018','2019','2020','2021','2022') 
+tp.FiscalYear IN ('2018','2019','2020','2021','2022') 
 
-AND dt.TermType='Fall'
+AND tp.TermType='Fall'
 
