@@ -1,7 +1,9 @@
-SELECT d.DegreeAbbrDesc FROM edw.TermType tp
 
-LEFT  JOIN rm_Enrollment.StudentMajorEnrolled_C_F e ON e.TermId=TP.TermTypeId
+SELECT d.DegreeAbbrDesc FROM edw.TermType tp
+LEFT  JOIN rm_Enrollment.StudentMajorEnrolled_C_F e ON e.TermId=tp.TermTypeId
 LEFT JOIN edw.DegreeFlat d on e.DegreeCode=d.DegreeAbbreviationLevelCode
+left join edw.Term t on e.TermId=t.TermId
+left join edw.TermType tp on t.TermTypeId=tp.TermTypeId
 
 WHERE 
-d.DegreeAbreviationLevelCode='BSN'
+d.DegreeAbreviationLevelCode like '%BSN%'
