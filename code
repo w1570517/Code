@@ -1,4 +1,5 @@
-SELECT e.department, count(e.StudentId) as total_enrollment__BS_Nursing_Last5years
+ 
+SELECT e.department, dt.FiscalYear as Year ,count(e.StudentId) as total_enrollment__BS_Nursing_Last5years
 
 From 
 rm_Enrollment.StudentMajorEnrolled_C_F e 
@@ -14,4 +15,6 @@ dt.FiscalYear IN ('2018','2019','2020','2021','2022')
 AND tp.TermType='Fall'
 
 
-Group by e.department
+Group by e.department,dt.FiscalYear
+
+order by total_enrollment__BS_Nursing_Last5years desc
