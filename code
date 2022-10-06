@@ -1,9 +1,9 @@
 
-SELECT d.DegreeAbbrDesc FROM 
+SELECT e.department FROM 
 rm_Enrollment.StudentMajorEnrolled_C_F e 
 LEFT JOIN  edw.Term t   ON e.TermId=t.TermId
 LEFT JOIN edw.DegreeFlat d on e.DegreeCode=d.DegreeAbbreviationLevelCode
 left join edw.TermType tp on t.TermTypeId=tp.TermTypeId
 
 WHERE 
-d.DegreeAbbreviationLevelCode like '%BSN%'
+e.departmnet like '%nursing%'
