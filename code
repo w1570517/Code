@@ -1,4 +1,6 @@
 
+
+
 Select count(e.student)
 
 FROM rem_enrollment.fact_StudentTermData e
@@ -11,4 +13,4 @@ Left join   edw.AdmitStatus adm ON ug.UGLevelid=adm.UGLevelid
 where  
 r.Description='Current'
 and ug.Description='Graduate'
-
+and sd.honors!='No Honors'
