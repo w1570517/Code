@@ -1,1 +1,6 @@
 
+
+Select sd.honors,count(sd.studentid) from
+edw.StudentDegree sd
+
+group by sd.honors
