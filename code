@@ -1,6 +1,15 @@
 
+Select count(e.studentid) from 
 
-Select sd.honors,count(sd.studentid) from
-edw.StudentDegree sd
+FROM rem_enrollment.fact_StudentTermData e
+Left join 	edw.StudentDegree sd on e.studentid=sd.personid
+Left join   edw.Term t on e.Termid=t.Termid
+left join   edw.DegreeFlat d on e.DegreeCode=d.DegreeAbbreviationLevelCode
+Left join   edw.RecordType r on e.RecordTypeid=r.RecordTypeid
+Left join   edw.AdmitStatus adm on e.Statusid= adm.AdmitStatusId
+Left join 	edw.UGLevel ug on adm.UGLevelid=ug.UGLevelid
 
-group by sd.honors
+where  
+r.Description='Current'
+and ug.Description='Graduate'
+and d.DegreeUGDesc='Graduate'
