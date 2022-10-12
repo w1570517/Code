@@ -1,5 +1,6 @@
 
-select count (c.CourseSessionTypeid)
+select count (c.CourseSessionTypeid) as TotalSectionENGL
+
     
     from 
 edw.Course c
@@ -9,3 +10,4 @@ left join edw.CourseStatus cs on c.Courseid=cs.CourseStatusid
 
 where t.TermName='Fall 2022'
 and  s.SubjectCode='ENGL'
+and s.remove=0
