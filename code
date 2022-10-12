@@ -2,11 +2,10 @@
 --questions 2 full query 
 
 
-select count (c.CourseSessionTypeid) as TotalSectionENGLSenior
+Select  count(c.CourseSessionTypeid) as TotalSectionENGLSenior
 
-    
-    from 
-edw.Course c
+FROM  edw.Course c
+
 left join edw.Subject s on c.Subjectid=s.Subjectid
 left join edw.Term t on c.Termid=t.Termid
 left join edw.CourseStatus cs on c.Courseid=cs.CourseStatusid
@@ -16,3 +15,4 @@ where t.TermName='Fall 2022'
 and  s.SubjectCode='ENG'
 and c.remove=0
 and cs.CourseStatus='Offered'
+and cp.CampusCode='S2S-Senior to Sophmore Program'
