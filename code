@@ -8,6 +8,6 @@ left join edw.Term t on c.Termid=t.Termid
 left join edw.CourseStatus cs on c.Courseid=cs.CourseStatusid
 
 where t.TermName='Fall 2022'
-and  s.SubjectCode='ENGL'
-and s.remove=0
+and  s.SubjectCode='ENG'
+and c.remove='0'
 and cs.CourseStatus='Offered'
