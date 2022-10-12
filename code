@@ -1,16 +1,5 @@
 
 
+select * from edw.Subject s 
 
-Select count(e.student)
-
-FROM rem_enrollment.fact_StudentTermData e
-Left join   edw.Term t ON e.Termid=t.Termid
-Left join   edw.RecordType r ON e.RecordTypeid=r.RecordTypeid
-Left join 	edw.StudentDegree sd ON e.studentid=sd.personid
-Left join   edw.DegreeFlat d ON sd.DegreeAbbreviationLevelid=d.DegreeAbbreviationLevelid
-Left join 	edw.UGLevel ug ON d.DegreeUGLevelid=ug.UGLevelid
-Left join   edw.AdmitStatus adm ON ug.UGLevelid=adm.UGLevelid
-where  
-r.Description='Current'
-and ug.Description='Graduate'
-and sd.honors!='No Honors'
+s.SubjectCode LIKE 'ENG%'
