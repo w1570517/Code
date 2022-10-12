@@ -1,7 +1,5 @@
-
 select count (c.CourseSessionTypeid) as TotalSectionENGL
-
-    
+ 
     from 
 edw.Course c
 left join edw.Subject s on c.Subjectid=s.Subjectid
