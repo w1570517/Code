@@ -1,18 +1,9 @@
+--- Question 1 
+SELECT 
+    COUNT(StudentID) AS StudentCount
+FROM
+     rm_Retention.StudentRetentionDegree 
+WHERE
+    (NEF = 1 OR NET = 1)
+    AND CohortTermName = 'Fall 2022'
 
-Select s.SubjectCode,c.SectionNumber, count(sc.GradeLetter)/ sum(sc.NumberEnrolled) * 100  as PassRates 
-from edw.Course c 
-left join 
-edw.StudentCourseDetai1 sc on c.CourseId=sc.CourseId 
-left join 
-edw.Term t on c.TermId=t.TermId 
-left join 
-edw. Subject s on c.Subjectid—s.Subjectid 
-
-where t.TermName='Spring 2022'
-and s.SubjectCode='MATH'
-and c.CourseNumber='112'
-and c.SectionNumber <='55' 
-and sc.GradeLetter IN ('A','B','c')
-and c.remove=0
-Group by s.SubjectCode,c.SectionNumber, sc.NumberEnrolled, c.maxsizedAdjusted
-order by c.SectionNumber desc 
