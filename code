@@ -7,3 +7,18 @@ WHERE
     (NEF = 1 OR NET = 1)
     AND CohortTermName = 'Fall 2022'
 
+
+-- Question 2 
+
+SELECT Gender, Age, Ethnicity, COUNT(StudentID) AS StudentCount 
+
+FROM
+     rm_Retention.StudentRetentionDegree 
+
+WHERE
+    (NEF = 1 OR NET = 1)
+    AND CohortTermName = 'Fall 2022'
+    
+Group By Gender, Age, Ethnicity
+
+Order by StudentCount Desc
