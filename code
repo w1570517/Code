@@ -1,24 +1,7 @@
---- Question 1 
-SELECT 
-    COUNT(StudentID) AS StudentCount
-FROM
-     rm_Retention.StudentRetentionDegree 
-WHERE
-    (NEF = 1 OR NET = 1)
-    AND CohortTermName = 'Fall 2022'
-
-
--- Question 2 
-
-SELECT Gender, Age, Ethnicity, COUNT(StudentID) AS StudentCount 
-
-FROM
-     rm_Retention.StudentRetentionDegree 
-
-WHERE
-    (NEF = 1 OR NET = 1)
-    AND CohortTermName = 'Fall 2022'
-    
-Group By Gender, Age, Ethnicity
-
-Order by StudentCount Desc
+select s.student_id, s.student_name, c.course_id, c.course_name, t.term_id, t.term_name
+from student s
+join student_course sc on s.student_id = sc.student_id
+join course c on sc.course_id = c.course_id
+join term t on sc.term_id = t.term_id
+group by s.student_id, s.student_name, c.course_id, c.course_name, t.term_id, t.term_name
+order by s.student_id, c.course_id, max(t.term_id) desc
