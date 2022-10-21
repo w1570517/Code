@@ -5,3 +5,8 @@ Left join course c on sc.course_id = c.course_id
 Left join term t on sc.term_id = t.term_id
 group by s.student_id, s.student_name, c.course_id, c.course_name, t.term_id, t.term_name
 order by s.student_id, c.course_id 
+
+
+
+
+df.filter((df['Work'] == 'England') & (df['Home'] == 'England') | (df['Work'] == 'England') & (df['Home'] == 'UK') | (df['Work'] == 'UK') & (df['Home'] == 'England')).show()
