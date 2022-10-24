@@ -1,8 +1,8 @@
 
 SELECT Gender, Age, Ethnicity,
 
-CASE WHEN NET = 1 COUNT (StudentID) AS NETStudentCount
-CASE WHEN NEF = 1 COUNT (StudentID) AS NEFStudentCount
+CASE WHEN NET = 1 COUNT (StudentID) END AS 'NETStudentCount',
+CASE WHEN NEF = 1 COUNT (StudentID) END AS 'NEFStudentCount' 
 FROM
      rm_Retention.StudentRetentionDegree 
 WHERE
