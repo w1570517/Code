@@ -1,15 +1,5 @@
 
-SELECT Gender, Age, Ethnicity,
-Sum(case when NET = 1 then 1 Else 0 End) as 'NETStudentCount',
-Sum(case when NEF = 1 then 1 else 0 end) as 'NEFStudentCount'
-FROM
-     rm_Retention.StudentRetentionDegree 
-WHERE
-   CohortTermName = 'Fall 2022'
-
-GROUP BY Gender, Age, Ethnicity
-
-Order by NETStudentCount Desc, NEFStudentCount Desc
+df. select ( 'birthdate' ) . withColumn ( 'age' , F. datediff ( F. current_date ( ) , F. to_date ( F. col ( 'birthdate' ) ) ) / 365 ) . show ( )
 
 
 
