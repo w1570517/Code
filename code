@@ -1,6 +1,22 @@
 
-df. select ( 'birthdate' ) . withColumn ( 'age' , F. datediff ( F. current_date ( ) , F. to_date ( F. col ( 'birthdate' ) ) ) / 365 ) . show ( )
 
+---- question 3
+
+
+select 
+    
+    NEF,
+    NET,
+    COUNT(StudentID) AS StudentCount,
+    SUM(CASE WHEN T1_Enrolled = 1 THEN 1 ELSE 0 END) AS RetainedCount,
+    SUM(CASE WHEN T1_Enrolled = 1 THEN 1 ELSE 0 END) / COUNT(StudentID) AS RetentionRate
+FROM
+     rm_Retention.StudentRetentionDegree
+
+     where CohortTermName ='Fall 2021'
+
+GROUP BY   NEF, NET
+ORDER BY RetainedCount
 
 
 
