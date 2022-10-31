@@ -1,6 +1,6 @@
 
 
----- question 3
+------- Questions 3 assignement 
 
 
 select 
@@ -17,6 +17,28 @@ FROM
 
 GROUP BY   NEF, NET
 ORDER BY RetainedCount
+
+
+
+
+------- Questions 4 assignement 
+
+
+
+Select 
+    Ethnicity, 
+    COUNT(StudentID) AS StudentCount,
+    SUM(CASE WHEN Ethinicity = 'White' THEN 1 ELSE 0 END) AS WhiteStudentCount,
+    SUM(CASE WHEN T1_Enrolled = 1 THEN 1 ELSE 0 END) / COUNT(StudentID) AS WhiteStudentRetentionRate
+    SUM(CASE WHEN Ethinicity != 'White' THEN 1 ELSE 0 END) AS ColourStudentCount,
+    SUM(CASE WHEN Ethinicity != 'White' THEN 1 ELSE 0 END) / COUNT(StudentID) AS ColourRetentionRate
+FROM
+     rm_Retention.StudentRetentionDegree
+
+     where CohortTermName ='Fall 2021'  and NEF = 1 
+
+GROUP BY   Ethnicity
+ORDER BY StudentCount
 
 
 
