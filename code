@@ -1,3 +1,82 @@
+import pandas as pd
+import numpy as np
 
-select YearTerm from edw.tfYearTermLookup(sc.BeginTermid)) left join edw.StudentSpecialCreditRate sc on edw.tfYearTermLookup(BeginTermid).YearTerm = edw.tfYearTermLookup(EndTermid).YearTerm 
-where edw.tfYearTermLookup(BeginTermid).YearTerm = edw.tfYearTermLookup(EndTermid).YearTerm
+# import the libraries
+from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
+import string
+
+
+# create a list of stop words that we will use to filter out the words that are not important
+stop = set(stopwords.words('english'))
+# create a list of punctuation that we will use to filter out the punctuation that are not important
+exclude = set(string.punctuation)
+# create a list of lemmatizer that we will use to filter out the lemmatizer that are not important
+lemma = WordNetLemmatizer()
+# create a list that will filter out UTF-8 characters
+non_ascii = set([chr(i) for i in range(128)])
+
+# create a function that will filter out the stop words, punctuation, lemmatizer, and UTF-8 characters
+def clean(doc):
+    stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
+    punc_free = ''.join(ch for ch in stop_free if ch not in exclude)
+    normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
+    ascii_free = ''.join(ch for ch in normalized if ch in non_ascii)
+    return ascii_free
+
+# create a new column that will contain the cleaned text
+df['cleaned_text'] = df['Negative_Review'].astype(str).apply(clean)
+
+# create a new column that will contain the length of the text
+df['text_length'] = df['cleaned_text'].apply(len)
+
+
+
+
+
+#CREATE A TEXT SUMMARIZER FROM THE CLEANED TEXT
+
+# import the libraries
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import NMF
+from sklearn.decomposition import LatentDirichletAllocation
+
+# create a function that will create a text summarizer
+def create_text_summarizer(text, no_features, no_topics, no_top_words):
+    # create a tfidf vectorizer
+    tfidf_vectorizer = TfidfVectorizer(max_df=0.95, min_df=2, max_features=no_features, ngram_range=(2,2), stop_words='english')
+    # create a tfidf matrix
+    tfidf = tfidf_vectorizer.fit_transform(text)
+    # create a topic model
+    lda = LatentDirichletAllocation(n_components=no_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(tfidf)
+    # create a list of words
+    tfidf_feature_names = tfidf_vectorizer.get_feature_names()
+    # create a list of topics
+    topics = []
+    # loop through the topics
+    for topic_idx, topic in enumerate(lda.components_):
+        # create a list of words
+        words = []
+        # loop through the words
+        for i in topic.argsort()[:-no_top_words - 1:-1]:
+            # append the words to the list
+            words.append(tfidf_feature_names[i])
+        # append the list of words to the list of topics
+        topics.append(words)
+    # return the list of topics
+    return topics
+
+# create a text summarizer
+topics = create_text_summarizer(df['cleaned_text'], 1000, 10, 10)
+
+# print the text summarizer
+print(topics)
+
+
+
+
+
+
+
+
+
