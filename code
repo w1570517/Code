@@ -211,6 +211,13 @@ print(lda.components_.shape)
 
 
 
+import pyLDAvis.sklearn
+
+pyLDAvis.enable_notebook()
+
+panel = pyLDAvis.sklearn.prepare(lda, count_data, count_vectorizer, mds='tsne')
+
+panel
 
 
 
