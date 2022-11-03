@@ -81,6 +81,41 @@ https://towardsdatascience.com/topic-modelling-in-python-with-nltk-and-gensim-4e
 
 
 
+# import the libraries
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
+
+# create a function that will create a topic model
+def create_topic_model(text, no_features, no_topics, no_top_words):
+    # create a tfidf vectorizer
+    tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2, max_features=no_features, stop_words='english')
+    # create a tfidf matrix
+    tf = tf_vectorizer.fit_transform(text)
+    # create a topic model
+    lda = LatentDirichletAllocation(n_components=no_topics, max_iter=5, learning_method='online', learning_offset=50.,random_state=0).fit(tf)
+    # create a list of words
+    tf_feature_names = tf_vectorizer.get_feature_names()
+    # create a list of topics
+    topics = []
+    # loop through the topics
+    for topic_idx, topic in enumerate(lda.components_):
+        # create a list of words
+        words = []
+        # loop through the words
+        for i in topic.argsort()[:-no_top_words - 1:-1]:
+            # append the words to the list
+            words.append(tf_feature_names[i])
+        # append the list of words to the list of topics
+        topics.append(words)
+    # return the list of topics
+    return topics
+
+# create a topic model
+topics = create_topic_model(df['cleaned_text'], 1000, 10, 10)
+
+# print the topic model
+print(topics)
+
 
 
 
