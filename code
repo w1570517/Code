@@ -252,7 +252,55 @@ df[df['Topic'] == 0].head()
 
 
 
+## rewrite the code to add if the text is positive or negative
 
+# import the sentiment analysis library
+
+from textblob import TextBlob
+
+# create a function to get the sentiment polarity
+
+def get_polarity(text):
+            
+            return TextBlob(str(text)).sentiment.polarity
+
+# create a function to get the sentiment subjectivity
+
+def get_subjectivity(text):
+                    
+                   TextBlob(str(text)).sentiment.subjectivity
+
+# create a function to get the sentiment polarity
+
+def get_sentiment(polarity):
+        
+        if polarity > 0:
+            
+            return 'positive'
+        
+        elif polarity == 0:
+            
+            return 'neutral'
+        
+        else:
+            
+            return 'negative'
+
+# create a column for the sentiment polarity
+
+df['Polarity'] = df['Negative_Review'].apply(get_polarity)
+
+# create a column for the sentiment subjectivity
+
+df['Subjectivity'] = df['Negative_Review'].apply(get_subjectivity)
+
+# create a column for the sentiment
+
+df['Sentiment'] = df['Polarity'].apply(get_sentiment)
+
+# show the first 5 rows of the dataframe
+
+df.head()
 
 
 
