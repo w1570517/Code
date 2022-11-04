@@ -1,4 +1,1 @@
-  case
-        when ie.studentid is not null then 'Y'
-        else 'N'
-    end as student_online
+df['review_lower'] = df['Review'].apply(lambda x: " ".join(x.lower() for x in x.split()))
