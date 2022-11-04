@@ -305,3 +305,12 @@ df.head()
 
 
 
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+sns.set(style="darkgrid")
+
+ax = sns.countplot(x="Sentiment", data=df)
+
+plt.show()
