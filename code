@@ -319,3 +319,28 @@ plt.show()
 
 df.groupby(['Topic', 'Sentiment']).size().unstack().plot(kind='bar', stacked=True, figsize=(10,5))
 
+
+
+
+from autocorrect import spell
+def spell_check(doc):
+    spell_check = " ".join(spell(word) for word in doc.split())
+    return spell_check
+
+# create a function that will filter out the stop words, punctuation, lemmatizer,spell checker  and UTF-8 characters
+
+def clean2(doc):
+    stop_free = " ".join([i for i in doc.lower().split() if i not in stop])
+    punc_free = ''.join(ch for ch in stop_free if ch not in exclude)
+    normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
+    ascii_free = ''.join(ch for ch in normalized if ch in non_ascii)
+    spell_check = " ".join(spell(word) for word in ascii_free.split())
+    return spell_check
+
+
+
+
+
+
+
+
