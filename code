@@ -227,3 +227,33 @@ panel
 https://towardsdatascience.com/introduction-to-topic-modeling-using-scikit-learn-4c3f3290f5b9
 
 
+
+print_topics(lda, count_vectorizer, n_top_words)
+
+# add the topic model to the dataframe
+
+topic_values = lda.transform(count_data)
+
+df['Topic'] = topic_values.argmax(axis=1)
+
+# show the first 5 rows of the dataframe
+
+df.head()
+
+
+
+df[df['Topic'] == 0].head()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
