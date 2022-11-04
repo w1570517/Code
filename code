@@ -314,3 +314,8 @@ sns.set(style="darkgrid")
 ax = sns.countplot(x="Sentiment", data=df)
 
 plt.show()
+
+
+
+df.groupby(['Topic', 'Sentiment']).size().unstack().plot(kind='bar', stacked=True, figsize=(10,5))
+
