@@ -1,12 +1,3 @@
 
 
-def print_top_words(model, feature_names, n_top_words):
-      for topic_idx, topic in enumerate(model.components_):
-         print("Topic %d:" % (topic_idx))
-         print(" ".join([feature_names[i]
-                           for i in topic.argsort()[:-n_top_words - 1:-1]]))
-      print()
-
-# print the top 15 words in each topic
-
-print_top_words(lda, count_vectorizer.get_feature_names(), 15)
+df['Postcode'] = df['Postcode'].apply(lambda x: x[:-3] + " " + x[-3:])
