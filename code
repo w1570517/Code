@@ -1,10 +1,2 @@
 
-
-df['Postcode'] = df['Postcode'].apply(lambda x: x[:-3] + " " + x[-3:])
-
-
-df['Postcode'] = df['Postcode'].apply(lambda x: x[:-3] + " " + x[-3:])
-
-# trabslate the above code to pyspark
-
-df = df.withColumn("Postcode", F.substring(df.Postcode, 1, length(df.Postcode)-3) + " " + F.substring(df.Postcode, length(df.Postcode)-2, 3))
+=SUMIF(A:A, TRUE, B:B, 2, C:C)
