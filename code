@@ -1,2 +1,2 @@
 
-=SUMIF(A:A, TRUE, B:B, 2, C:C)
+=SUMIF(A:A, TRUE, C:C) + SUMIF(B:B, 2, C:C)
