@@ -1,6 +1,9 @@
-select   YearTerm,
-count ( case   when  grade  in   ( 'A' ,  'B' ,  'C' )   then   1   end )  /  count ( * )  as  pass_rate
- from  edw.StudentCourseGradeDetailFlat 
 
-   group   by YearTerm
-   
+select SubjectCode, count(case when GradeLetter in ('A','B','C') then 1 end) as pass, count(*) as total, 
+count(case when GradeLetter in ('A','B','C','D') then 1 end)/count(*) as pass_rate
+from StudentCourseGradeDetailFlat
+
+where YearTerm between 20118 and 2021
+--and graduate ='undergraduate'
+group by SubjectCode
+
