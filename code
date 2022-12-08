@@ -1,6 +1,9 @@
 
-select  student_id, YearTerm, grade,
-count ( case   when  grade  in   ( 'A' ,  'B' ,  'C' )   then   1   end )  /  count ( * )  as  pass_rate
- from  edw.StudentCourseGradeDetailFlat 
+   
+SELECT YearTerm, 
+       COUNT(*) AS total,
+       ROUND(COUNT(CASE WHEN grade IN ('A', 'B', 'C') THEN 1 ELSE NULL END) / COUNT(*)::numeric, 2) AS pass_rate
+FROM edw.StudentCourseGradeDetailFlat 
+GROUP BY YearTerm
 
-   group   by student_id, YearTerm, grade
+
