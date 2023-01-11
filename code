@@ -120,4 +120,14 @@ matched_data = dataset1.join(dataset2, dataset1.b == dataset2.c) \
 # Show the matched data
 matched_data.show()
 
+%python
+spark.conf.set("spark.synapse.python.library", "<library-name>")
+spark.conf.set("spark.synapse.python.library.version", "<library-version>")
+
+
+%pip install python-Levenshtein
+
+%pip install fuzzywuzzy[speedup]
+
+
 
