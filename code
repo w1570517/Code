@@ -1,9 +1,100 @@
+from pyspark.sql.functions import lower, trim, regexp_replace
 
-select SubjectCode, count(case when GradeLetter in ('A','B','C') then 1 end) as pass, count(*) as total, 
-count(case when GradeLetter in ('A','B','C','D') then 1 end)/count(*) as pass_rate
-from StudentCourseGradeDetailFlat
+# Preprocess the postcode column in dataset1 and dataset2 by converting the values to lowercase 
+# and removing spaces, and concatenating the first and second part of postcode if they are different
+dataset1 = dataset1.withColumn("b", lower(trim(dataset1.b)))
+dataset1 = dataset1.withColumn("b", regexp_replace(dataset1.b, "([a-z]+)(\s)([a-z]+)", "$1$3"))
 
-where YearTerm between 20118 and 2021
---and graduate ='undergraduate'
-group by SubjectCode
+dataset2 = dataset2.withColumn("c", lower(trim(dataset2.c)))
+dataset2 = dataset2.withColumn("c", regexp_replace(dataset2.c, "([a-z]+)(\s)([a-z]+)", "$1$3"))
+
+
+
+
+
+
+
+
+
+# Start a Spark session
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName("Fuzzy Matching").getOrCreate()
+
+# Install the fuzzywuzzy library
+!pip install fuzzywuzzy[speedup]
+from fuzzywuzzy import fuzz
+from pyspark.sql.functions import udf
+from pyspark.sql.types import IntegerType
+
+# Define a UDF to compare the similarity of two strings
+compare_strings = udf(lambda x, y: fuzz.token_set_ratio(x, y), IntegerType())
+
+# Read dataset1 and dataset2 into dataframes
+dataset1 = spark.read.format("csv") \
+    .options(header="true", inferschema="true", 
+             charset="UTF-8", delimiter=",", 
+             path = "wasbs://container@storageAccount.blob.core.windows.net/path/to/dataset1.csv" ) \
+    .load()
+dataset2 = spark.read.format("csv") \
+    .options(header="true", inferschema="true", 
+             charset="UTF-8", delimiter=",", 
+             path = "wasbs://container@storageAccount.blob.core.windows.net/path/to/dataset2.csv" ) \
+    .load()
+
+# Join the two dataframes on the column "b" of dataset1 and column "c" of dataset2
+# using the compare_strings UDF to calculate the similarity between the values
+# and only keep the rows where the similarity is greater than the threshold
+similarity_threshold = 80
+matched_data = dataset1.join(dataset2, dataset1.b == dataset2.c) \
+    .select("dataset1.*", "dataset2.*", compare_strings(dataset1.b, dataset2.c).alias("similarity")) \
+    .where(compare_strings(dataset1.b, dataset2.c) > similarity_threshold)
+
+# Show the matched data
+matched_data.show()
+
+
+
+
+
+
+
+
+
+
+#####################################################################################################
+
+
+from pyspark.sql.functions import udf
+import pgeocode
+
+# Initialize the pgeocode library
+nomi = pgeocode.GeoDistance('GB')
+
+# Define a UDF to extract geographic information from a postcode
+def extract_geo_info(postcode):
+    try:
+        info = nomi.query_postal_code(postcode)
+        return (info['place_name'], info['region_name'], info['area_name'], info['county_name'])
+    except:
+        return ("N/A", "N/A", "N/A", "N/A")
+
+extract_geo_info_udf = udf(extract_geo_info, returnType=ArrayType(StringType()))
+
+# Apply the UDF to the "b" column of the dataset1
+dataset1 = dataset1.withColumn("geo_info", extract_geo_info_udf(dataset1.b))
+
+# Extract each item of geo_info list and create new columns for them
+dataset1 = dataset1.withColumn("place_name", dataset1.geo_info[0])
+dataset1 = dataset1.withColumn("region_name", dataset1.geo_info[1])
+dataset1 = dataset1.withColumn("area_name", dataset1.geo_info[2])
+dataset1 = dataset1.withColumn("county_name", dataset1.geo_info[3])
+
+# Show the updated dataset1
+dataset1.show()
+
+
+
+
+
+
 
