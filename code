@@ -139,3 +139,7 @@ from pyspark.sql.functions import levenshtein
 from synapse_py_tools.sql_functions import fuzzywuzzy
 %pip install synapse-py-tools
 
+
+
+
+compare_strings = udf(lambda x, y: SequenceMatcher(None, x, y).ratio()*100, DoubleType())
