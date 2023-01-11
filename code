@@ -131,3 +131,11 @@ spark.conf.set("spark.synapse.python.library.version", "<library-version>")
 
 
 from pyspark.sql.functions import levenshtein
+
+
+
+
+
+from synapse_py_tools.sql_functions import fuzzywuzzy
+%pip install synapse-py-tools
+
