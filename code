@@ -96,5 +96,28 @@ dataset1.show()
 
 
 
+######################################################################################
+
+
+
+
+
+from fuzzywuzzy import fuzz
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
+
+# Define a UDF to compare the similarity of two strings
+compare_strings = udf(lambda x, y: fuzz.token_set_ratio(x, y), DoubleType())
+
+# Join the two dataframes on the column "b" of dataset1 and column "c" of dataset2
+# using the compare_strings UDF to calculate the similarity between the values
+# and only keep the rows where the similarity is greater than the threshold
+similarity_threshold = 80
+matched_data = dataset1.join(dataset2, dataset1.b == dataset2.c) \
+    .select(dataset1.b, dataset2.c, compare_strings(dataset1.b, dataset2.c).alias("similarity")) \
+    .where(compare_strings(dataset1.b, dataset2.c) > similarity_threshold)
+
+# Show the matched data
+matched_data.show()
 
 
