@@ -143,3 +143,6 @@ from synapse_py_tools.sql_functions import fuzzywuzzy
 
 
 compare_strings = udf(lambda x, y: SequenceMatcher(None, x, y).ratio()*100, DoubleType())
+
+
+dataset1 = dataset1.withColumn("b", when((dataset1["id"] == 2) & (dataset1["b"] == "-"), lit(0)).otherwise(dataset1["b"]))
