@@ -189,3 +189,21 @@ plt.ylabel("Silhouette Score")
 plt.title("Silhouette Score vs Number of Topics")
 plt.show()
 
+
+
+
+
+perplexities = []
+for i in range(1, 20):
+    lda = LatentDirichletAllocation(n_components=i, max_iter=5,
+                                    learning_method='online',
+                                    learning_offset=50.,
+                                    random_state=0)
+    lda.fit(count_data)
+    perplexities.append(lda.perplexity(count_data))
+plt.plot(range(1, 20), perplexities)
+plt.title("Perplexity vs Number of Topics")
+plt.xlabel("Number of Topics")
+plt.ylabel("Perplexity")
+plt.show()
+
