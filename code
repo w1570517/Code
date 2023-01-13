@@ -161,3 +161,31 @@ Thank you again for your assistance.
 
 Best regards,
 [Your Name]
+
+
+
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+
+# Define the range of possible number of topics
+num_topics = range(2, 20)
+
+# Create an empty list to store the silhouette scores
+sil_scores = []
+
+for k in num_topics:
+    # Create an instance of LDA with the number of topics
+    lda = LatentDirichletAllocation(n_components=k)
+    # Fit the LDA model to the data
+    lda.fit(count_data)
+    # Get the silhouette score for the current number of topics
+    sil_scores.append(silhouette_score(count_data, lda.transform(count_data)))
+
+# Plot the silhouette scores
+plt.plot(num_topics, sil_scores)
+plt.xlabel("Number of Topics")
+plt.ylabel("Silhouette Score")
+plt.title("Silhouette Score vs Number of Topics")
+plt.show()
+
