@@ -146,3 +146,18 @@ compare_strings = udf(lambda x, y: SequenceMatcher(None, x, y).ratio()*100, Doub
 
 
 dataset1 = dataset1.withColumn("b", when((dataset1["id"] == 2) & (dataset1["b"] == "-"), lit(0)).otherwise(dataset1["b"]))
+
+
+
+
+
+Hi Celso,
+
+I have just rechecked and it is working now. Thank you very much for your help. Please feel free to close the ticket.
+
+Regarding the other issue with the error message showing on the Azure Portal, have you been able to figure out why it is happening?
+
+Thank you again for your assistance.
+
+Best regards,
+[Your Name]
