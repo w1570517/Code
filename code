@@ -216,4 +216,5 @@ table_name = "mytable"
 
 spark.sql("DROP TABLE IF EXISTS " + table_name)
 
-
+spark.sql("USE <database_name>")
+spark.sql("DROP TABLE <table_name>")
