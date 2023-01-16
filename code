@@ -207,3 +207,13 @@ plt.xlabel("Number of Topics")
 plt.ylabel("Perplexity")
 plt.show()
 
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.appName("example").getOrCreate()
+
+table_name = "mytable"
+
+spark.sql("DROP TABLE IF EXISTS " + table_name)
+
+
