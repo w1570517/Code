@@ -279,3 +279,50 @@ for place_name in place_names:
 # Find the rows that meet the conditions
 qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import count, max, when
+
+# Create a new column called 'check' with default value of 1
+datasetLoc = datasetLoc.withColumn("check", lit(1))
+
+# Get a list of all place names in the dataset
+place_names = datasetLoc.select("place_name").distinct().rdd.flatMap(lambda x: x).collect()
+
+# Loop through each place name
+for place_name in place_names:
+    # check for condition 1
+    loc_name_count = datasetLoc.filter(datasetLoc["place_name"] == place_name).groupBy("Loc_Name").agg(count("Loc_Name").alias("count"))
+    loc_name_count = loc_name_count.filter(loc_name_count["count"] > 1).count()
+    if loc_name_count == 0:
+        datasetLoc = datasetLoc.withColumn("check", when(datasetLoc["place_name"] == place_name, 1).otherwise(datasetLoc["check"]))
+    else:
+        # check for condition 2
+        max_loc_name = datasetLoc.filter(datasetLoc["place_name"] == place_name).groupBy("Loc_Name").agg(count("Loc_Name").alias("count"))
+        max_loc_name = max_loc_name.agg(max("count")).first()[0]
+        loc_name_count = datasetLoc.filter(datasetLoc["place_name"] == place_name).groupBy("Loc_Name").agg(count("Loc_Name").alias("count"))
+        loc_name_count = loc_name_count.filter(loc_name_count["count"] == max_loc_name).count()
+        if loc_name_count == 1:
+            datasetLoc = datasetLoc.withColumn("check", when(datasetLoc["place_name"] == place_name, 1).otherwise(datasetLoc["check"]))
+        else:
+            datasetLoc = datasetLoc.withColumn("check", when(datasetLoc["place_name"] == place_name, 0).otherwise(datasetLoc["check"]))
+
+# Find the rows that meet the conditions
+qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
+
+
