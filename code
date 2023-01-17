@@ -347,3 +347,24 @@ for index, row in dataset.iterrows():
         unique_values[placename] = 1
 
 
+
+
+
+
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder.appName("UniqueValues").getOrCreate()
+
+# Read in the dataset
+df = spark.read.csv("path/to/dataset.csv", header=True, inferSchema=True)
+
+# Group the dataset by the "placename" column and count the number of occurrences
+df = df.groupBy("placename").count()
+
+# Add a new column to the dataset indicating whether the "placename" is unique (1) or duplicate (0)
+df = df.withColumn("unique", F.when(F.col("count") == 1, 1).otherwise(0))
+
+# Show the resulting dataset
+df.show()
+
