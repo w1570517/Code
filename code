@@ -249,3 +249,33 @@ qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
 
 
 
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import when, countDistinct, count, first
+
+# Create a new column called 'check' with default value of 1
+datasetLoc = datasetLoc.withColumn("check", lit(1))
+
+# Get a list of all place names in the dataset
+place_names = datasetLoc.select("place_name").rdd.flatMap(lambda x: x).collect()
+
+# Loop through each place name
+for place_name in place_names:
+    # Check if the place name is unique 
+    unique_loc_count = datasetLoc.filter(datasetLoc["place_name"] == place_name).agg(countDistinct("Loc_Name")).first()[0]
+    if unique_loc_count > 1:
+        # Check if the loc_name corresponding to place_name is repeating and all have the same name
+        loc_name_count = datasetLoc.filter(datasetLoc["place_name"] == place_name).agg(count("Loc_Name"), first("Loc_Name")).first()
+        if loc_name_count[0] != loc_name_count[1]:
+            datasetLoc = datasetLoc.withColumn("check", when(datasetLoc["place_name"] == place_name, 0).otherwise(datasetLoc["check"]))
+
+# Find the rows that meet the conditions
+qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
+
