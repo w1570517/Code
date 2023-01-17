@@ -336,35 +336,7 @@ qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
 
 
 
-
-unique_values = {}
-
-for index, row in dataset.iterrows():
-    placename = row['placename']
-    if placename in unique_values:
-        unique_values[placename] = 0
-    else:
-        unique_values[placename] = 1
-
-
-
-
-
-
-from pyspark.sql import SparkSession
-
-# Create a SparkSession
-spark = SparkSession.builder.appName("UniqueValues").getOrCreate()
-
-# Read in the dataset
-df = spark.read.csv("path/to/dataset.csv", header=True, inferSchema=True)
-
-# Group the dataset by the "placename" column and count the number of occurrences
-df = df.groupBy("placename").count()
+df = df.groupBy("placename").agg(sum("*").alias("count"))
 
 # Add a new column to the dataset indicating whether the "placename" is unique (1) or duplicate (0)
-df = df.withColumn("unique", F.when(F.col("count") == 1, 1).otherwise(0))
-
-# Show the resulting dataset
-df.show()
-
+df = df.withColumn("check", when(col("count") > 1, 0).otherwise(1))
