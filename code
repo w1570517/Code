@@ -333,10 +333,10 @@ qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
 
 
 
-
-
-
-df = df.groupBy("placename").agg(sum("*").alias("count"))
+df = df.groupBy("placename").count()
 
 # Add a new column to the dataset indicating whether the "placename" is unique (1) or duplicate (0)
 df = df.withColumn("check", when(col("count") > 1, 0).otherwise(1))
+
+# Show the resulting dataset
+df.show()
