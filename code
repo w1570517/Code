@@ -363,3 +363,34 @@ df = df.select("placename", "loc", "duplicate")
 
 # Show the resulting dataframe
 df.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import col, when, lead
+from pyspark.sql import Window
+
+# Load your dataframe
+df = spark.read.csv("path/to/your_file.csv", inferSchema=True, header=True)
+
+# Create a window to compare the current row's 'placename' with the next row's 'placename'
+window = Window.partitionBy("placename").orderBy("placename")
+
+# Create a new column 'duplicate' with value 1 if the current row's 'placename' is the same as the next row's 'placename' and the current row's 'loc' is the same as the next row's 'loc', 0 otherwise
+df = df.withColumn("duplicate", when(col("placename") == lead("placename").over(window) & col("loc") == lead("loc").over(window), 1).otherwise(0))
+
+# Select only the 'placename', 'loc', and 'duplicate' columns
+df = df.select("placename", "loc", "duplicate")
+
+# Show the resulting dataframe
+df.show()
