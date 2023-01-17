@@ -326,3 +326,24 @@ for place_name in place_names:
 qualified_rows = datasetLoc.filter(datasetLoc["check"] == 1)
 
 
+
+
+
+
+
+
+
+
+
+
+
+unique_values = {}
+
+for index, row in dataset.iterrows():
+    placename = row['placename']
+    if placename in unique_values:
+        unique_values[placename] = 0
+    else:
+        unique_values[placename] = 1
+
+
