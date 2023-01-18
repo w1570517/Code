@@ -424,3 +424,25 @@ df = df.select("placename", "loc", "duplicate")
 
 # Show the resulting dataframe
 df.show()
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql import functions as F
+
+# Load your dataframe
+df = spark.read.csv("path/to/your_file.csv", inferSchema=True, header=True)
+
+# create a flag column with value 1 for condition 1 and 2
+df = df.withColumn("flag",F.when((F.count("placename").over(Window.partitionBy("placename"))>1) & (F.count("loc").over(Window.partitionBy("placename","loc")) == F.count("placename").over(Window.partitionBy("placename"))) , 1).otherwise(F.when(F.count("placename").over(Window.partitionBy("placename"))==1,1).otherwise(0)))
+
+# Show the resulting dataframe
+df.show()
