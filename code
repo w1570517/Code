@@ -177,8 +177,9 @@ matched_data.show()
 
 
 
-
 from pyspark.ml.feature import NGram
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
 
 # Define the similarity threshold
 similarity_threshold = 0.8
@@ -196,6 +197,28 @@ ngram = NGram(n=3, inputCol="c_clean", outputCol="c_ngrams")
 data2_ngrams = ngram.transform(data2_clean)
 
 # Join the two datasets on the matching column and calculate similarity
-matched_data = data1_ngrams.join(data2_ngrams, data1_ngrams["b_ngrams"] == data2_ngrams["c_ngrams"],
+matched_data = data1_ngrams.join(data2_ngrams, data1_ngrams["b_ngrams"] == data2_ngrams["c_ngrams"], "inner")
+
+# Create a function to calculate the Jaccard similarity
+def jaccard_similarity(set1, set2):
+    set1 = set(set1)
+    set2 = set(set2)
+    return len(set1.intersection(set2)) / len(set1.union(set2))
+
+# Register the function as a UDF
+jaccard_similarity_udf = udf(jaccard_similarity, DoubleType())
+
+# Calculate the Jaccard similarity
+matched_data = matched_data.withColumn("similarity", jaccard_similarity_udf(matched_data["b_ngrams"], matched_data["c_ngrams"]))
+
+# Filter out null values from the matched data
+matched_data = matched_data.filter("b_ngrams is not null and c_ngrams is not null")
+
+# Filter out data with similarity below the threshold
+matched_data = matched_data.filter(matched_data["similarity"] > similarity_threshold)
+
+# Show the matched data
+matched_data.show()
+
 
 
