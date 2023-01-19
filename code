@@ -506,3 +506,35 @@ df_join = df1.alias("df1").join(df2.alias("df2"), df1.similarity == df2.similari
 df_result = df_join.select("df1.a", "df1.b", "df1.c", "df2.g", "df1.similarity")
 
 
+
+
+
+
+
+from pyspark.ml.feature import RegexTokenizer, Sequencer
+from pyspark.sql.functions import col
+
+# Tokenize the address fields
+tokenizer = RegexTokenizer(inputCol="address1", outputCol="address1_tokens")
+dataset1 = tokenizer.transform(dataset1)
+
+tokenizer = RegexTokenizer(inputCol="address2", outputCol="address2_tokens")
+dataset2 = tokenizer.transform(dataset2)
+
+# Create a Sequencer object to compute the Levenshtein distance between the tokenized addresses
+sequencer = Sequencer(seqCol='address1_tokens', minSimilarity=0.8)
+
+# Add a new column to dataset1 with the Levenshtein distances
+dataset1 = sequencer.transform(dataset1.withColumnRenamed("address1_tokens", "seq"))
+
+# Add a new column to dataset2 with the Levenshtein distances
+dataset2 = sequencer.transform(dataset2.withColumnRenamed("address2_tokens", "seq"))
+
+# Join the two datasets on the Levenshtein distance column and select only the addresses with a distance less than the threshold
+similarity_threshold = 0.8
+matched_data = dataset1.join(dataset2, dataset1.distance <= similarity_threshold) \
+    .select(dataset1.address1, dataset2.address2)
+
+# Show the matched data
+matched_data.show()
+
