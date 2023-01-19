@@ -446,3 +446,32 @@ df = df.withColumn("flag",F.when((F.count("placename").over(Window.partitionBy("
 
 # Show the resulting dataframe
 df.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import levenshtein, udf
+from pyspark.sql.types import DoubleType
+
+# Define a user-defined function to calculate the similarity of two strings
+similarity = udf(lambda x, y: levenshtein(x, y) / max(len(x), len(y)), DoubleType())
+
+# Join the two DataFrames on the 'a' column of df1 and the 'g' column of df2
+# and calculate the similarity between the two columns
+df_join = df1.alias("df1").join(df2.alias("df2"), df1.a == df2.g).select("df1.*", "df2.*", similarity(df1.a, df2.g).alias("similarity"))
+
+# Filter the joined DataFrame to select only matches with similarity greater than 80%
+df_match = df_join.filter(df_join.similarity < 0.2)
+
+# Select the desired columns from the matched DataFrame
+df_result = df_match.select("df1.a", "df1.b", "df1.c", "df2.g", "similarity")
+
