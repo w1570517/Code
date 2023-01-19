@@ -222,3 +222,12 @@ matched_data.show()
 
 
 
+
+from pyspark.sql.functions import split
+
+# Split the ngrams column into an array of strings
+data1_ngrams = data1_ngrams.withColumn("b_ngrams", split(data1_ngrams["b_ngrams"], " "))
+data2_ngrams = data2_ngrams.withColumn("c_ngrams", split(data2_ngrams["c_ngrams"], " "))
+
+
+
