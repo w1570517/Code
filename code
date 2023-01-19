@@ -1,185 +1,14 @@
-from pyspark.sql.functions import lower, trim, regexp_replace
-
-# Preprocess the postcode column in dataset1 and dataset2 by converting the values to lowercase 
-# and removing spaces, and concatenating the first and second part of postcode if they are different
-dataset1 = dataset1.withColumn("b", lower(trim(dataset1.b)))
-dataset1 = dataset1.withColumn("b", regexp_replace(dataset1.b, "([a-z]+)(\s)([a-z]+)", "$1$3"))
-
-dataset2 = dataset2.withColumn("c", lower(trim(dataset2.c)))
-dataset2 = dataset2.withColumn("c", regexp_replace(dataset2.c, "([a-z]+)(\s)([a-z]+)", "$1$3"))
-
-
-
-
-
-
-
-
-
-# Start a Spark session
 from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName("Fuzzy Matching").getOrCreate()
-
-# Install the fuzzywuzzy library
-!pip install fuzzywuzzy[speedup]
-from fuzzywuzzy import fuzz
-from pyspark.sql.functions import udf
-from pyspark.sql.types import IntegerType
-
-# Define a UDF to compare the similarity of two strings
-compare_strings = udf(lambda x, y: fuzz.token_set_ratio(x, y), IntegerType())
-
-# Read dataset1 and dataset2 into dataframes
-dataset1 = spark.read.format("csv") \
-    .options(header="true", inferschema="true", 
-             charset="UTF-8", delimiter=",", 
-             path = "wasbs://container@storageAccount.blob.core.windows.net/path/to/dataset1.csv" ) \
-    .load()
-dataset2 = spark.read.format("csv") \
-    .options(header="true", inferschema="true", 
-             charset="UTF-8", delimiter=",", 
-             path = "wasbs://container@storageAccount.blob.core.windows.net/path/to/dataset2.csv" ) \
-    .load()
-
-# Join the two dataframes on the column "b" of dataset1 and column "c" of dataset2
-# using the compare_strings UDF to calculate the similarity between the values
-# and only keep the rows where the similarity is greater than the threshold
-similarity_threshold = 80
-matched_data = dataset1.join(dataset2, dataset1.b == dataset2.c) \
-    .select("dataset1.*", "dataset2.*", compare_strings(dataset1.b, dataset2.c).alias("similarity")) \
-    .where(compare_strings(dataset1.b, dataset2.c) > similarity_threshold)
-
-# Show the matched data
-matched_data.show()
-
-
-
-
-
-
-
-
-
-
-#####################################################################################################
-
-
-from pyspark.sql.functions import udf
-import pgeocode
-
-# Initialize the pgeocode library
-nomi = pgeocode.GeoDistance('GB')
-
-# Define a UDF to extract geographic information from a postcode
-def extract_geo_info(postcode):
-    try:
-        info = nomi.query_postal_code(postcode)
-        return (info['place_name'], info['region_name'], info['area_name'], info['county_name'])
-    except:
-        return ("N/A", "N/A", "N/A", "N/A")
-
-extract_geo_info_udf = udf(extract_geo_info, returnType=ArrayType(StringType()))
-
-# Apply the UDF to the "b" column of the dataset1
-dataset1 = dataset1.withColumn("geo_info", extract_geo_info_udf(dataset1.b))
-
-# Extract each item of geo_info list and create new columns for them
-dataset1 = dataset1.withColumn("place_name", dataset1.geo_info[0])
-dataset1 = dataset1.withColumn("region_name", dataset1.geo_info[1])
-dataset1 = dataset1.withColumn("area_name", dataset1.geo_info[2])
-dataset1 = dataset1.withColumn("county_name", dataset1.geo_info[3])
-
-# Show the updated dataset1
-dataset1.show()
-
-
-
-
-
-######################################################################################
-
-
-
-
-
-from fuzzywuzzy import fuzz
-from pyspark.sql.functions import udf
+from pyspark.sql.functions import udf, split
 from pyspark.sql.types import DoubleType
-
-# Define a UDF to compare the similarity of two strings
-compare_strings = udf(lambda x, y: fuzz.token_set_ratio(x, y), DoubleType())
-
-# Join the two dataframes on the column "b" of dataset1 and column "c" of dataset2
-# using the compare_strings UDF to calculate the similarity between the values
-# and only keep the rows where the similarity is greater than the threshold
-similarity_threshold = 80
-matched_data = dataset1.join(dataset2, dataset1.b == dataset2.c) \
-    .select(dataset1.b, dataset2.c, compare_strings(dataset1.b, dataset2.c).alias("similarity")) \
-    .where(compare_strings(dataset1.b, dataset2.c) > similarity_threshold)
-
-# Show the matched data
-matched_data.show()
-
-%python
-spark.conf.set("spark.synapse.python.library", "<library-name>")
-spark.conf.set("spark.synapse.python.library.version", "<library-version>")
-
-
-%pip install python-Levenshtein
-
-%pip install fuzzywuzzy[speedup]
-
-
-from pyspark.sql.functions import levenshtein
-
-
-
-
-
-from synapse_py_tools.sql_functions import fuzzywuzzy
-%pip install synapse-py-tools
-
-
-
-
-compare_strings = udf(lambda x, y: SequenceMatcher(None, x, y).ratio()*100, DoubleType())
-
-
-dataset1 = dataset1.withColumn("b", when((dataset1["id"] == 2) & (dataset1["b"] == "-"), lit(0)).otherwise(dataset1["b"]))
-
-
-
-
-
-from pyspark.sql.functions import udf
-from fuzzywuzzy import fuzz
-
-# Create a function to compare strings and calculate Levenshtein distance
-def compare_strings(x, y):
-    return fuzz.ratio(x, y)
-
-# Register the function as a UDF
-compare_strings_udf = udf(compare_strings, IntegerType())
-
-# Define the similarity threshold
-similarity_threshold = 80
-
-# Join the two datasets on the matching column and calculate similarity
-matched_data = data1_clean.join(data2_clean, data1_clean["b_clean"] == data2_clean["c_clean"], "inner") \
-    .selectExpr("data1_clean.*", "data2_clean.*", "compare_strings_udf(data1_clean.b_clean, data2_clean.c_clean) as similarity") \
-    .filter(compare_strings_udf(data1_clean["b_clean"], data2_clean["c_clean"]) > similarity_threshold)
-
-# Filter out null values from the matched data
-matched_data = matched_data.filter("b_clean is not null and c_clean is not null")
-
-# Show the matched data
-matched_data.show()
-
-
-
 from pyspark.ml.feature import NGram
-from pyspark.sql.functions import udf
-from pyspark.sql.types import DoubleType
+
+# Create a Spark session
+spark = SparkSession.builder.appName("example").getOrCreate()
+
+# Read the datasets
+data1_clean = spark.read.format("csv").options(header='true', inferSchema='true').load("path/to/data1.csv")
+data2_clean = spark.read.format("csv").options(header='true', inferSchema='true').load("path/to/data2.csv")
 
 # Define the similarity threshold
 similarity_threshold = 0.8
@@ -196,57 +25,9 @@ ngram = NGram(n=3, inputCol="c_clean", outputCol="c_ngrams")
 # Transform the data2_clean dataset
 data2_ngrams = ngram.transform(data2_clean)
 
-# Join the two datasets on the matching column and calculate similarity
-matched_data = data1_ngrams.join(data2_ngrams, data1_ngrams["b_ngrams"] == data2_ngrams["c_ngrams"], "inner")
-
-# Create a function to calculate the Jaccard similarity
-def jaccard_similarity(set1, set2):
-    set1 = set(set1)
-    set2 = set(set2)
-    return len(set1.intersection(set2)) / len(set1.union(set2))
-
-# Register the function as a UDF
-jaccard_similarity_udf = udf(jaccard_similarity, DoubleType())
-
-# Calculate the Jaccard similarity
-matched_data = matched_data.withColumn("similarity", jaccard_similarity_udf(matched_data["b_ngrams"], matched_data["c_ngrams"]))
-
-# Filter out null values from the matched data
-matched_data = matched_data.filter("b_ngrams is not null and c_ngrams is not null")
-
-# Filter out data with similarity below the threshold
-matched_data = matched_data.filter(matched_data["similarity"] > similarity_threshold)
-
-# Show the matched data
-matched_data.show()
-
-
-
-
-from pyspark.sql.functions import split
-
 # Split the ngrams column into an array of strings
 data1_ngrams = data1_ngrams.withColumn("b_ngrams", split(data1_ngrams["b_ngrams"], " "))
 data2_ngrams = data2_ngrams.withColumn("c_ngrams", split(data2_ngrams["c_ngrams"], " "))
-
-
-
-
-
-
-
-
-
-
-
-
-from pyspark.sql.functions import split
-
-# Split the ngrams column into an array of strings
-data1_ngrams = data1_ngrams.withColumn("b_ngrams", split(data1_ngrams["b_ngrams"], " "))
-data2_ngrams = data2_ngrams.withColumn("c_ngrams", split(data2_ngrams["c_ngrams"], " "))
-
-
 
 # Join the two datasets on the matching column and calculate similarity
 matched_data = data1_ngrams.join(data2_ngrams, data1_ngrams["b_ngrams"] == data2_ngrams["c_ngrams"], "inner")
@@ -271,5 +52,3 @@ matched_data = matched_data.filter(matched_data["similarity"] > similarity_thres
 
 # Show the matched data
 matched_data.show()
-
-
