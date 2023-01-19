@@ -558,3 +558,42 @@ matched_data = dataset1.join(dataset2, dataset1.distance <= similarity_threshold
 matched_data.show()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf
+from difflib import SequenceMatcher
+from pyspark.sql.types import DoubleType
+
+# Create a function to compare strings and calculate similarity ratio
+def compare_strings(x, y):
+    return SequenceMatcher(None, x, y).ratio() * 100
+
+# Register the function as a UDF
+compare_strings_udf = udf(compare_strings, DoubleType())
+
+# Define the similarity threshold
+similarity_threshold = 80
+
+# Join the two datasets on the matching column and calculate similarity
+matched_data = data1_clean.join(data2_clean, data1_clean["b_clean"] == data2_clean["c_clean"], "inner") \
+    .selectExpr("data1_clean.*", "data2_clean.*", "compare_strings_udf(data1_clean.b_clean, data2_clean.c_clean) as similarity") \
+    .filter(compare_strings_udf(data1_clean["b_clean"], data2_clean["c_clean"]) > similarity_threshold)
+
+# Filter out null values from the matched data
+matched_data = matched_data.filter("b_clean is not null and c_clean is not null")
+
+# Show the matched data
+matched_data.show()
+
+
