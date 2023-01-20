@@ -52,3 +52,7 @@ matched_data = matched_data.filter(matched_data["similarity"] > similarity_thres
 
 # Show the matched data
 matched_data.show()
+
+
+
+"Hi Alice, I just wanted to check if the issue described in the screenshot is within the scope of fixing. We have respondents who have answered questions that are not displaying correctly. For example, in the screenshot, the person has answered "Yes" to the "Do you have caring responsibilities" column (AG), but instead, the subcategory questions are all displaying in column (AH). The alternative screenshot provides an ideal scenario for how questions with subcategories should be displayed. Please let me know if you have any questions regarding the above. Thanks and kind regards, Chiogor"
