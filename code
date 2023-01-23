@@ -1,1 +1,8 @@
 
+from pyspark.sql import functions as F
+
+# Create a new column "total_hit" as the sum of all hits in columns "col a", "col b" and "col c"
+df = df.withColumn("total_hit", F.sum(F.when(F.col("col a") == 'dd', 1).otherwise(0), F.when(F.col("col b") == 'dd', 1).otherwise(0), F.when(F.col("col c") == 'dd', 1).otherwise(0)))
+
+# Create a new column "percentage" based on the percentage of hits in the "total_hit" column
+df = df.withColumn("percentage", F.round((F.col("total_hit") / F.count("*")) * 100, 2))
