@@ -30,3 +30,17 @@ df1.join(df2, udf_similarity(col("cola"), col("col e")) >= 0.6)
 
 # Select the columns of interest
 result = df1.select("cola", "colb", "colc", "col e", "col f", udf_similarity(col("cola"), col("col e")).alias("similarity"))
+
+
+
+
+
+from pyspark.sql.functions import levenshtein
+
+# Join the two datasets
+df_join = df1.alias("df1").join(df2.alias("df2"), levenshtein(col("df1.cola"), col("df2.col e")) <= 60)
+
+# Select the columns of interest
+result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", levenshtein(col("df1.cola"), col("df2.col e")).alias("similarity"))
+
+
