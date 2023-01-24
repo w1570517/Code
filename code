@@ -63,3 +63,27 @@ result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.co
 
 
 
+
+from pyspark.ml.feature import TokenSimilarity
+from pyspark.ml import Pipeline
+from pyspark.sql.functions import col
+
+# Define the input columns
+input_cols = ["cola", "col e"]
+
+# Create the TokenSimilarity estimator
+similarity = TokenSimilarity(inputCols=input_cols, outputCol="similarity", similarityType="jw")
+
+# Create a pipeline with the TokenSimilarity estimator
+pipeline = Pipeline(stages=[similarity])
+
+# Fit the pipeline on the data
+model = pipeline.fit(df1.alias("df1").join(df2.alias("df2"), on=col("df1.cola") == col("df2.col e")))
+
+# Get the transformed data
+result = model.transform(df1.alias("df1").join(df2.alias("df2"), on=col("df1.cola") == col("df2.col e")))
+
+# Select the columns of interest
+result = result.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", "similarity")
+
+
