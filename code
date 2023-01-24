@@ -44,3 +44,22 @@ df_join = df1.alias("df1").join(df2.alias("df2"), levenshtein(col("df1.cola"), c
 result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", levenshtein(col("df1.cola"), col("df2.col e")).alias("similarity"))
 
 
+
+
+
+from pyspark.sql.functions import levenshtein, jaro_winkler
+
+# Define a UDF to take the average of Jaro-Winkler and Levenshtein distance similarity scores
+def combined_similarity(s1, s2):
+    return (jaro_winkler(s1, s2) + levenshtein(s1, s2)) / 2
+
+udf_combined_similarity = udf(combined_similarity, DoubleType())
+
+# Join the two datasets
+df_join = df1.alias("df1").join(df2.alias("df2"), udf_combined_similarity(col("df1.cola"), col("df2.col e")) >= threshold)
+
+# Select the columns of interest
+result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_combined_similarity(col("df1.cola"), col("df2.col e")).alias("similarity"))
+
+
+
