@@ -14,3 +14,19 @@ https://docs.google.com/presentation/d/1WrkeJ9-CjuotTXoa4ZZlB3UPBXpxe4B3FMs9R9tn
 https://www.oreilly.com/radar/radar-trends-to-watch-december-2022/
 
 https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2022-and-a-half-decade-in-review
+
+
+
+from pyspark.sql.functions import col
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
+from pyspark_fuzzy.functions import jaro_winkler_similarity
+
+# Define a UDF for calculating the Jaro-Winkler similarity
+udf_similarity = udf(lambda s1, s2: jaro_winkler_similarity(s1, s2), DoubleType())
+
+# Join the two datasets
+df1.join(df2, udf_similarity(col("cola"), col("col e")) >= 0.6)
+
+# Select the columns of interest
+result = df1.select("cola", "colb", "colc", "col e", "col f", udf_similarity(col("cola"), col("col e")).alias("similarity"))
