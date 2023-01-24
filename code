@@ -6,3 +6,6 @@ df = df.withColumn("total_hit", F.sum(F.when(F.col("col a") == 'dd', 1).otherwis
 
 # Create a new column "percentage" based on the percentage of hits in the "total_hit" column
 df = df.withColumn("percentage", F.round((F.col("total_hit") / F.count("*")) * 100, 2))
+
+
+https://docs.google.com/presentation/d/1WrkeJ9-CjuotTXoa4ZZlB3UPBXpxe4B3FMs9R9tn34I/edit#slide=id.g164b1bac824_0_5291
