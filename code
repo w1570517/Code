@@ -9,3 +9,8 @@ df = df.withColumn("percentage", F.round((F.col("total_hit") / F.count("*")) * 1
 
 
 https://docs.google.com/presentation/d/1WrkeJ9-CjuotTXoa4ZZlB3UPBXpxe4B3FMs9R9tn34I/edit#slide=id.g164b1bac824_0_5291
+
+
+https://www.oreilly.com/radar/radar-trends-to-watch-december-2022/
+
+https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2022-and-a-half-decade-in-review
