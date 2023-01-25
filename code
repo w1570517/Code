@@ -109,3 +109,30 @@ df_join = df1.alias("df1").join(df2.alias("df2"))
 result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_jw_similarity(col("df1.cola"), col("df2.col e")).alias("jw_similarity"), udf_levenshtein_distance(col("df1.cola"), col("df2.col e")).alias("levenshtein_distance"))
 
 
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import col
+from pyspark.sql.types import DoubleType
+from spark_sequencer import Sequencer
+
+# Initialize the Sequencer
+sequencer = Sequencer(threshold=80, similarity_type='jaccard')
+
+# Define a UDF for calculating the similarity
+udf_similarity = udf(lambda s1, s2: sequencer.similarity(s1, s2), DoubleType())
+
+# Join the two datasets
+df_join = df1.alias("df1").join(df2.alias("df2"))
+
+# Select the columns of interest
+result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_similarity(col("df1.cola"), col("df2.col e")).alias("similarity"))
+
