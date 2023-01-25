@@ -136,3 +136,33 @@ df_join = df1.alias("df1").join(df2.alias("df2"))
 # Select the columns of interest
 result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_similarity(col("df1.cola"), col("df2.col e")).alias("similarity"))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
+import difflib
+
+# Define a UDF for calculating the similarity
+udf_similarity = udf(lambda s1, s2: difflib.SequenceMatcher(None, s1, s2).ratio(), DoubleType())
+
+# Join the two datasets
+df_join = df1.alias("df1").join(df2.alias("df2"), (udf_similarity(col("df1.cola"), col("df2.col e")) >= 0.8))
+
+# Select the columns of interest
+result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_similarity(col("df1.cola"), col("df2.col e")).alias("similarity"))
+
