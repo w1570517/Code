@@ -171,3 +171,18 @@ result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.co
 df = df.withColumn("age", when((col("age") < 5) | (col("age") > 90), lit(None)).otherwise(col("age")))
 
 
+
+
+
+Create a new column called "Gender & Profession" with the following formula:
+=CONCATENATE([Gender]," & ", [Profession])
+
+Create a new table using the "Gender & Profession" column and the "COUNTROWS" function with the following formula:
+=SUMMARIZE(GROUPBY(TableName, "Gender & Profession"), "Total", COUNTROWS(TableName))
+
+Create a new measure called "Percentage" with the following formula:
+=DIVIDE(COUNTROWS(FILTER(TableName, [Gender & Profession] = EARLIER([Gender & Profession]))),COUNTROWS(TableName))
+
+Drag the "Gender & Profession" column to the Rows field, and the "Percentage" measure to the Values field, and you will have a percentage breakdown of gender and profession.
+
+
