@@ -166,3 +166,8 @@ df_join = df1.alias("df1").join(df2.alias("df2"), (udf_similarity(col("df1.cola"
 # Select the columns of interest
 result = df_join.select("df1.cola", "df1.colb", "df1.colc", "df2.col e", "df2.col f", udf_similarity(col("df1.cola"), col("df2.col e")).alias("similarity"))
 
+
+
+df = df.withColumn("age", when((col("age") < 5) | (col("age") > 90), lit(None)).otherwise(col("age")))
+
+
