@@ -205,4 +205,4 @@ Use the "Gender" and "Profession" columns to group or pivot the data in your vis
 
 
 
-=COUNTROWS(FILTER(TableName, [Gender] = EARLIER([Gender]) && [Profession] = EARLIER([Profession]))) / [Total Count]
+=COUNTROWS(FILTER(TableName, [Gender] = SELECTEDVALUE(TableName[Gender]) && [Profession] = SELECTEDVALUE(TableName[Profession]))) / [Gender Count]
