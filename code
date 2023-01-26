@@ -201,3 +201,8 @@ Create a new measure called "Percentage" with the following formula:
 =DIVIDE([Gender Count], [Total Count])
 
 Use the "Gender" and "Profession" columns to group or pivot the data in your visual, and then drag the "Percentage" measure to the values field to show the breakdown of gender against profession in percentage.
+
+
+
+
+=COUNTROWS(FILTER(TableName, [Gender] = EARLIER([Gender]) && [Profession] = EARLIER([Profession]))) / [Total Count]
