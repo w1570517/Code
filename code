@@ -289,3 +289,7 @@ from pyspark.sql.functions import coalesce
 df = df.withColumn("a",coalesce(col("a"),F.lit("")))
 df2 = df2.withColumn("e",coalesce(col("e"),F.lit("")))
 
+
+
+df_joined.select("df1.a","df1.b","df2.e","df2.f",levenshtein_udf(col("df1.a"), col("df2.e")).alias("levenshtein_distance"))
+
