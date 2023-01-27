@@ -229,3 +229,25 @@ df_joined.select("df1.*", "df2.*", "fuzzy_similarity")
 
 %pip install fuzzywuzzy
 
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf
+from difflib import SequenceMatcher
+
+# Create a UDF to calculate the Levenshtein distance
+levenshtein_udf = udf(lambda x, y: SequenceMatcher(None, x, y).ratio(), DoubleType())
+
+# Join the two dataframes on the fuzzy match
+similarity_threshold = 0.8
+df_joined = df.alias("df1").join(df2.alias("df2"), (levenshtein_udf(col("df1.a"), col("df2.e")) > similarity_threshold))
+
+# Select columns from both dataframes
+df_joined.select("df1.*", "df2.*", "levenshtein_distance")
+
