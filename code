@@ -373,3 +373,28 @@ df = df.filter(df["degree_change"] == 1)
 df.show()
 
 
+
+
+
+
+
+
+
+
+from pyspark.sql import functions as F
+
+# Create a Window to partition the data by student_id and order by student_id and date
+window = Window.partitionBy("student_id").orderBy("student_id", "student_degree")
+
+# Use the window to calculate the previous value for each student's active degree
+df = df.withColumn("previous_active_degree", F.lag(df["student_active_degree"]).over(window))
+
+# Add a new column with a flag to indicate if the student has changed their active degree
+df = df.withColumn("degree_change", F.when(((df["student_active_degree"] == "active") | (df["student_active_degree"].isNull())) & (df["previous_active_degree"] == "inactive"), 1).otherwise(0))
+
+# Filter the DataFrame to show only the students who have changed their active degree
+df = df.filter(df["degree_change"] == 1)
+
+# Show the results
+df.show()
+
