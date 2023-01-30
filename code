@@ -293,3 +293,27 @@ df2 = df2.withColumn("e",coalesce(col("e"),F.lit("")))
 
 df_joined.select("df1.a","df1.b","df2.e","df2.f",levenshtein_udf(col("df1.a"), col("df2.e")).alias("levenshtein_distance"))
 
+
+
+
+
+
+from pyspark.sql import SparkSession
+
+# Create a Spark session
+spark = SparkSession.builder.appName("DataLakeWriteExample").getOrCreate()
+
+# Load the data into a DataFrame
+df = spark.read.csv("path/to/large/file.csv", header=True, inferSchema=True)
+
+# Write the DataFrame in batches to Azure Data Lake Storage
+batch_size = 10000
+num_batches = df.count() // batch_size + 1
+for i in range(num_batches):
+    batch_df = df.limit(batch_size).offset(i * batch_size)
+    batch_df.write.parquet("adl://{}/data/batch_{}".format(adl_account_name, i), mode="overwrite")
+
+# Stop the Spark session
+spark.stop()
+
+
