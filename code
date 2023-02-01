@@ -152,7 +152,6 @@ ORDER BY COUNT(*) DESC;
 
 
 
-
 WITH subquery AS (
   SELECT studentid, 
          studentcourse,
@@ -168,13 +167,19 @@ WITH subquery AS (
   ) sub
   GROUP BY studentid
 )
-SELECT r.studentid,
+SELECT TOP 10 r.studentid,
        r.studentname,
        r.studentcity,
        s.courses,
        s.meeting_condition
 FROM registration r
-LEFT JOIN subquery s
+LEFT JOIN (
+  SELECT studentid, 
+         STRING_AGG(studentcourse, ', ') WITHIN GROUP (ORDER BY studentcourse) AS courses,
+         meeting_condition
+  FROM subquery
+) s
 ON r.studentid = s.studentid;
+
 
 
