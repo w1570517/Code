@@ -398,3 +398,7 @@ df = df.filter(df["degree_change"] == 1)
 # Show the results
 df.show()
 
+
+
+# Define a user-defined function to calculate the Jaccard similarity
+jaccard = udf(lambda x, y: len(set(x).intersection(y)) / len(set(x).union(y)))
