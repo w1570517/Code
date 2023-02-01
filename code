@@ -143,43 +143,35 @@ ORDER BY COUNT(*) DESC;
 
 
 
-
-
-
-
-
-
-
-
-
 WITH subquery AS (
-  SELECT studentid, 
-         studentcourse,
+  SELECT Registrant_ID, 
+         Registrant_Name,
          CASE 
            WHEN COUNT(*) = 2 THEN 'Yes'
            ELSE 'No'
          END AS meeting_condition
   FROM (
-    SELECT studentid, studentcourse
-    FROM student
-    GROUP BY studentid, studentcourse
+    SELECT Registrant_ID, Registrant_Name
+    FROM registration2
+    GROUP BY Registrant_ID, Registrant_Name
     HAVING COUNT(*) = 1
   ) sub
-  GROUP BY studentid
+  GROUP BY Registrant_ID
 )
-SELECT TOP 10 r.studentid,
-       r.studentname,
-       r.studentcity,
-       s.courses,
+SELECT r.Registrant_ID,
+       r.Registrant_Name,
+       r.active,
+       s.registrantdifference,
        s.meeting_condition
 FROM registration r
 LEFT JOIN (
-  SELECT studentid, 
-         STRING_AGG(studentcourse, ', ') WITHIN GROUP (ORDER BY studentcourse) AS courses,
+  SELECT Registrant_ID, 
+         STRING_AGG(Registrant_Name, ', ') WITHIN GROUP (ORDER BY Registrant_Name) AS registrantdifference,
          meeting_condition
   FROM subquery
 ) s
-ON r.studentid = s.studentid;
+ON r.Registrant_ID = s.Registrant_ID;
+
 
 
 
