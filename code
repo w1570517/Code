@@ -27,13 +27,15 @@ match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","d
 
 
 
-
+WITH subquery AS (
+  SELECT studentid, studentcourse
+  FROM student
+  GROUP BY studentid, studentcourse
+  HAVING COUNT(*) = 1
+)
 SELECT studentid, 
-       group_concat(studentcourse) as courses
-FROM 
-  (SELECT studentid, studentcourse
-   FROM student
-   GROUP BY studentid, studentcourse
-   HAVING COUNT(*) = 1) subquery
+       STRING_AGG(studentcourse, ', ') WITHIN GROUP (ORDER BY studentcourse) AS courses
+FROM subquery
 GROUP BY studentid
 HAVING COUNT(*) = 2;
+
