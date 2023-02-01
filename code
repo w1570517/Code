@@ -23,3 +23,17 @@ df_joined = dff_regrandcon.alias("df1").join(broadcast(df2_postalcode.alias("df2
 
 # Select columns from both dataframes and calculate Levenshtein distance
 match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
+
+
+
+
+
+SELECT studentid, 
+       group_concat(studentcourse) as courses
+FROM 
+  (SELECT studentid, studentcourse
+   FROM student
+   GROUP BY studentid, studentcourse
+   HAVING COUNT(*) = 1) subquery
+GROUP BY studentid
+HAVING COUNT(*) = 2;
