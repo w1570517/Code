@@ -1,174 +1,29 @@
-from pyspark.ml.feature import HashingTF, Tokenizer, MinHashLSH
-
-# Tokenize the text data in col a and col b
-df1_tokenized = Tokenizer(inputCol="col a", outputCol="col_a_token").transform(df1)
-df2_tokenized = Tokenizer(inputCol="col b", outputCol="col_b_token").transform(df2)
-
-# Compute the term frequency for each dataframe
-df1_hash = HashingTF(inputCol="col_a_token", outputCol="col_a_vector").transform(df1_tokenized)
-df2_hash = HashingTF(inputCol="col_b_token", outputCol="col_b_vector").transform(df2_tokenized)
-
-# Create the MinHashLSH model
-lsh = MinHashLSH(inputCol="col_b_vector", outputCol="df2_lsh", numHashTables=5)
-
-# Fit the MinHashLSH model to the second dataframe
-model = lsh.fit(df2_hash)
-
-# Perform the fuzzy matching by computing the similarity between the two dataframes
-df1_matches = model.approxSimilarityJoin(df1_hash, df2_hash, 0.8, distCol="Similarity")
-
-# Select the desired columns from the result
-df1_matches = df1_matches.select("col a", "col b", "Similarity")
-
-
-df2_hash = HashingTF(inputCol="col_b_token", outputCol="col_b_vector").transform(df2_tokenized)
-
-
-
-
-
-
-
-
-from pyspark.sql.functions import col
-from pyspark.ml.feature import HashingTF, Tokenizer, MinHashLSH
-
-# tokenize the string data in the columns
-tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="col_a_token")
-df1 = tokenizer.transform(dff_regrandcon)
-
-tokenizer = Tokenizer(inputCol="place20nm2", outputCol="col_b_token")
-df2 = tokenizer.transform(df2_postalcode)
-
-# create features using HashingTF
-hashing_tf = HashingTF(inputCol="col_a_token", outputCol="col_a_vector")
-df1 = hashing_tf.transform(df1)
-
-hashing_tf = HashingTF(inputCol="col_b_token", outputCol="col_b_vector")
-df2 = hashing_tf.transform(df2)
-
-# apply MinHashLSH
-minhash_lsh = MinHashLSH(inputCol="col_a_vector", outputCol="lsh", numHashTables=3)
-model = minhash_lsh.fit(df1)
-
-# find approximate matches
-approx_matches = model.approxNearestNeighbors(df2, df1, 2).filter("distCol >= 0.5")
-
-# join the dataframes on the approximate matches
-result = approx_matches.join(df2, col("datasetA.registrant_id") == col("datasetB.placeid"), "inner")
-result = result.drop(col("datasetB.placeid"))
-
-# show the results
-result.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from pyspark.ml.feature import HashingTF, Tokenizer
-from pyspark.ml.linalg import Vector
-from pyspark.sql import functions as F
-
-# Tokenize the columns
-tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="col_a_token")
-dff_regrandcon = tokenizer.transform(dff_regrandcon)
-
-tokenizer = Tokenizer(inputCol="place20nm2", outputCol="col_b_token")
-df2_postalcode = tokenizer.transform(df2_postalcode)
-
-# Compute the term frequency vectors
-hashingTF = HashingTF(inputCol="col_a_token", outputCol="col_a_vector", numFeatures=10000)
-dff_regrandcon = hashingTF.transform(dff_regrandcon)
-
-hashingTF = HashingTF(inputCol="col_b_token", outputCol="col_b_vector", numFeatures=10000)
-df2_postalcode = hashingTF.transform(df2_postalcode)
-
-# Compute the dot product
-dff_regrandcon = dff_regrandcon.withColumn("dot_product", F.udf(lambda x, y: float(x.dot(y)), DoubleType())("col_a_vector", "col_b_vector"))
-
-# Join the two dataframes
-join_df = dff_regrandcon.join(df2_postalcode, "dot_product")
-
-# Add a new column indicating the similarity score
-join_df = join_df.withColumn("similarity", F.udf(lambda x: float(x / 10000), DoubleType())("dot_product"))
-
-# Filter rows with similarity score greater than the threshold
-threshold = 0.8
-filtered_df = join_df.filter(F.col("similarity") > threshold)
-
-
-
-
-
-
-
-
-
-
-
-from pyspark.sql import functions as F
+from pyspark.sql.functions import udf, col, lit, broadcast, levenshtein
 from pyspark.sql.types import DoubleType
-from pyspark.ml.feature import HashingTF, Tokenizer
 
-# Tokenize the columns
-tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="col_a_token")
-dff_regrandcon = tokenizer.transform(dff_regrandcon)
+# Create a UDF to calculate the Levenshtein distance
+levenshtein_udf = udf(lambda x,y: levenshtein(x, y) if x is not None and y is not None else None, DoubleType())
 
-tokenizer = Tokenizer(inputCol="place20nm2", outputCol="col_b_token")
-df2_postalcode = tokenizer.transform(df2_postalcode)
+# Filter data to only include rows with a high enough similarity score
+similarity_threshold = 0.9
+dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(col("Primary_Address_City2"), lit("")))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), lit("")))
+filtered_dff_regrandcon = dff_regrandcon.filter(levenshtein_udf(col("Primary_Address_City2"), col("place20nm2")) > similarity_threshold)
 
-# Compute the term frequency vectors
-hashingTF = HashingTF(inputCol="col_a_token", outputCol="col_a_vector", numFeatures=10000)
-dff_regrandcon = hashingTF.transform(dff_regrandcon)
+# Join the two dataframes on the fuzzy match using a broadcast join
+df_joined = filtered_dff_regrandcon.alias("df1").join(broadcast(df2_postalcode), on=(levenshtein_udf(col("df1.Primary_Address_City2"), col("place20nm2")) > similarity_threshold))
 
-hashingTF = HashingTF(inputCol="col_b_token", outputCol="col_b_vector", numFeatures=10000)
-df2_postalcode = hashingTF.transform(df2_postalcode)
-
-# Define the dot product calculation UDF
-def dot_product(vec1, vec2):
-    return float(vec1.dot(vec2))
-
-dot_product_udf = F.udf(dot_product, DoubleType())
-
-# Compute the dot product
-dff_regrandcon = dff_regrandcon.withColumn("dot_product", dot_product_udf("col_a_vector", "col_b_vector"))
-
-# Join the two dataframes
-join_df = dff_regrandcon.join(df2_postalcode, "dot_product")
-
-# Define the similarity calculation UDF
-def similarity(dot_product):
-    return float(dot_product / 10000)
-
-similarity_udf = F.udf(similarity, DoubleType())
-
-# Add a new column indicating the similarity score
-join_df = join_df.withColumn("similarity", similarity_udf("dot_product"))
-
-# Filter rows with similarity score greater than the threshold
-threshold = 0.8
-filtered_df = join_df.filter(F.col("similarity") > threshold)
-
+# Select columns from both dataframes
+matched_data = df_joined.select(
+    "df1.registrant_id",
+    "df1.Primary_Address_City2",
+    "df1.Primary_Address_City",
+    "df1.Work_PostalCode",
+    "df1.Work_PostalCode2",
+    "df1.pcd",
+    "df1.pcd2",
+    "df2.place20nm",
+    "df2.eer20nm",
+    "df2.ctry20nm",
+    levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance")
+)
