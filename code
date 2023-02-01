@@ -79,3 +79,60 @@ df_joined = filtered_dff_regrandcon.alias("df1").join(broadcast(df2_postalcode),
 
 df2_postalcode = df2_postalcode.withColumn("place20nm2", col("place20nm2"))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf, col, lit, broadcast
+from pyspark.sql.types import DoubleType
+from difflib import SequenceMatcher
+
+# Create a UDF to calculate the Levenshtein distance
+def levenshtein_distance(x,y):
+    if x is None or y is None:
+        return None
+    else:
+        return SequenceMatcher(None, x, y).ratio()
+
+levenshtein_udf = udf(levenshtein_distance, DoubleType())
+
+# Handle missing values in both dataframes
+dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(col("Primary_Address_City2"), lit("")))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), lit("")))
+
+# Filter data to only include rows with a high enough similarity score
+similarity_threshold = 0.9
+filtered_dff_regrandcon = dff_regrandcon.filter(levenshtein_udf(col("Primary_Address_City2"), col("place20nm2")) > similarity_threshold)
+
+# Join the two dataframes on the fuzzy match using a broadcast join
+df_joined = filtered_dff_regrandcon.alias("df1").join(broadcast(df2_postalcode), on=(col("df1.Primary_Address_City2") == col("place20nm2")))
+
+# Select columns from both dataframes
+matched_data = df_joined.select(
+    "df1.registrant_id",
+    "df1.Primary_Address_City2",
+    "df1.Primary_Address_City",
+    "df1.Work_PostalCode",
+    "df1.Work_PostalCode2",
+    "df1.pcd",
+    "df1.pcd2",
+    "df2.place20nm",
+    "df2.eer20nm",
+    "df2.ctry20nm",
+    levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance")
+)
+
+
