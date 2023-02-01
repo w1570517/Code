@@ -19,3 +19,6 @@ df1_matches = model.approxSimilarityJoin(df1_hash, df2_hash, 0.8, distCol="Simil
 
 # Select the desired columns from the result
 df1_matches = df1_matches.select("col a", "col b", "Similarity")
+
+
+df2_hash = HashingTF(inputCol="col_b_token", outputCol="col_b_vector").transform(df2_tokenized)
