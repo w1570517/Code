@@ -30,25 +30,33 @@ df2_hash = HashingTF(inputCol="col_b_token", outputCol="col_b_vector").transform
 
 
 
+from pyspark.sql.functions import col
+from pyspark.ml.feature import HashingTF, Tokenizer, MinHashLSH
 
+# tokenize the string data in the columns
+tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="col_a_token")
+df1 = tokenizer.transform(dff_regrandcon)
 
+tokenizer = Tokenizer(inputCol="place20nm2", outputCol="col_b_token")
+df2 = tokenizer.transform(df2_postalcode)
 
-from pyspark.ml.feature import HashingTF
+# create features using HashingTF
+hashing_tf = HashingTF(inputCol="col_a_token", outputCol="col_a_vector")
+df1 = hashing_tf.transform(df1)
 
-# Apply Tokenizer and StopWordsRemover to both DataFrames
-df1_tokenized = Tokenizer(inputCol="col_a", outputCol="col_a_token").transform(df1)
-df1_stop = StopWordsRemover(inputCol="col_a_token", outputCol="col_a_stop").transform(df1_tokenized)
+hashing_tf = HashingTF(inputCol="col_b_token", outputCol="col_b_vector")
+df2 = hashing_tf.transform(df2)
 
-df2_tokenized = Tokenizer(inputCol="col_b", outputCol="col_b_token").transform(df2)
-df2_stop = StopWordsRemover(inputCol="col_b_token", outputCol="col_b_stop").transform(df2_tokenized)
+# apply MinHashLSH
+minhash_lsh = MinHashLSH(inputCol="col_a_vector", outputCol="lsh", numHashTables=3)
+model = minhash_lsh.fit(df1)
 
-# Apply HashingTF to both DataFrames
-df1_hash = HashingTF(inputCol="col_a_stop", outputCol="col_a_vector").transform(df1_stop)
-df2_hash = HashingTF(inputCol="col_b_stop", outputCol="col_b_vector").transform(df2_stop)
+# find approximate matches
+approx_matches = model.approxNearestNeighbors(df2, df1, 2).filter("distCol >= 0.5")
 
-# Apply MinHashLSH
-lsh = MinHashLSH(inputCol="col_a_vector", outputCol="lsh", numHashTables=3)
-model = lsh.fit(df1_hash)
-df1_lsh = model.transform(df1_hash)
+# join the dataframes on the approximate matches
+result = approx_matches.join(df2, col("datasetA.registrant_id") == col("datasetB.placeid"), "inner")
+result = result.drop(col("datasetB.placeid"))
 
-result = model.approxSimilarityJoin(df2_hash, df1_lsh, 0.8, distCol="similarity")
+# show the results
+result.show()
