@@ -77,4 +77,5 @@ filtered_dff_regrandcon = dff_regrandcon.filter(levenshtein_udf(col("Primary_Add
 
 df_joined = filtered_dff_regrandcon.alias("df1").join(broadcast(df2_postalcode), on=(col("df1.Primary_Address_City2") == col("df2_postalcode.place20nm2")))
 
+df2_postalcode = df2_postalcode.withColumn("place20nm2", col("place20nm2"))
 
