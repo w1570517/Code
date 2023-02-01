@@ -60,3 +60,62 @@ result = result.drop(col("datasetB.placeid"))
 
 # show the results
 result.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.ml.feature import HashingTF, Tokenizer
+from pyspark.ml.linalg import Vector
+from pyspark.sql import functions as F
+
+# Tokenize the columns
+tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="col_a_token")
+dff_regrandcon = tokenizer.transform(dff_regrandcon)
+
+tokenizer = Tokenizer(inputCol="place20nm2", outputCol="col_b_token")
+df2_postalcode = tokenizer.transform(df2_postalcode)
+
+# Compute the term frequency vectors
+hashingTF = HashingTF(inputCol="col_a_token", outputCol="col_a_vector", numFeatures=10000)
+dff_regrandcon = hashingTF.transform(dff_regrandcon)
+
+hashingTF = HashingTF(inputCol="col_b_token", outputCol="col_b_vector", numFeatures=10000)
+df2_postalcode = hashingTF.transform(df2_postalcode)
+
+# Compute the dot product
+dff_regrandcon = dff_regrandcon.withColumn("dot_product", F.udf(lambda x, y: float(x.dot(y)), DoubleType())("col_a_vector", "col_b_vector"))
+
+# Join the two dataframes
+join_df = dff_regrandcon.join(df2_postalcode, "dot_product")
+
+# Add a new column indicating the similarity score
+join_df = join_df.withColumn("similarity", F.udf(lambda x: float(x / 10000), DoubleType())("dot_product"))
+
+# Filter rows with similarity score greater than the threshold
+threshold = 0.8
+filtered_df = join_df.filter(F.col("similarity") > threshold)
+
