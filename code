@@ -402,3 +402,44 @@ df.show()
 
 # Define a user-defined function to calculate the Jaccard similarity
 jaccard = udf(lambda x, y: len(set(x).intersection(y)) / len(set(x).union(y)))
+
+
+
+
+
+
+from pyspark.ml.feature import HashingTF, MinHashLSH
+
+# Compute the term frequency for each dataframe
+df1_hash = HashingTF(inputCol="col a", outputCol="df1_vector").transform(df1)
+df2_hash = HashingTF(inputCol="col b", outputCol="df2_vector").transform(df2)
+
+# Create the MinHashLSH model
+lsh = MinHashLSH(inputCol="df2_vector", outputCol="df2_lsh", numHashTables=5)
+
+# Fit the MinHashLSH model to the second dataframe
+model = lsh.fit(df2_hash)
+
+# Perform the fuzzy matching by computing the similarity between the two dataframes
+df1_matches = model.approxSimilarityJoin(df1_hash, df2_hash, 0.8, distCol="Similarity")
+
+# Select the desired columns from the result
+df1_matches = df1_matches.select("col a", "col b", "Similarity")
+
+from pyspark.ml.feature import HashingTF, MinHashLSH
+
+# Compute the term frequency for each dataframe
+df1_hash = HashingTF(inputCol="col a", outputCol="df1_vector").transform(df1)
+df2_hash = HashingTF(inputCol="col b", outputCol="df2_vector").transform(df2)
+
+# Create the MinHashLSH model
+lsh = MinHashLSH(inputCol="df2_vector", outputCol="df2_lsh", numHashTables=5)
+
+# Fit the MinHashLSH model to the second dataframe
+model = lsh.fit(df2_hash)
+
+# Perform the fuzzy matching by computing the similarity between the two dataframes
+df1_matches = model.approxSimilarityJoin(df1_hash, df2_hash, 0.8, distCol="Similarity")
+
+# Select the desired columns from the result
+df1_matches = df1_matches.select("col a", "col b", "Similarity")
