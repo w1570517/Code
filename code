@@ -175,3 +175,39 @@ ON r.Registrant_ID = s.Registrant_ID;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+  SELECT Registrant_ID, 
+         STRING_AGG(Registrant_Name, ', ') WITHIN GROUP (ORDER BY Registrant_Name) AS registrantdifference,
+         CASE 
+           WHEN COUNT(*) = 2 THEN 'Yes'
+           ELSE 'No'
+         END AS meeting_condition
+  FROM (
+    SELECT Registrant_ID, Registrant_Name
+    FROM registration2
+    GROUP BY Registrant_ID, Registrant_Name
+    HAVING COUNT(*) = 1
+  ) sub
+  GROUP BY Registrant_ID, registrantdifference
+)
+SELECT r.Registrant_ID,
+       r.Registrant_Name,
+       r.active,
+       s.registrantdifference,
+       s.meeting_condition
+FROM registration r
+LEFT JOIN subquery s
+ON r.Registrant_ID = s.Registrant_ID;
+
