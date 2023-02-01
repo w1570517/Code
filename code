@@ -98,3 +98,41 @@ GROUP BY studentid
 ORDER BY COUNT(*) DESC;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+  SELECT studentid, studentcourse
+  FROM student
+  GROUP BY studentid, studentcourse
+  HAVING COUNT(*) = 1
+)
+SELECT TOP 10 r.request_id, 
+       STRING_AGG(s.studentcourse, ', ') WITHIN GROUP (ORDER BY s.studentcourse) AS courses,
+       CASE 
+         WHEN COUNT(*) = 2 THEN 'Yes'
+         ELSE 'No'
+       END AS meeting_condition
+FROM registration r
+LEFT JOIN (
+  SELECT studentid, 
+         studentcourse
+  FROM subquery
+  GROUP BY studentid
+) s
+ON r.studentid = s.studentid
+GROUP BY r.request_id, r.studentid
+ORDER BY COUNT(*) DESC;
+
+
