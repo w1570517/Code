@@ -136,3 +136,45 @@ GROUP BY r.request_id, r.studentid
 ORDER BY COUNT(*) DESC;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+  SELECT studentid, 
+         studentcourse,
+         CASE 
+           WHEN COUNT(*) = 2 THEN 'Yes'
+           ELSE 'No'
+         END AS meeting_condition
+  FROM (
+    SELECT studentid, studentcourse
+    FROM student
+    GROUP BY studentid, studentcourse
+    HAVING COUNT(*) = 1
+  ) sub
+  GROUP BY studentid
+)
+SELECT r.studentid,
+       r.studentname,
+       r.studentcity,
+       s.courses,
+       s.meeting_condition
+FROM registration r
+LEFT JOIN subquery s
+ON r.studentid = s.studentid;
+
+
