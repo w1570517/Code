@@ -66,3 +66,35 @@ FROM subquery
 GROUP BY studentid;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+  SELECT studentid, studentcourse
+  FROM student
+  GROUP BY studentid, studentcourse
+  HAVING COUNT(*) = 1
+)
+SELECT TOP 10 studentid, 
+       STRING_AGG(studentcourse, ', ') WITHIN GROUP (ORDER BY studentcourse) AS courses,
+       CASE 
+         WHEN COUNT(*) = 2 THEN 'Yes'
+         ELSE 'No'
+       END AS meeting_condition
+FROM subquery
+GROUP BY studentid
+ORDER BY COUNT(*) DESC;
+
+
