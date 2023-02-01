@@ -22,3 +22,33 @@ df1_matches = df1_matches.select("col a", "col b", "Similarity")
 
 
 df2_hash = HashingTF(inputCol="col_b_token", outputCol="col_b_vector").transform(df2_tokenized)
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.ml.feature import HashingTF
+
+# Apply Tokenizer and StopWordsRemover to both DataFrames
+df1_tokenized = Tokenizer(inputCol="col_a", outputCol="col_a_token").transform(df1)
+df1_stop = StopWordsRemover(inputCol="col_a_token", outputCol="col_a_stop").transform(df1_tokenized)
+
+df2_tokenized = Tokenizer(inputCol="col_b", outputCol="col_b_token").transform(df2)
+df2_stop = StopWordsRemover(inputCol="col_b_token", outputCol="col_b_stop").transform(df2_tokenized)
+
+# Apply HashingTF to both DataFrames
+df1_hash = HashingTF(inputCol="col_a_stop", outputCol="col_a_vector").transform(df1_stop)
+df2_hash = HashingTF(inputCol="col_b_stop", outputCol="col_b_vector").transform(df2_stop)
+
+# Apply MinHashLSH
+lsh = MinHashLSH(inputCol="col_a_vector", outputCol="lsh", numHashTables=3)
+model = lsh.fit(df1_hash)
+df1_lsh = model.transform(df1_hash)
+
+result = model.approxSimilarityJoin(df2_hash, df1_lsh, 0.8, distCol="similarity")
