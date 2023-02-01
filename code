@@ -178,15 +178,6 @@ ON r.Registrant_ID = s.Registrant_ID;
 
 
 
-
-
-
-
-
-
-
-
-
 WITH subquery AS (
   SELECT Registrant_ID, 
          STRING_AGG(Registrant_Name, ', ') WITHIN GROUP (ORDER BY Registrant_Name) AS registrantdifference,
@@ -200,7 +191,7 @@ WITH subquery AS (
     GROUP BY Registrant_ID, Registrant_Name
     HAVING COUNT(*) = 1
   ) sub
-  GROUP BY Registrant_ID, registrantdifference
+  GROUP BY Registrant_ID, Registrant_Name
 )
 SELECT r.Registrant_ID,
        r.Registrant_Name,
@@ -210,4 +201,5 @@ SELECT r.Registrant_ID,
 FROM registration r
 LEFT JOIN subquery s
 ON r.Registrant_ID = s.Registrant_ID;
+
 
