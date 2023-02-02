@@ -399,13 +399,5 @@ s.flag
 
 
 
-
-
-
-CASE
-WHEN SUM(CASE WHEN [Regsitration_State_Description]='Inactive' THEN 1 ELSE 0 END)>0
-AND SUM(CASE WHEN [Regsitration_State_Description] IS NULL THEN 1 ELSE 0 END)>0
-THEN 1
-ELSE 0
-END AS [InactiveAndBlank]
+,CASE WHEN COUNT(CASE WHEN r.[Regsitration_State_Description]='inactive' AND r.[Registration_Status_Description] IS NULL THEN 1 END) OVER (PARTITION BY r.Registrant_ID) > 0 THEN 1 ELSE 0 END AS flag
 
