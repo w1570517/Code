@@ -385,3 +385,27 @@ r.[Date_Deregistered],
 r.[Date_Registered_From],
 r.[Date_Registered_To],
 s.flag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CASE
+WHEN SUM(CASE WHEN [Regsitration_State_Description]='Inactive' THEN 1 ELSE 0 END)>0
+AND SUM(CASE WHEN [Regsitration_State_Description] IS NULL THEN 1 ELSE 0 END)>0
+THEN 1
+ELSE 0
+END AS [InactiveAndBlank]
+
