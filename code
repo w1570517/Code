@@ -655,3 +655,24 @@ Result = df1[M] - 1 +
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    df1[Result] = 
+    IF(df1[D7] > 0, 
+        "Cancelled", 
+        IF(FORMAT(df1[L7], "hh:mm") = FORMAT(df1[N7], "hh:mm"), 
+            "On time", 
+            IF(df1[L7] > df1[N7], 
+                "Early", 
+                "Later"
+            )
+        )
+    )
+
+    
