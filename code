@@ -628,4 +628,30 @@ Result = df1[M] - 1 +
         IF(df1[L] - INT(df1[L]) - TIME(10, 0, 0) > TIME(3, 18, 0), 
             1, 
             0.5)
+    
+    
     )
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    df1[Result] = 
+    IF(df1[D7] > 0, 
+        "Cancelled", 
+        IF(df1[L7] = df1[N7], 
+            "On time", 
+            IF(df1[L7] > df1[N7], 
+                "Early", 
+                "Later"
+            )
+        )
+    )
+
+    
+    
+    
