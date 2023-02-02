@@ -480,8 +480,6 @@ n.flag
 
 
 
-
-
 WITH subquery AS (
 SELECT Registrant_ID,
 STRING_AGG(Profession_Name, ', ') WITHIN GROUP (ORDER BY Profession_Name) AS registrantdifference,
@@ -493,12 +491,12 @@ GROUP BY Registrant_ID, Profession_Name
 ) sub
 GROUP BY Registrant_ID
 ),
-sum_query AS (
-SELECT Registrant_ID,
-SUM([StatusCode]) OVER (PARTITION BY Registrant_ID) AS total_statuscode
+status_sum AS (
+SELECT Registrant_ID, SUM(StatusCode) OVER (PARTITION BY Registrant_ID) AS total_statuscode
 FROM [dbo].[registrations]
 )
-SELECT top 10 Optevia_Contact_ID AS Contact_ID,
+SELECT top 10
+c.Optevia_Contact_ID AS Contact_ID ,
 r.Registrant_ID,
 r.[Regsitration_State_Description],
 r.[Registration_Status_Description],
@@ -510,18 +508,19 @@ r.[Date_Deregistered] AS [Date Deregistered],
 r.[Date_Registered] AS [Date most recently registered],
 r.[Date_Registered_From] AS [Date registered from],
 r.[Date_Registered_To] AS [Date registered to],
---s.registrantdifference,
+s.registrantdifference,
 s.meeting_condition AS [ProfessionChange(Yes_No)],
-[StatusCode],
-CASE WHEN s.total_statuscode = 3 THEN 1 ELSE 0 END AS flag
+ss.total_statuscode,
+CASE WHEN ss.total_statuscode = 3 THEN 1 ELSE 0 END AS new_flag
 FROM [dbo].[registrations] r
 LEFT JOIN subquery s
 ON r.Registrant_ID = s.Registrant_ID
-LEFT JOIN sum_query
-ON r.Registrant_ID = sum_query.Registrant_ID
-LEFT JOIN [dbo].[contacts] c
+Left join [dbo].[contacts] c
 ON r.Registrant_ID = c.[Contact_ID]
-GROUP BY Optevia_Contact_ID,
+LEFT JOIN status_sum ss
+ON r.Registrant_ID = ss.Registrant_ID
+--where meeting_condition='Yes'
+GROUP BY c.Optevia_Contact_ID,
 r.Registrant_ID,
 r.Registration_Name,
 r.[Regsitration_State_Description],
@@ -532,6 +531,6 @@ r.[Date_Registered],
 r.[Date_Deregistered],
 r.[Date_Registered_From],
 r.[Date_Registered_To],
---s.registrantdifference,
+s.registrantdifference,
 s.meeting_condition,
-[StatusCode]
+ss.total_statuscode;
