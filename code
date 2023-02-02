@@ -311,9 +311,77 @@ s.flag
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+SELECT Registrant_ID,
 SUM(CASE WHEN Regsitration_State_Description = 'inactive' THEN 1 ELSE 0 END) +
 SUM(CASE WHEN Regsitration_State_Description IS NULL THEN 1 ELSE 0 END) as flag
 FROM [dbo].[registrations]
 GROUP BY Registrant_ID
 HAVING COUNT(DISTINCT Regsitration_State_Description) = 2
 )
+
+SELECT Optevia_Contact_ID AS Contact_ID,
+r.Registrant_ID,
+r.[Regsitration_State_Description],
+r.[Registration_Status_Description],
+r.[Profession_Name],
+r.[Date_Registered],
+r.Registration_Name,
+r.[First_Registration_Date] AS [First Registration Date],
+r.[Date_Deregistered] AS [Date Deregistered],
+r.[Date_Registered] AS [Date most recently registered],
+r.[Date_Registered_From] AS [Date registered from],
+r.[Date_Registered_To] AS [Date registered to],
+CASE
+WHEN s.flag = 2 THEN 1
+ELSE 0
+END AS [Flag for Inactive and Null]
+FROM [dbo].[registrations] r
+LEFT JOIN subquery s
+ON r.Registrant_ID = s.Registrant_ID
+LEFT JOIN [dbo].[contacts] c
+ON r.Registrant_ID = c.[Contact_ID]
+GROUP BY Optevia_Contact_ID,
+r.Registrant_ID,
+r.Registration_Name,
+r.[Regsitration_State_Description],
+r.[Registration_Status_Description],
+r.[Profession_Name],
+r.[First_Registration_Date],
+r.[Date_Registered],
+r.[Date_Deregistered],
+r.[Date_Registered_From],
+r.[Date_Registered_To],
+s.flag
