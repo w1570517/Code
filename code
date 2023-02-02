@@ -623,11 +623,12 @@ df2_postalcode.unpersist()
 
 
 
-
 Result = df1[M] - 1 + 
-    IF(TEXT((df1[L] - INT(df1[L])), "hh.mm") = "00.00", 
+    IF(TEXT((df1[L] - INT(df1[L])), "hh:mm") = "00:00", 
         1, 
-        IF(TEXT((df1[L] - INT(df1[L])), "hh.mm") - TIME(10, 0, 0), "hh.mm") > 3.3, 
+        IF(TEXT((df1[L] - INT(df1[L])), "hh:mm") - TIME(10, 0, 0) > 3.3, 
             1, 
             0.5)
+    )
+
 
