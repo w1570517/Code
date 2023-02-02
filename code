@@ -446,3 +446,12 @@ r.[Date_Registered_To],
 --s.registrantdifference,
 --s.meeting_condition,
 n.flag
+
+
+
+
+
+
+
+
+,CASE WHEN COUNT(CASE WHEN r.[Regsitration_State_Description]='inactive' AND r.[Registration_Status_Description] IS NULL THEN 1 END) OVER (PARTITION BY r.Registrant_ID) > 0 THEN 1 ELSE 0 END AS flag
