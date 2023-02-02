@@ -196,3 +196,119 @@ SELECT r.Registrant_ID,
 FROM registration r
 LEFT JOIN subquery s
 ON r.Registrant_ID = s.Registrant_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WITH subquery AS (
+SELECT Registrant_ID,
+STRING_AGG(Profession_Name, ', ') WITHIN GROUP (ORDER BY Profession_Name) AS registrantdifference,
+CASE
+WHEN COUNT(DISTINCT Profession_Name) = 2 THEN 'Yes'
+ELSE 'No'
+END AS meeting_condition,
+CASE
+WHEN SUM(CASE WHEN Regsitration_State_Description IN ('inactive', 'blank') THEN 1 ELSE 0 END) = 2 THEN 1
+ELSE 0
+END AS flag
+FROM (
+SELECT Registrant_ID,
+Profession_Name,
+Regsitration_State_Description
+FROM [dbo].[registrations]
+GROUP BY Registrant_ID,
+Profession_Name,
+Regsitration_State_Description
+) sub
+GROUP BY Registrant_ID
+)
+
+SELECT Optevia_Contact_ID AS Contact_ID ,
+r.Registrant_ID,
+r.[Regsitration_State_Description],
+r.[Registration_Status_Description],
+r.[Profession_Name],
+r.[Date_Registered],
+r.Registration_Name,
+r.[First_Registration_Date] AS [First Registration Date],
+r.[Date_Deregistered] AS [Date Deregistered],
+r.[Date_Registered] AS [Date most recently registered],
+r.[Date_Registered_From] AS [Date registered from],
+r.[Date_Registered_To] AS [Date registered to],
+s.registrantdifference,
+s.meeting_condition AS [ProfessionChange(Yes_No)],
+s.flag AS [Flag for Inactive and Blank]
+FROM [dbo].[registrations] r
+LEFT JOIN subquery s
+ON r.Registrant_ID = s.Registrant_ID
+Left join [dbo].[contacts] c
+ON r.Registrant_ID = c.[Contact_ID]
+GROUP BY Optevia_Contact_ID,
+r.Registrant_ID,
+r.Registration_Name,
+r.[Regsitration_State_Description],
+r.[Registration_Status_Description],
+r.[Profession_Name],
+r.[First_Registration_Date],
+r.[Date_Registered],
+r.[Date_Deregistered],
+r.[Date_Registered_From],
+r.[Date_Registered_To],
+s.registrantdifference,
+s.meeting_condition,
+s.flag
+
+
+
+
+Regenerate response
