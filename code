@@ -311,4 +311,9 @@ s.flag
 
 
 
-Regenerate response
+SUM(CASE WHEN Regsitration_State_Description = 'inactive' THEN 1 ELSE 0 END) +
+SUM(CASE WHEN Regsitration_State_Description IS NULL THEN 1 ELSE 0 END) as flag
+FROM [dbo].[registrations]
+GROUP BY Registrant_ID
+HAVING COUNT(DISTINCT Regsitration_State_Description) = 2
+)
