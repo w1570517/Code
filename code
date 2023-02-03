@@ -700,3 +700,21 @@ Result = df1[M] - 1 +
         "Unknown"
     )
 
+
+
+
+Hearingconcludedontime? = 
+    IF( 
+        ISNUMBER(Raw_Data2[Panel Member Cancelled Date]), 
+        IF(Raw_Data2[Panel Member Cancelled Date] > 0, 
+            "Cancelled", 
+            IF(IFNA(Raw_Data2[Hearing To],0) = IFNA(Raw_Data2[Actual Hearing End Date],0), 
+                "On time", 
+                IF(IFNA(Raw_Data2[Hearing To],0) > IFNA(Raw_Data2[Actual Hearing End Date],0), 
+                    "Early", 
+                    "Later" 
+                )
+            )
+        ), 
+        "Unknown"
+    )
