@@ -364,3 +364,26 @@ IF(Raw_Data2[Actual Hearing End Date]=Raw_Data2[Hearing To],"On time",
 IF(Raw_Data2[Actual Hearing End Date] > Raw_Data2[Hearing To],"Early","Later")
 )
 )
+
+
+
+
+
+
+
+
+
+Join the two dataframes on the fuzzy match
+similarity_threshold = 0.9
+df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), 
+    (levenshtein_udf(
+        col("df1.Primary_Address_City2").cast("string").alias("text1"),
+        col("df2.place20nm2").cast("string").alias("text2")) > similarity_threshold))
+
+Select columns from both dataframes
+matched_data=df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Primary_Address_City2"
+,"df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.place20nm2"
+,"df2.eer20nm","df2.ctry20nm",levenshtein_udf(
+    col("df1.Primary_Address_City2").cast("string"), 
+    col("df2.place20nm2").cast("string")).alias("levenshtein_distance"))
+
