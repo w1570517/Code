@@ -721,3 +721,35 @@ Hearingconcludedontime? =
         ), 
         "Unknown"
     )
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    Hearingconcludedontime? = 
+    IF( 
+        ISNUMBER(Raw_Data2[Panel Member Cancelled Date]), 
+        IF(Raw_Data2[Panel Member Cancelled Date] > 0, 
+            "Cancelled", 
+            IF(OR(ISBLANK(Raw_Data2[Hearing To]), ISBLANK(Raw_Data2[Actual Hearing End Date])), 
+                "Unknown", 
+                IF(TEXT(Raw_Data2[Hearing To], "yyyy-MM-dd hh:mm:ss") = TEXT(Raw_Data2[Actual Hearing End Date], "yyyy-MM-dd hh:mm:ss"), 
+                    "On time", 
+                    IF(Raw_Data2[Hearing To] > Raw_Data2[Actual Hearing End Date], 
+                        "Early", 
+                        "Later" 
+                    )
+                )
+            )
+        ), 
+        "Unknown"
+    )
+
