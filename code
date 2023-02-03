@@ -396,14 +396,12 @@ matched_data=df_joined.select("df1.registrant_id","df1.Primary_Address_City2","d
     
     
     
-    
-    
-    
-    
- from pyspark.sql.functions import udf, col, lit, coalesce, cast
+ from diff_match_patch import diff_match_patch
+from pyspark.sql.functions import udf, col, coalesce
+from pyspark.sql import functions as F
 from pyspark.sql.types import DoubleType
 
-def levenshtein_distance(text1, text2):
+def levenshtein_distance(text1,text2):
     if text1 is None or text2 is None:
         return 0
     else:
@@ -417,18 +415,13 @@ def levenshtein_distance(text1, text2):
 
 levenshtein_udf = udf(levenshtein_distance, DoubleType())
 
-# Make sure the columns are cast to strings before passing them to the function
-dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(cast(col("Primary_Address_City2"), "string"), lit("")))
-df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(cast(col("place20nm2"), "string"), lit("")))
+# Make sure that the columns are of string type
+dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(F.cast(col("Primary_Address_City2"), "string"), F.lit("")))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(F.cast(col("place20nm2"), "string"), F.lit("")))
 
-# Join the two dataframes on the fuzzy match
 similarity_threshold = 0.9
 df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), (levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")) > similarity_threshold))
 
-# Select columns from both dataframes
-matched_data = df_joined.select("df1.registrant_id", "df1.Primary_Address_City2", "df1.Primary_Address_City", "df1.Primary_Address_City2",
-                                 "df1.Work_PostalCode", "df1.Work_PostalCode2", "df1.pcd", "df1.pcd2", "df2.place20nm", "df2.eer20nm",
-                                 "df2.place20nm2", "df2.eer20nm", "df2.ctry20nm", levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
-
-
-
+matched_data=df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Primary_Address_City2",
+"df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.place20nm2",
+"df2.eer20nm","df2.ctry20nm",levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
