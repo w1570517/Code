@@ -708,11 +708,14 @@ Hearingconcludedontime? =
         ISNUMBER(Raw_Data2[Panel Member Cancelled Date]), 
         IF(Raw_Data2[Panel Member Cancelled Date] > 0, 
             "Cancelled", 
-            IF(IFNA(Raw_Data2[Hearing To],0) = IFNA(Raw_Data2[Actual Hearing End Date],0), 
-                "On time", 
-                IF(IFNA(Raw_Data2[Hearing To],0) > IFNA(Raw_Data2[Actual Hearing End Date],0), 
-                    "Early", 
-                    "Later" 
+            IF(OR(ISBLANK(Raw_Data2[Hearing To]), ISBLANK(Raw_Data2[Actual Hearing End Date])), 
+                "Unknown", 
+                IF(Raw_Data2[Hearing To] = Raw_Data2[Actual Hearing End Date], 
+                    "On time", 
+                    IF(Raw_Data2[Hearing To] > Raw_Data2[Actual Hearing End Date], 
+                        "Early", 
+                        "Later" 
+                    )
                 )
             )
         ), 
