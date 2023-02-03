@@ -676,3 +676,27 @@ Result = df1[M] - 1 +
     )
 
     
+    
+    
+    
+    
+    
+    
+    
+    
+    df1[Result] = 
+    IF(
+        ISNUMBER(df1[D7]), 
+        IF(df1[D7] > 0, 
+            "Cancelled", 
+            IF(df1[L7] = df1[N7], 
+                "On time", 
+                IF(df1[L7] > df1[N7], 
+                    "Early", 
+                    "Later"
+                )
+            )
+        ), 
+        "Unknown"
+    )
+
