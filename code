@@ -359,14 +359,8 @@ Raw_Data2[Hearing To] > Raw_Data2[Actual Hearing End Date],
 )
 
 
-
-= IF(ISBLANK([Panel Member Cancelled Date]), BLANK(),
-IF(VALUE([Panel Member Cancelled Date]) > 0, "Cancelled",
-IF(ISBLANK([Hearing To]), BLANK(),
-IF([Actual Hearing End Date]=[Hearing To],"On time",
-IF([Actual Hearing End Date] > [Hearing To],"Early","Later")
+= IF(Raw_Data2[Panel Member Cancelled Date] > 0, "Cancelled",
+IF(Raw_Data2[Actual Hearing End Date]=Raw_Data2[Hearing To],"On time",
+IF(Raw_Data2[Actual Hearing End Date] > Raw_Data2[Hearing To],"Early","Later")
 )
 )
-)
-)
-
