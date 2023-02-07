@@ -544,6 +544,7 @@ df_result = df_result.select("df1.*").join(df_joined, (df_result["df1.Primary_Ad
 
 
 
-df_result = df_joined.groupBy(F.col("df1.Primary_Address_City2")).agg(F.max(MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2"))).alias("max_score"))
-df_result = df_result.filter(F.col("max_score") >= similarity_threshold)
-df_result = df_result.select("df1.*").join(df_joined, (df_result["df1.Primary_Address_City2"] == df_joined[F.col("df1.Primary_Address_City2")]) & (df_result["max_score"] == MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2"))))
+DJoined = dff_regrandcon.crossJoin(df2_postalcode)
+matched_data = DJoined.withColumn("score", MatchUDF(F.col("Primary_Address_City2"), F.col("place20nm2")))
+max_score_row = matched_data.agg(F.max("score").alias("max_score")).collect()[0]
+selected_row = matched_data.filter(F.col("score") == max_score_row["max_score"]).collect()[0]
