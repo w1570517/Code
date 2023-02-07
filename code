@@ -548,3 +548,17 @@ DJoined = dff_regrandcon.crossJoin(df2_postalcode)
 matched_data = DJoined.withColumn("score", MatchUDF(F.col("Primary_Address_City2"), F.col("place20nm2")))
 max_score_row = matched_data.agg(F.max("score").alias("max_score")).collect()[0]
 selected_row = matched_data.filter(F.col("score") == max_score_row["max_score"]).collect()[0]
+
+
+
+from pyspark.sql.functions import broadcast
+DJoined = dff_regrandcon.crossJoin(broadcast(df2_postalcode))
+matched_data = DJoined.withColumn("score", MatchUDF(F.col("Primary_Address_City2"), F.col("place20nm2")))
+max_score_row = matched_data.agg(F.max("score").alias("max_score")).collect()[0]
+selected_row = matched_data.filter(F.col("score") == max_score_row["max_score"]).collect()[0]
+
+from pyspark.sql.functions import broadcast
+DJoined = dff_regrandcon.crossJoin(broadcast(df2_postalcode))
+matched_data = DJoined.withColumn("score", MatchUDF(F.col("Primary_Address_City2"), F.col("place20nm2")))
+max_score_row = matched_data.agg(F.max("score").alias("max_score")).collect()[0]
+selected_row = matched_data.filter(F.col("score") == max_score_row["max_score"]).collect()[0]
