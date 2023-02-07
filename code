@@ -510,5 +510,36 @@ df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), (leven
 matched_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Primary_Address_City2","df1.Work_PostalCode","df1.Work_PostalCode2",
                                 "df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.place20nm2","df2.eer20nm","df2.ctry20nm",
                                 levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+   from pyspark.sql import functions as F
+from fuzzywuzzy import fuzz
+from pyspark.sql.types import IntegerType
+
+def matchstring(s1, s2):
+    return fuzz.ratio(s1, s2)
+
+MatchUDF = F.udf(matchstring, IntegerType())
+
+similarity_threshold = 90
+df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), (MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2")) > similarity_threshold))
+
+df_result = df_joined.groupBy("df1.Primary_Address_City2").agg(F.max("matchstring").alias("max_score")).filter(F.col("max_score") >= similarity_threshold)
+df_result = df_result.select("df1.*").join(df_joined, (df_result["df1.Primary_Address_City2"] == df_joined["df1.Primary_Address_City2"]) & (df_result["max_score"] == df_joined["matchstring"]))
+                            
+                                
+                                
+                                
 
 
