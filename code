@@ -571,12 +571,16 @@ df2_postalcode = df.withColumn("place20nm2", regexp_replace(df.place20nm, "[^a-z
 
 
 
-
-
-
-
-
 from pyspark.sql.functions import trim, regexp_replace, lower
 
-df2_postalcode = df.withColumn("place20nm2", lower(trim(regexp_replace(regexp_replace(df.place20nm, "\s+", ""), "[^a-zA-Z0-9]+", ""))))
+df2_postalcode = df
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm, "\s+", " "))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm2, "[.']+", ""))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm2, "[^a-zA-Z0-9]+", ""))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", trim(df2_postalcode.place20nm2))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm2, "1", "one"))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm2, "2", "two"))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_postalcode.place20nm2, "St", "Street"))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", lower(df2_postalcode.place20nm2))
+
 
