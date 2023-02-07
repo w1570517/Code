@@ -520,8 +520,6 @@ matched_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2",
                                 
                                 
                                 
-                                
-                                
 import pyspark.sql.functions as F
 from fuzzywuzzy import fuzz
 from pyspark.sql.types import IntegerType
@@ -535,6 +533,4 @@ similarity_threshold = 90
 df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), (MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2")) > similarity_threshold))
 
 df_result = df_joined.groupBy("df1.Primary_Address_City2").agg(F.max(MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2"))).alias("max_score")).filter(F.col("max_score") >= similarity_threshold)
-df_result = df_result.select("df1.*").join(df_joined, (df_result["df1.Primary_Address_City2"] == df_joined["df1.Primary_Address_City2"]) & (df_result["max_score"] == MatchUDF(F.col("df1.Primary_Address_City2"),
-
-
+df_result = df_result.select("df1.*").join(df_joined, (df_result["df1.Primary_Address_City2"] == df_joined["df1.Primary_Address_City2"]) & (df_result["max_score"] == MatchUDF(F.col("df1.Primary_Address_City2"), F.col("df2.place20nm2"))))
