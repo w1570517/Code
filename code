@@ -595,3 +595,11 @@ matched_data = dff_regrandcon.alias("xrt") \
                               .select("xrt.*", "xrtx.*")
 
 
+
+from pyspark.sql.functions import col, expr
+
+matched_data = dff_regrandcon.alias("xrt") \
+                              .join(df2_postalcode.alias("xrtx"), 
+                                    expr("xrt.Primary_Address_City like concat(xrtx.place20nm, '_')")) \
+                              .select("xrt.*", "xrtx.*")
+
