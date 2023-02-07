@@ -567,3 +567,16 @@ selected_row = matched_data.filter(F.col("score") == max_score_row["max_score"])
 
 
 df2_postalcode = df.withColumn("place20nm2", regexp_replace(df.place20nm, "[^a-zA-Z0-9]+", ""))
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import trim, regexp_replace, lower
+
+df2_postalcode = df.withColumn("place20nm2", lower(trim(regexp_replace(regexp_replace(df.place20nm, "\s+", ""), "[^a-zA-Z0-9]+", ""))))
+
