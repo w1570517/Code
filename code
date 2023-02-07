@@ -603,3 +603,10 @@ matched_data = dff_regrandcon.alias("xrt") \
                                     expr("xrt.Primary_Address_City like concat(xrtx.place20nm, '_')")) \
                               .select("xrt.*", "xrtx.*")
 
+
+
+SELECT *
+FROM dff_regrandcon xrt
+JOIN df2_postalcode xrtx
+ON xrt.Primary_Address_City LIKE concat(xrtx.place20nm, '_')
+
