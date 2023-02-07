@@ -610,3 +610,33 @@ FROM dff_regrandcon xrt
 JOIN df2_postalcode xrtx
 ON xrt.Primary_Address_City LIKE concat(xrtx.place20nm, '_')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let
+    Source = List.Dates(#date(2000, 1, 1), #date(2030, 12, 31)),
+    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), {"Date"}),
+    #"Expanded Date" = Table.ExpandColumn(#"Converted to Table", "Date", {"Year", "Quarter", "Month", "Week", "Day", "Weekday"}),
+    #"Added Custom" = Table.AddColumn(#"Expanded Date", "Year Month", each [Year] * 100 + [Month]),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "Year Month Day", each [Year Month] * 100 + [Day]),
+    #"Added Custom2" = Table.AddColumn(#"Added Custom1", "Month Name", each Date.MonthName([Month]), type text),
+    #"Added Custom3" = Table.AddColumn(#"Added Custom2", "Quarter Name", each "Q" & Number.ToText([Quarter]), type text),
+    #"Added Custom4" = Table.AddColumn(#"Added Custom3", "Weekday Name", each Date.DayOfWeekName([Weekday]), type text)
+in
+    #"Added Custom4"
+
+
