@@ -584,3 +584,14 @@ df2_postalcode = df2_postalcode.withColumn("place20nm2", regexp_replace(df2_post
 df2_postalcode = df2_postalcode.withColumn("place20nm2", lower(df2_postalcode.place20nm2))
 
 
+
+
+
+from pyspark.sql.functions import col, expr
+
+matched_data = dff_regrandcon.alias("xrt") \
+                              .join(df2_postalcode.alias("xrtx"), 
+                                    expr("xrt.Primary_Address_City like concat('%', xrtx.place20nm, '%')")) \
+                              .select("xrt.*", "xrtx.*")
+
+
