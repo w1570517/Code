@@ -711,3 +711,31 @@ SUMX(
     ),
     PeopleData[Value]
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Last Month Value =
+VAR LastMonth = MONTH(TODAY())-1
+VAR LastYear = YEAR(TODAY())
+
+RETURN
+SUMX(
+    FILTER(
+        CALCULATETABLE(PeopleData, CALENDAR2),
+        MONTH(MIN(Calendar2[Date])) = LastMonth && YEAR(MIN(Calendar2[Date])) = LastYear
+    ),
+    PeopleData[Value]
+)
