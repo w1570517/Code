@@ -822,3 +822,22 @@ FILTER(peopledata, peopledata[categorypeopledata] = CurrentCategory && peopledat
 peopledata[value]
 )
 
+
+
+
+
+
+
+
+
+
+Previous Month Value =
+VAR CurrentCategory = SELECTEDVALUE(peopledata[categorypeopledata])
+VAR CurrentDate = MAX(peopledata[date])
+VAR PreviousMonth = EOMONTH(CurrentDate, -1)
+
+RETURN
+SUMX(
+FILTER(peopledata, peopledata[categorypeopledata] = CurrentCategory && peopledata[date] >= PreviousMonth && peopledata[date] < CurrentDate),
+peopledata[value]
+)
