@@ -698,16 +698,16 @@ VAR LastYear = YEAR(TODAY())
 RETURN
 SUMX(
     FILTER(
-        PeopleData,
-        MONTH(PeopleData[Date]) = CurrentMonth && YEAR(PeopleData[Date]) = CurrentYear
+        CALCULATETABLE(PeopleData, CALENDAR2),
+        MONTH(Calendar2[Date]) = CurrentMonth && YEAR(Calendar2[Date]) = CurrentYear
     ),
     PeopleData[Value]
 )
 +
 SUMX(
     FILTER(
-        PeopleData,
-        MONTH(PeopleData[Date]) = LastMonth && YEAR(PeopleData[Date]) = LastYear
+        CALCULATETABLE(PeopleData, CALENDAR2),
+        MONTH(Calendar2[Date]) = LastMonth && YEAR(Calendar2[Date]) = LastYear
     ),
     PeopleData[Value]
 )
