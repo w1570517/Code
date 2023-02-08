@@ -669,3 +669,20 @@ CALCULATE(SUM(Sales[SalesValue]), FILTER(Sales, Sales[Date] >= EOMONTH(TODAY(), 
 
 
 
+
+
+
+
+Last Month Sales =
+CALCULATE(
+    SUM(Sales[SalesValue]),
+    FILTER(
+        ALL(Calendar),
+        Calendar[Date] >= MIN(Calendar[Date]) &&
+        Calendar[Date] <= MAX(Calendar[Date]) &&
+        MONTH(Calendar[Date]) = MONTH(TODAY()) - 1 &&
+        YEAR(Calendar[Date]) = YEAR(TODAY())
+    )
+)
+
+
