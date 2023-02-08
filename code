@@ -686,3 +686,28 @@ CALCULATE(
 )
 
 
+
+
+
+Current and Last Month Value =
+VAR CurrentMonth = MONTH(TODAY())
+VAR CurrentYear = YEAR(TODAY())
+VAR LastMonth = MONTH(TODAY())-1
+VAR LastYear = YEAR(TODAY())
+
+RETURN
+SUMX(
+    FILTER(
+        PeopleData,
+        MONTH(PeopleData[Date]) = CurrentMonth && YEAR(PeopleData[Date]) = CurrentYear
+    ),
+    PeopleData[Value]
+)
++
+SUMX(
+    FILTER(
+        PeopleData,
+        MONTH(PeopleData[Date]) = LastMonth && YEAR(PeopleData[Date]) = LastYear
+    ),
+    PeopleData[Value]
+)
