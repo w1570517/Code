@@ -752,3 +752,26 @@ CALCULATE(
     )
 )
 
+
+
+
+
+
+
+Latest Month Value =
+CALCULATE(SUM(peopledata[value]),
+FILTER(ALL(peopledata), peopledata[date] = MAX(peopledata[date])))
+
+And here's the DAX measure for the "Previous Month Value":
+
+Previous Month Value =
+CALCULATE(SUM(peopledata[value]),
+FILTER(ALL(peopledata), peopledata[date] =
+MAX(peopledata[date]) - 1))
+
+
+
+
+
+
+
