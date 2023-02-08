@@ -725,17 +725,12 @@ SUMX(
 
 
 
-
-
 Last Month Value =
-VAR LastMonth = MONTH(TODAY())-1
-VAR LastYear = YEAR(TODAY())
-
-RETURN
 SUMX(
     FILTER(
         CALCULATETABLE(PeopleData, CALENDAR2),
-        MONTH(MIN(Calendar2[Date])) = LastMonth && YEAR(MIN(Calendar2[Date])) = LastYear
+        MONTH(MIN(Calendar2[Date])) = MONTH(TODAY())-1 && YEAR(MIN(Calendar2[Date])) = YEAR(TODAY())
     ),
     PeopleData[Value]
 )
+
