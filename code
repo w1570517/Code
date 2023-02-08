@@ -664,6 +664,8 @@ CALCULATE(SUM(Sales[SalesValue]), DATESYTD(Calendar[Date])-1, Sales[Category]=EA
 
 
 
+Last Month Sales =
+CALCULATE(SUM(Sales[SalesValue]), FILTER(Sales, Sales[Date] >= EOMONTH(TODAY(), -1) && Sales[Date] < EOMONTH(TODAY(), 0)))
 
 
 
