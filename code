@@ -734,3 +734,21 @@ SUMX(
     PeopleData[Value]
 )
 
+
+
+
+
+
+
+
+
+
+Previous Value = 
+CALCULATE(
+    SUM(PeopleData[Value]),
+    FILTER(
+        ALL(PeopleData),
+        PeopleData[Date] = MAX(PeopleData[Date]) - 1
+    )
+)
+
