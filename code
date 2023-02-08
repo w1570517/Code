@@ -655,6 +655,11 @@ https://learn.microsoft.com/en-us/power-bi/visuals/power-bi-visualization-scorec
 https://learn.microsoft.com/en-us/power-bi/visuals/power-bi-visualization-tables?tabs=powerbi-desktop
 
 
+Current Month Sales =
+CALCULATE(SUM(Sales[SalesValue]), DATESYTD(Calendar[Date]), Sales[Category]=EARLIER(Sales[Category]))
+
+Last Month Sales =
+CALCULATE(SUM(Sales[SalesValue]), DATESYTD(Calendar[Date])-1, Sales[Category]=EARLIER(Sales[Category]))
 
 
 
