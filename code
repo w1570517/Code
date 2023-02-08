@@ -783,3 +783,31 @@ peopledata[date] < MAX(peopledata[date])
 )
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Previous Month Value =
+CALCULATE(
+SUM(peopledata[value]),
+FILTER(
+peopledata,
+peopledata[categorypeopledata] = SELECTEDVALUE(peopledata[categorypeopledata]) &&
+peopledata[date] >= EOMONTH(MAX(peopledata[date]), -1) &&
+peopledata[date] < MAX(peopledata[date])
+)
+)
+
+
