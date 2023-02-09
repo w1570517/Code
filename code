@@ -866,4 +866,28 @@ RETURN
     IF(CurrentColumn = "food name", PreviousValue/1000 & "k", 
     IF(CurrentColumn = "house name", PreviousValue/1000 & "k", 
     IF(CurrentColumn = "invoice name", PreviousValue, BLANK())))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    Previous Value Reformatted = 
+    VAR CurrentColumn = SELECTEDVALUE(df[col1])
+    VAR PreviousValue = [Your Measure Name]
+RETURN 
+    IF(CurrentColumn = "food name", FORMAT(PreviousValue, "0,0") & "k", 
+    IF(CurrentColumn = "house name", FORMAT(PreviousValue, "0,0") & "k", 
+    IF(CurrentColumn = "invoice name", FORMAT(PreviousValue, "0.0%"), BLANK())))
+
 
