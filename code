@@ -841,3 +841,29 @@ SUMX(
 FILTER(peopledata, peopledata[categorypeopledata] = CurrentCategory && peopledata[date] >= PreviousMonth && peopledata[date] < CurrentDate),
 peopledata[value]
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Previous Value Reformatted = 
+    VAR CurrentColumn = SELECTEDVALUE(df[col1])
+    VAR PreviousValue = [Your Measure Name]
+RETURN 
+    IF(CurrentColumn = "food name", PreviousValue/1000 & "k", 
+    IF(CurrentColumn = "house name", PreviousValue/1000 & "k", 
+    IF(CurrentColumn = "invoice name", PreviousValue, BLANK())))
+
