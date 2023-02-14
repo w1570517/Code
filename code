@@ -889,5 +889,72 @@ RETURN
     IF(CurrentColumn = "food name", FORMAT(PreviousValue, "0,0") & "k", 
     IF(CurrentColumn = "house name", FORMAT(PreviousValue, "0,0") & "k", 
     IF(CurrentColumn = "invoice name", FORMAT(PreviousValue, "0.0%"), BLANK())))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+from pyspark.sql.functions import when, col, concat_ws
 
+sex_values = df1.select("Sex").distinct().rdd.flatMap(lambda x: x).collect()
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("Sex").isin(sex_values) & col("Sex").isNotNull() & (col("Sex") != ""),
+        col("Sex")
+    ).otherwise(
+        col("Gender")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("gender/sex").isNull(),
+        col("Gender")
+    ).otherwise(
+        col("gender/sex")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("gender/sex").isNull(),
+        "Null"
+    ).otherwise(
+        col("gender/sex")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    concat_ws("/", col("gender/sex"), col("contact_id"))
+)
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
