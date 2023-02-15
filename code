@@ -955,6 +955,17 @@ df1 = df1.withColumn(
     
     
     
-    
+    from pyspark.sql.functions import regexp_replace, col
+
+# Create sample DataFrame
+data = [("John", "Doe", "   "), ("Jane", "Doe", " "), ("Bob", "Smith", "   ")]
+df = spark.createDataFrame(data, ["first_name", "last_name", "middle_name"])
+
+# Replace invisible characters with "N/A"
+df = df.withColumn("middle_name", regexp_replace(col("middle_name"), "[^\\p{Print}]", "N/A"))
+
+# Show updated DataFrame
+df.show()
+
     
 
