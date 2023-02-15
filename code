@@ -968,4 +968,22 @@ df = df.withColumn("middle_name", regexp_replace(col("middle_name"), "[^\\p{Prin
 df.show()
 
     
+from pyspark.sql.functions import ascii, length
+
+# Display the ASCII code and length of each character in the "middle_name" column
+df.select("middle_name", length("middle_name"), ascii("middle_name")).show(truncate=False)
+
+
+from pyspark.sql.functions import regexp_replace
+
+# Replace all whitespace characters with "N/A"
+df = df.withColumn("middle_name", regexp_replace("middle_name", "\\s+", "N/A"))
+
+
+
+
+
+
+
+
 
