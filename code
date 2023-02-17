@@ -995,3 +995,64 @@ import pyspark.sql.functions as F
 # assume df is your Synapse DataFrame and col is the column you want to change
 df = df.withColumn("book", F.when(F.col("book").isNull(), None).otherwise(F.col("book")))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import when, col, concat_ws
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("Sex").isNotNull() & (col("Sex") != ""),
+        col("Sex")
+    ).otherwise(
+        col("Gender")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("gender/sex").isNull() & col("Gender").isNotNull(),
+        col("Gender")
+    ).otherwise(
+        col("gender/sex")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    when(
+        col("gender/sex").isNull(),
+        None
+    ).otherwise(
+        col("gender/sex")
+    )
+)
+
+df1 = df1.withColumn(
+    "gender/sex",
+    concat_ws("/", col("gender/sex"), col("contact_id"))
+)
+
+
