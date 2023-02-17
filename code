@@ -990,4 +990,8 @@ df = df.withColumn(col, F.when(F.col(col).isNull(), None).otherwise(F.col(col)))
 
 
 
+import pyspark.sql.functions as F
+
+# assume df is your Synapse DataFrame and col is the column you want to change
+df = df.withColumn("book", F.when(F.col("book").isNull(), None).otherwise(F.col("book")))
 
