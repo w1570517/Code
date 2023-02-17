@@ -982,6 +982,10 @@ df = df.withColumn("middle_name", regexp_replace("middle_name", "\\s+", "N/A"))
 
 
 
+import pyspark.sql.functions as F
+
+# assume df is your Synapse DataFrame and col is the column you want to change
+df = df.withColumn(col, F.when(F.col(col).isNull(), None).otherwise(F.col(col)))
 
 
 
