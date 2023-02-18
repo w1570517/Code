@@ -1055,4 +1055,4 @@ df1 = df1.withColumn(
     concat_ws("/", col("gender/sex"), col("contact_id"))
 )
 
-
+https://stackoverflow.com/questions/72144956/how-to-get-the-keyvault-name-in-the-notebook-from-the-keyvault-link-in-synapse
