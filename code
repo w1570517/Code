@@ -1313,3 +1313,5 @@ match_data_filtered = match_data.filter(col("jaccard_similarity") > 0.9)
 match_data_filtered.show()
 
 
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), F.lit("")).cast("string"))
+df2_postalcode = df2_postalcode.withColumn("place20nm2_arr", split(col("place20nm2"), " "))
