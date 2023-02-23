@@ -1315,3 +1315,50 @@ match_data_filtered.show()
 
 df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), F.lit("")).cast("string"))
 df2_postalcode = df2_postalcode.withColumn("place20nm2_arr", split(col("place20nm2"), " "))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf
+from pyspark.sql.types import DoubleType
+
+# Create a UDF to calculate Jaccard similarity
+def jaccard_similarity(x,y):
+  if x is None or y is None:
+    return None
+  else:
+    set_x = set(str(x).split())
+    set_y = set(str(y).split())
+    return float(len(set_x.intersection(set_y)) / len(set_x.union(set_y)))
+
+jaccard_udf = udf(jaccard_similarity, DoubleType())
+
+# Join the two dataframes on the fuzzy match
+similarity_threshold = 0.9
+df_joined = dff_regrandcon.alias("df1").join(broadcast(df2_postalcode.alias("df2")), (jaccard_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")) > similarity_threshold))
+
+# Select columns from both dataframes and calculate Jaccard similarity
+match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", jaccard_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("jaccard_similarity"))
+
+# Filter for rows with Jaccard similarity > threshold
+match_data = match_data.filter(col("jaccard_similarity") > similarity_threshold)
+
+# Show results
+match_data.show()
+
