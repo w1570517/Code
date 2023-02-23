@@ -1056,3 +1056,57 @@ df1 = df1.withColumn(
 )
 
 https://stackoverflow.com/questions/72144956/how-to-get-the-keyvault-name-in-the-notebook-from-the-keyvault-link-in-synapse
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf, col, broadcast
+from pyspark.sql.types import DoubleType
+from difflib import SequenceMatcher
+
+# Create a UDF to calculate the Levenshtein distance
+def levenshtein_distance(x,y):
+  if x is None or y is None:
+    return None
+  else:
+    return SequenceMatcher(None, x, y).ratio()
+
+levenshtein_udf = udf(levenshtein_distance, DoubleType())
+
+from pyspark.sql.functions import coalesce
+
+# Replace null values in columns "Primary_Address_City2" and "place20nm2" with empty strings
+dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(col("Primary_Address_City2"), F.lit("")))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), F.lit("")))
+
+# Create an index on the join column for faster performance
+df2_postalcode.createOrReplaceTempView("df2_postalcode")
+spark.sql("CREATE INDEX index_place20nm2 ON df2_postalcode (place20nm2)")
+
+# Broadcast the smaller dataframe for faster performance
+df2_postalcode = broadcast(df2_postalcode)
+
+# Join the two dataframes on the fuzzy match
+similarity_threshold = 0.9
+df_joined = dff_regrandcon.alias("df1").join(df2_postalcode.alias("df2"), (levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")) > similarity_threshold))
+
+# Select columns from both dataframes and calculate Levenshtein distance
+match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
+
+# Cache the resulting DataFrame for faster performance in subsequent operations
+match_data.cache()
+
+# Show the first 500 rows of the DataFrame
+match_data.show(500)
+
+
+
+
+
+
+
