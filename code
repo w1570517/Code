@@ -1141,24 +1141,20 @@ match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","d
 
 
 
-
-
-from difflib import SequenceMatcher
-from pyspark.sql.functions import udf, col, broadcast, coalesce
+from pyspark.sql.functions import udf, col, broadcast
 from pyspark.sql.types import DoubleType
+from difflib import SequenceMatcher
 
-# Define the Levenshtein distance function as a UDF
-def levenshtein_distance(x, y):
-    if x is None or y is None:
-        return None
-    else:
-        return SequenceMatcher(None, x, y).ratio()
+# Create a UDF to calculate the Levenshtein distance
+def levenshtein_distance(x,y):
+  if x is None or y is None:
+    return None
+  else:
+    return SequenceMatcher(None, x, y).ratio()
 
 levenshtein_udf = udf(levenshtein_distance, DoubleType())
 
-# Load the dataframes
-dff_regrandcon = spark.sql("SELECT * FROM regdb.dff_regrandcon")
-df2_postalcode = spark.sql("SELECT * FROM regdb.df2_postalcode")
+from pyspark.sql.functions import coalesce
 
 # Replace null values in columns "Primary_Address_City2" and "place20nm2" with empty strings
 dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(col("Primary_Address_City2"), F.lit("")))
@@ -1170,7 +1166,4 @@ df_joined = dff_regrandcon.alias("df1").join(broadcast(df2_postalcode.alias("df2
 
 # Select columns from both dataframes and calculate Levenshtein distance
 match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
-
-# Show the match data
-match_data.show()
 
