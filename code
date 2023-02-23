@@ -1138,3 +1138,63 @@ match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","d
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf, col, broadcast
+from pyspark.sql.types import DoubleType
+from difflib import SequenceMatcher
+
+# Create a UDF to calculate the Levenshtein distance
+def levenshtein_distance(x,y):
+  if x is None or y is None:
+    return None
+  else:
+    return SequenceMatcher(None, x, y).ratio()
+
+levenshtein_udf = udf(levenshtein_distance, DoubleType())
+
+from pyspark.sql.functions import coalesce
+
+# Replace null values in columns "Primary_Address_City2" and "place20nm2" with empty strings
+dff_regrandcon = dff_regrandcon.withColumn("Primary_Address_City2", coalesce(col("Primary_Address_City2"), F.lit("")))
+df2_postalcode = df2_postalcode.withColumn("place20nm2", coalesce(col("place20nm2"), F.lit("")))
+
+# Register dataframe as temporary table
+dff_regrandcon.createOrReplaceTempView("temp_dff_regrandcon")
+
+# Join the two dataframes on the fuzzy match
+similarity_threshold = 0.9
+df_joined = spark.sql("""
+    SELECT df1.registrant_id, df1.Primary_Address_City2, df1.Primary_Address_City, df1.Work_PostalCode, 
+           df1.Work_PostalCode2, df1.pcd, df1.pcd2, df2.place20nm, df2.eer20nm, df2.ctry20nm, 
+           levenshtein_udf(df1.Primary_Address_City2, df2.place20nm2) AS levenshtein_distance
+    FROM temp_dff_regrandcon df1
+    JOIN df2_postalcode df2
+    ON levenshtein_udf(df1.Primary_Address_City2, df2.place20nm2) > similarity_threshold
+""")
+
+# Select columns from both dataframes and calculate Levenshtein distance
+match_data = df_joined.select("registrant_id", "Primary_Address_City2", "Primary_Address_City", "Work_PostalCode",
+                              "Work_PostalCode2", "pcd", "pcd2", "place20nm", "eer20nm", "ctry20nm", 
+                              "levenshtein_distance")
+
+
