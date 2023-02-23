@@ -1224,3 +1224,92 @@ df_joined = dff_regrandcon.alias("df1").join(broadcast(df2_postalcode.alias("df2
 match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", levenshtein_udf(col("df1.Primary_Address_City2"), col("df2.place20nm2")).alias("levenshtein_distance"))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf, col, broadcast
+from pyspark.sql.types import DoubleType
+from pyspark.ml.feature import Tokenizer
+from pyspark.ml.feature import StopWordsRemover
+
+# Create a UDF to calculate the Jaccard similarity
+def jaccard_similarity(x,y):
+  if x is None or y is None:
+    return None
+  else:
+    x = set(x.split())
+    y = set(y.split())
+    return float(len(x & y))/float(len(x | y))
+
+jaccard_udf = udf(jaccard_similarity, DoubleType())
+
+# Tokenize and remove stop words from "Primary_Address_City2" and "place20nm2" columns
+tokenizer = Tokenizer(inputCol="Primary_Address_City2", outputCol="tokens")
+dff_regrandcon = tokenizer.transform(dff_regrandcon)
+remover = StopWordsRemover(inputCol="tokens", outputCol="Primary_Address_City2_filtered")
+dff_regrandcon = remover.transform(dff_regrandcon)
+
+tokenizer = Tokenizer(inputCol="place20nm2", outputCol="tokens")
+df2_postalcode = tokenizer.transform(df2_postalcode)
+remover = StopWordsRemover(inputCol="tokens", outputCol="place20nm2_filtered")
+df2_postalcode = remover.transform(df2_postalcode)
+
+# Join the two dataframes on the fuzzy match
+similarity_threshold = 0.9
+df_joined = dff_regrandcon.alias("df1").join(broadcast(df2_postalcode.alias("df2")), (jaccard_udf(col("df1.Primary_Address_City2_filtered"), col("df2.place20nm2_filtered")) > similarity_threshold))
+
+# Select columns from both dataframes and calculate Jaccard similarity
+match_data = df_joined.select("df1.registrant_id","df1.Primary_Address_City2","df1.Primary_Address_City","df1.Work_PostalCode","df1.Work_PostalCode2","df1.pcd","df1.pcd2","df2.place20nm","df2.eer20nm","df2.ctry20nm", jaccard_udf(col("df1.Primary_Address_City2_filtered"), col("df2.place20nm2_filtered")).alias("jaccard_similarity"))
+
+# Filter for rows with Jaccard similarity > 0.9
+match_data_filtered = match_data.filter(col("jaccard_similarity") > 0.9)
+
+# Show the resulting dataframe
+match_data_filtered.show()
+
+
