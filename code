@@ -1393,3 +1393,25 @@ IF([Switch Background Color] = "Red", "R",
     IF([Switch Background Color] = "Blue", "B", BLANK())
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Switch Background Color =
+SWITCH(TRUE(),
+    NOT(ISBLANK([Variable 1])) && ISBLANK([Variable 2]), "Yellow",
+    ISBLANK([Variable 1]) && NOT(ISBLANK([Variable 2])), "White",
+    [Variable 1] > [Variable 2], "Red",
+    [Variable 1] < [Variable 2], "Blue",
+    "No color"
+)
+
