@@ -1362,3 +1362,36 @@ match_data = match_data.filter(col("jaccard_similarity") > similarity_threshold)
 # Show results
 match_data.show()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Switch Background Color = 
+SWITCH(TRUE(),
+    [Variable 1] > [Variable 2], 
+        "<div style='background-color: red; color: white; padding: 5px;'>R</div>",
+    [Variable 1] < [Variable 2], 
+        "<div style='background-color: blue; color: white; padding: 5px;'>B</div>",
+    "<div style='background-color: grey; color: black; padding: 5px;'>Equal</div>"
+)
+
+
+
+
+
