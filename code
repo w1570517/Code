@@ -1415,3 +1415,66 @@ SWITCH(TRUE(),
     "No color"
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Import Libraries
+from fuzzywuzzy import fuzz
+from pyspark.sql.functions import col, udf, current_date
+from pyspark.sql.types import StringType
+
+# Read Files
+df1_regrandcon = read("FUZZY.Roster")
+df2_postalcode = read("FUZZY.Customer")
+
+# Get Column Names in Data Frame
+print(df1_regrandcon.columns)
+print(df2_postalcode.columns)
+
+# Create Temp Views
+df1_regrandcon.createOrReplaceTempView("df1_regrandcon")
+df2_postalcode.createOrReplaceTempView("df2_postalcode")
+
+# Join
+df = spark.sql("SELECT df1_regrandcon.registrant_id, df1_regrandcon.Work_PostalCode2, df1_regrandcon.Work_PostalCode, df2_postalcode.pcd, df2_postalcode.pcd2 FROM df2_postalcode CROSS JOIN df1_regrandcon ON df1_regrandcon.Work_PostalCode2 = df2_postalcode.pcd2")
+
+# Apply Fuzzy Function
+def matchstring(s1, s2):
+    return fuzz.token_sort_ratio(s1, s2)
+
+MatchUDF = udf(matchstring, StringType())
+
+# Add columns and filter score more than 90
+dvf = df.withColumn("similarity_score", MatchUDF(col("Work_PostalCode2"), col("pcd2"))).withColumn("run_date", current_date())
+dvf = dvf.filter(dvf.similarity_score > 90)
+dvf = dvf.drop("Address1")
+dvf.show()
+
+# Save Data Frame
+dvf.write.save("output_folder", format="csv", header=True)
+
+
