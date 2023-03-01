@@ -1482,3 +1482,19 @@ def matchstring(s1,s2):
     return float(fuzz.token_sort_ratio(s1,s2))/100
 
 MatchUDF = udf(matchstring, FloatType())
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import col
+
+df.select('a', 'b', 'c', 'd').where((col('a').isNotNull()) & (col('a') != '') & (col('b').isNotNull()) & (col('b') != ''))
+
