@@ -1478,3 +1478,7 @@ dvf.show()
 dvf.write.save("output_folder", format="csv", header=True)
 
 
+def matchstring(s1,s2):
+    return float(fuzz.token_sort_ratio(s1,s2))/100
+
+MatchUDF = udf(matchstring, FloatType())
