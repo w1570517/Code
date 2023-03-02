@@ -1498,3 +1498,18 @@ from pyspark.sql.functions import col
 
 df.select('a', 'b', 'c', 'd').where((col('a').isNotNull()) & (col('a') != '') & (col('b').isNotNull()) & (col('b') != ''))
 
+
+
+
+
+
+from pyspark.sql.functions import col, regexp_extract, when
+
+df = spark.read.csv('path/to/data.csv', header=True)
+
+# Extract any letters from postcode column
+postcode_letters = regexp_extract(col('postcode'), r'[a-zA-Z]+', 0)
+
+# Replace city with blank if postcode contains only numbers
+df = df.withColumn('city', when(postcode_letters == '', '', col('city')))
+
