@@ -1538,24 +1538,15 @@ df = df.withColumn('city', when(postcode_letters == '', '', col('city')))
 
 
 
+from pyspark.sql.functions import input_file_name
 
-import pyspark.sql.functions as F
-import pyspark.sql.types as T
-from fuzzywuzzy import fuzz
-from pyspark.sql.types import ArrayType, StructField, StructType, StringType, IntegerType, LongType
+# Set the path for the CSV files
+path = '<your-path>'
 
-spark.sql(“optimize spark_table_1”)
-spark.sql(“optimize spark_table_2”)
+# Load all CSV files into a single DataFrame
+df = spark.read.csv(path + '/nspl21_aug_2022_uk*.csv', header=True)
 
-def matchstring(s1,s2):
+# Add a column to the DataFrame to indicate the source file for each row
+df = df.withColumn('filename', input_file_name())
 
-return fuzz.ratio(s1,s2)
-
-MatchUDF = udf( matchstring,StringType())
-
-D1 = spark.sql(“select name n1 from Saprk_table_1“)
-D2 = spark.sql(“select name n2 from Saprk_table_2“)
-DJoined = D1.crossJoin(D2)
-
-DJoined=DJoined.withColumn(“score”,MatchUDF(F.col(“n1”),F.col(“n2”)))
 
