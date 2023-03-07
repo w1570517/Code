@@ -1550,3 +1550,55 @@ df = spark.read.csv(path + '/nspl21_aug_2022_uk*.csv', header=True)
 df = df.withColumn('filename', input_file_name())
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import udf, col, round
+from pyspark.sql.types import DoubleType, StringType
+from difflib import SequenceMatcher
+
+# Define the UDF for string comparison
+compare_strings = udf(lambda x, y: SequenceMatcher(None, x, y).ratio() * 100, DoubleType())
+
+# Set the similarity threshold as a decimal value
+similarity_threshold = 0.9
+
+# Join the dataframes and perform the string comparison
+matched_dataJoin2 = df1_regrandconH.join(df2_postalcodeH, df1_regrandconH.Home_PostalCode == df2_postalcodeH.pcd2) \
+    .select(df1_regrandconH.registrant_id, df1_regrandconH.Primary_Address_PostalCode, df1_regrandconH.Home_PostalCode,
+            df2_postalcodeH.pcd, df2_postalcodeH.pcd2, compare_strings(df1_regrandconH.Home_PostalCode,
+                                                                      df2_postalcodeH.pcd2).alias("similarity"))
+
+# Round the similarity score to 2 decimal places and filter the results by the similarity threshold
+matched_data2 = matched_dataJoin2.withColumn("similarity", round(col("similarity"), 2)) \
+    .filter(col("similarity") > similarity_threshold)
+
