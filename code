@@ -1513,3 +1513,49 @@ postcode_letters = regexp_extract(col('postcode'), r'[a-zA-Z]+', 0)
 # Replace city with blank if postcode contains only numbers
 df = df.withColumn('city', when(postcode_letters == '', '', col('city')))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import pyspark.sql.functions as F
+import pyspark.sql.types as T
+from fuzzywuzzy import fuzz
+from pyspark.sql.types import ArrayType, StructField, StructType, StringType, IntegerType, LongType
+
+spark.sql(“optimize spark_table_1”)
+spark.sql(“optimize spark_table_2”)
+
+def matchstring(s1,s2):
+
+return fuzz.ratio(s1,s2)
+
+MatchUDF = udf( matchstring,StringType())
+
+D1 = spark.sql(“select name n1 from Saprk_table_1“)
+D2 = spark.sql(“select name n2 from Saprk_table_2“)
+DJoined = D1.crossJoin(D2)
+
+DJoined=DJoined.withColumn(“score”,MatchUDF(F.col(“n1”),F.col(“n2”)))
+
