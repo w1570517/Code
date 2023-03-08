@@ -1616,25 +1616,22 @@ matched_data2 = matched_dataJoin2.withColumn("similarity", round(col("similarity
 
 
 
-from pyspark.sql.functions import broadcast, col, round
-from pyspark.sql.functions import levenshtein
-from difflib import SequenceMatcher
+from fuzzywuzzy import fuzz
+from pyspark.sql.functions import udf, lower, levenshtein
+from pyspark.sql.types import DoubleType, StringType
+from pyspark.sql.functions import round
 
-# Set the similarity threshold as a decimal value
-similarity_threshold = 0.9
+compare_strings = udf(lambda x, y: fuzz.token_sort_ratio(x, y), StringType())
 
-# Broadcast the smaller dataframe to avoid shuffling
-df2_postalcodeH_broadcast = broadcast(df2_postalcodeH)
+similarity_threshold = 90.0
 
-# Use built-in string similarity functions
-matched_dataJoin2 = df1_regrandconH.join(df2_postalcodeH_broadcast, df1_regrandconH.Home_PostalCode == df2_postalcodeH_broadcast.pcd2) \
-    .select(df1_regrandconH.registrant_id, df1_regrandconH.Primary_Address_PostalCode, df1_regrandconH.Home_PostalCode,
-            df2_postalcodeH.pcd, df2_postalcodeH.pcd2, 
-            (1 - levenshtein(df1_regrandconH.Home_PostalCode, df2_postalcodeH_broadcast.pcd2)/10).alias("similarity"))
+matched_data = df1_regrandconH.join(df2_postalcodeH, lower(df1_regrandconH.Home_PostalCode) == lower(df2_postalcodeH.pcd2)) \
+    .withColumn("similarity", levenshtein(lower(df1_regrandconH.Home_PostalCode), lower(df2_postalcodeH.pcd2))) \
+    .filter(compare_strings(lower(df1_regrandconH.Home_PostalCode), lower(df2_postalcodeH.pcd2)) > similarity_threshold) \
+    .withColumn("similarity", round(col("similarity").cast(DoubleType()), 2)) \
+    .select(df1_regrandconH.registrant_id, df1_regrandconH.Primary_Address_PostalCode, df1_regrandconH.Home_PostalCode, df2_postalcodeH.pcd, df2_postalcodeH.pcd2, col("similarity"))
 
-# Round the similarity score to 2 decimal places and filter the results by the similarity threshold
-matched_data2 = matched_dataJoin2.withColumn("similarity", round(col("similarity"), 2)) \
-    .filter(col("similarity") > similarity_threshold)
+
 
 
 
