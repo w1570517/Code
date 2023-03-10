@@ -1639,3 +1639,20 @@ https://www.data.gov.uk/dataset/7ec10db7-c8f4-4a40-8d82-8921935b4865/national-st
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+Questions 1:  To determine those who do not Geocode to the UK, their postcode/address will have to be invalid as a UK geodata or not existing in the geodata (ONS) dictionary for us to identify this group.  
+Question 2:  For the UK region, my suspension is this is the flat structure I have used to map the data which is also coming from ONS 2021. The one you shared IPN_GB_2021 does has limited regions so was not able to use it.   
+Question 3: for this, I did not considered if they where in the UK, I can tweak this further by filtering nationality | country  to be in UK before doing the match
+
+
