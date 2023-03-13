@@ -1783,17 +1783,15 @@ RETURN
 
 
 
-
-
-
-
-
-
-
-Days_Hours_Minutes = 
-VAR TotalHours = SUM('df1'[value]) / 60
+Days_Hours_Minutes Label = 
+VAR TotalMinutes = SUM('df1'[value])
+VAR TotalHours = TotalMinutes / 60
+VAR Days = INT(TotalHours / 24)
+VAR Hours = INT(MOD(TotalHours, 24))
+VAR Minutes = INT(MOD(TotalMinutes, 60))
 RETURN
-    FORMAT(INT(TotalHours), "0") & " days, " & 
-    FORMAT(MOD(INT(TotalHours * 24), 24), "0") & " hours, " &
-    FORMAT(MOD(SUM('df1'[value]), 60), "0") & " minutes"
+    Days & " days, " &
+    FORMAT(Hours, "00") & " hours, " &
+    FORMAT(Minutes, "00") & " minutes"
+
 
