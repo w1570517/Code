@@ -1771,3 +1771,29 @@ RETURN
         )
     )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Days_Hours_Minutes = 
+VAR TotalHours = SUM('df1'[value]) / 60
+RETURN
+    FORMAT(INT(TotalHours), "0") & " days, " & 
+    FORMAT(MOD(INT(TotalHours * 24), 24), "0") & " hours, " &
+    FORMAT(MOD(SUM('df1'[value]), 60), "0") & " minutes"
+
