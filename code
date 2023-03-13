@@ -1700,3 +1700,38 @@ VAR Hours = INT((Minutes - (Days * 1440)) / 60)
 VAR Minutes_Remaining = MOD(Minutes, 60)
 RETURN
     Days + Hours / 24 + Minutes_Remaining / 1440
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    Days_Hours_Minutes = 
+VAR Minutes = SUM('df1'[value])
+VAR Days = INT(Minutes / 1440)
+VAR Hours = INT((Minutes - (Days * 1440)) / 60)
+VAR Minutes_Remaining = MOD(Minutes, 60)
+RETURN
+    SWITCH (
+        TRUE (),
+        Days >= 7, INT(Days / 7) & " weeks, " & INT(MOD(Days, 7)) & " days, ",
+        Days > 1, Days & " days, ",
+        Days = 1, "1 day, ",
+        Days = 0, "",
+        TRUE (), ""
+    ) & 
+    IF(Hours > 0, FORMAT(Hours, "0") & " hours, ", "") &
+    FORMAT(Minutes_Remaining, "0") & " minutes"
+
