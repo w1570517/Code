@@ -1656,3 +1656,26 @@ Question 2:  For the UK region, my suspension is this is the flat structure I ha
 Question 3: for this, I did not considered if they where in the UK, I can tweak this further by filtering nationality | country  to be in UK before doing the match
 
 
+
+
+
+
+
+
+
+
+Days_Hours_Minutes = 
+VAR Minutes = SUM('df1'[value])
+VAR Days = INT(Minutes / 1440)
+VAR Hours = INT((Minutes - (Days * 1440)) / 60)
+VAR Minutes_Remaining = MOD(Minutes, 60)
+RETURN
+    SWITCH (
+        TRUE (),
+        Days >= 7, INT(Days / 7) & " weeks, " & MOD(Days, 7) & " days, ",
+        Days > 1, Days & " days, ",
+        Days = 1, "1 day, ",
+        Days = 0, "",
+        "",
+    ) & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00")
+
