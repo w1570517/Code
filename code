@@ -2315,3 +2315,50 @@ VALUE(
 )
 
 [>1440]d" day, "h" hr, "m" mins";[>60]h" hr, "m" mins";m" mins"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Formatted Time =
+VAR TotalMinutes = SUM(TechData2[value])
+VAR TimeIntervals = VALUES(TimeIntervals[Interval])
+VAR Results =
+    CONCATENATEX(
+        TimeIntervals,
+        IF(
+            TotalMinutes >= [Minutes],
+            FORMAT(DIVIDE(TotalMinutes, [Minutes]), "0"),
+            BLANK()
+        ) & " " & [Interval],
+        ", ",
+        [Interval]
+    )
+RETURN
+    IF(
+        ISBLANK(Results),
+        FORMAT(0, "0.00"),
+        Results
+    )
+
