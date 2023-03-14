@@ -2314,3 +2314,4 @@ VALUE(
     )
 )
 
+[>1440]d" day, "h" hr, "m" mins";[>60]h" hr, "m" mins";m" mins"
