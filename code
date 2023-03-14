@@ -2293,3 +2293,24 @@ IF(
     )
 )
 
+
+
+
+Formatted Time =
+VAR TotalMinutes = SUM(TechData2[value])
+VAR Days = INT(TotalMinutes / 1440)
+VAR Hours = INT((TotalMinutes - (Days * 1440)) / 60)
+VAR Minutes = TotalMinutes - (Days * 1440) - (Hours * 60)
+RETURN
+VALUE(
+    IF(
+        Days > 0,
+        Days & " day, " & Hours & " hr, " & Minutes & " mins",
+        IF(
+            Hours > 0,
+            Hours & " hr, " & Minutes & " mins",
+            Minutes & " mins"
+        )
+    )
+)
+
