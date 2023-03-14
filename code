@@ -2230,15 +2230,13 @@ RETURN
 
 
 
-
-
-
 Days_Hours_Minutes = 
-VAR Minutes = SUM('df1'[value])
+VAR SelectedValue = SELECTEDVALUE('Table'[Column])
+VAR Minutes = CALCULATE(SUM('df1'[value]), 'Table'[Column] = SelectedValue)
 VAR Days = INT(Minutes / 1440)
 VAR Hours = INT((Minutes - (Days * 1440)) / 60)
 VAR Minutes_Remaining = MOD(Minutes, 60)
-VAR Result =
+RETURN
     IF(
         Days >= 7,
         INT(Days / 7) & " weeks, " & INT(MOD(Days, 7)) & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
@@ -2252,19 +2250,3 @@ VAR Result =
             )
         )
     )
-RETURN
-    IF(
-        HASONEVALUE('Table'[Column]),
-        Result,
-        BLANK()
-    )
-
-
-
-
-
-
-
-
-
-
