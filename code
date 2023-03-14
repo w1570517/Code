@@ -2277,26 +2277,19 @@ RETURN
     
     
     
-    
-Days_Hours_Minutes_with_Minutes_numeric = 
-VAR Minutes = SUM('df1'[value])
-VAR Days = INT(Minutes / 1440)
-VAR Hours = INT((Minutes - (Days * 1440)) / 60)
-VAR Minutes_Remaining = MOD(Minutes, 60)
-VAR Days_Hours_Minutes = 
-    IF(
-        Days >= 7,
-        Days*1440 + MOD(Days, 7)*1440 + Hours*60 + Minutes_Remaining,
-        IF(
-            Days > 1,
-            Days*1440 + Hours*60 + Minutes_Remaining,
-            IF(
-                Days = 1,
-                1440 + Hours*60 + Minutes_Remaining,
-                Hours*60 + Minutes_Remaining
-            )
-        )
-    )
+Formatted Time =
+VAR TotalMinutes = SUM(TechData2[value])
+VAR Days = INT(TotalMinutes / 1440)
+VAR Hours = INT((TotalMinutes - (Days * 1440)) / 60)
+VAR Minutes = TotalMinutes - (Days * 1440) - (Hours * 60)
 RETURN
-    Days_Hours_Minutes
+IF(
+    Days > 0,
+    Days & " day, " & Hours & " hr, " & Minutes & " mins",
+    IF(
+        Hours > 0,
+        Hours & " hr, " & Minutes & " mins",
+        Minutes & " mins"
+    )
+)
 
