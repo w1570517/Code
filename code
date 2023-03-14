@@ -2286,20 +2286,17 @@ VAR Minutes_Remaining = MOD(Minutes, 60)
 VAR Days_Hours_Minutes = 
     IF(
         Days >= 7,
-        INT(Days / 7) & " weeks, " & INT(MOD(Days, 7)) & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+        Days*1440 + MOD(Days, 7)*1440 + Hours*60 + Minutes_Remaining,
         IF(
             Days > 1,
-            Days & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+            Days*1440 + Hours*60 + Minutes_Remaining,
             IF(
                 Days = 1,
-                "1 day, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
-                FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00")
+                1440 + Hours*60 + Minutes_Remaining,
+                Hours*60 + Minutes_Remaining
             )
         )
     )
 RETURN
-    VALUE(REPLACE(Days_Hours_Minutes, "(", ""))
+    Days_Hours_Minutes
 
-In this example, the `Days_Hours_Minutes_with_Minutes_numeric` measure uses the `VALUE` function to extract the numeric value from the `Days_Hours_Minutes_with_Minutes` measure by removing the opening parenthesis using the `REPLACE` function. This will return the numeric value as a decimal number.
-
-You can now use this new measure in your
