@@ -2386,3 +2386,23 @@ VAR Result =
     )
 RETURN Result
 
+
+
+
+
+
+
+Formatted Total = 
+VAR TotalMinutes = TechData2[value]
+VAR Days = INT(TotalMinutes / 1440)
+VAR Hours = INT(MOD(TotalMinutes, 1440) / 60)
+VAR Minutes = MOD(TotalMinutes, 60)
+VAR Result =
+    SWITCH(
+        TRUE(),
+        Days > 0, Days & " day" & IF(Days > 1, "s", "") & ", " & Hours & " hr" & IF(Hours > 1, "s", "") & ", " & Minutes & " min" & IF(Minutes > 1, "s", ""),
+        Hours > 0, Hours & " hr" & IF(Hours > 1, "s", "") & ", " & Minutes & " min" & IF(Minutes > 1, "s", ""),
+        TRUE(), Minutes & " min" & IF(Minutes > 1, "s", "")
+    )
+RETURN TotalMinutes & " mins, " & Result
+
