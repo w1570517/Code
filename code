@@ -1962,3 +1962,36 @@ RETURN
             )
         )
     )
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    VAR Minutes = SELECTEDVALUE('df1'[value])
+VAR Days = INT(Minutes / 1440)
+VAR Hours = INT((Minutes - (Days * 1440)) / 60)
+VAR Minutes_Remaining = MOD(Minutes, 60)
+RETURN
+    IF(
+        Days >= 7,
+        INT(Days / 7) & " weeks, " & INT(MOD(Days, 7)) & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+        IF(
+            Days > 1,
+            Days & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+            IF(
+                Days = 1,
+                "1 day, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+                FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00")
+            )
+        )
+    )
+
