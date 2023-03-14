@@ -2081,3 +2081,95 @@ RETURN
 
 =CONCATENATEX(VALUES('df1'[value]), [Duration], ", ")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+To display the result of the above DAX expression as a label in the value field of a Power BI visual, you can use a workaround by converting the text output of the measure into a numeric value.
+
+Here's an example of how to do it:
+
+Create a new measure in the Power BI data model and name it "Duration (in minutes)":
+
+scss
+Copy code
+Duration (in minutes) = SUM('df1'[value])
+This measure simply calculates the sum of the "value" field in the 'df1' table.
+
+Create another new measure in the Power BI data model and name it "Duration (text)":
+
+less
+Copy code
+Duration (text) =
+VAR Minutes = [Duration (in minutes)]
+VAR Days = INT(Minutes / 1440)
+VAR Hours = INT((Minutes - (Days * 1440)) / 60)
+VAR Minutes_Remaining = MOD(Minutes, 60)
+RETURN
+    IF(
+        Days >= 7,
+        INT(Days / 7) & " weeks, " & INT(MOD(Days, 7)) & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+        IF(
+            Days > 1,
+            Days & " days, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+            IF(
+                Days = 1,
+                "1 day, " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00"),
+                FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00")
+            )
+        )
+    )
+This measure uses the same DAX expression as before to calculate the duration in days, hours, and minutes, but returns the result as a text string.
+
+Create a new visual on your report canvas and drag the "Duration (in minutes)" measure into the Values field.
+
+Click on the "Duration (in minutes)" measure in the Values field and select "Don't summarize" from the dropdown list.
+
+Create a new measure and name it "Duration (numeric)":
+
+scss
+Copy code
+Duration (numeric) = VALUE([Duration (text)])
+This measure converts the text output of the "Duration (text)" measure into a numeric value.
+
+Drag the "Duration (numeric)" measure into the Values field of the visual.
+
+Click on the "Duration (numeric)" measure in the Values field and select "Don't summarize" from the dropdown list.
+
+In the Visualizations pane, select the visual type that you want to use to display the duration.
+
+Add a new data label to the visual and select "Duration (text)" as the label field.
+
+Adjust the formatting of the visual as desired.
+
+Once you have completed these steps, the visual should display the duration as a label in the value field, while still allowing you to use a numeric measure for aggregation and other calculations.
+
+
+
+
