@@ -2278,7 +2278,7 @@ RETURN
     
     
     
-    Days_Hours_Minutes_with_Minutes = 
+Days_Hours_Minutes_with_Minutes_numeric = 
 VAR Minutes = SUM('df1'[value])
 VAR Days = INT(Minutes / 1440)
 VAR Hours = INT((Minutes - (Days * 1440)) / 60)
@@ -2298,5 +2298,8 @@ VAR Days_Hours_Minutes =
         )
     )
 RETURN
-    Days_Hours_Minutes & " (" & Minutes & " minutes)"
+    VALUE(REPLACE(Days_Hours_Minutes, "(", ""))
 
+In this example, the `Days_Hours_Minutes_with_Minutes_numeric` measure uses the `VALUE` function to extract the numeric value from the `Days_Hours_Minutes_with_Minutes` measure by removing the opening parenthesis using the `REPLACE` function. This will return the numeric value as a decimal number.
+
+You can now use this new measure in your
