@@ -2215,6 +2215,12 @@ Duration (numeric) =
 VAR DurationText = [Duration (text)]
 RETURN
     VALUE(
-        SUBSTITUTE(DurationText, ":", ".")
+        SUBSTITUTE(
+            CLEAN(
+                SUBSTITUTE(DurationText, ":", ".")
+            ),
+            ",",
+            "."
+        )
     )
 
