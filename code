@@ -1820,8 +1820,21 @@ FORMAT(
 
 
 
+If you are getting an error that says "Cannot convert type text to type number", it's likely because you are trying to use a text-based DAX measure in a numerical context.
 
+To fix this error, you can modify the DAX measure to return a numerical value instead of a text value. Here's the modified DAX measure:
 
+Days_Hours_Minutes =
+VAR Minutes = SUM('df1'[value])
+VAR Days = INT(Minutes / 1440)
+VAR Hours = INT((Minutes - (Days * 1440)) / 60)
+VAR Minutes_Remaining = MOD(Minutes, 60)
+RETURN
+Days * 1440 + Hours * 60 + Minutes_Remaining
+
+This DAX measure will return the total number of minutes as a numerical value. You can then use this measure in the field value in Power BI and format the result using the "Duration" format in the "Modeling" tab.
+
+To display the result in days, hours, and minutes format, you can create a calculated column using the original DAX measure and format the result as a text value. Here's the modified DAX measure for the calculated column:
 
 Days_Hours_Minutes_Text =
 VAR Minutes = [Days_Hours_Minutes]
@@ -1842,5 +1855,9 @@ FORMAT(Hours, "00") & ":" & FORMAT(Minutes_Remaining, "00")
 )
 )
 )
+
+This DAX measure will return a text value in the days, hours, and minutes format. You can use this calculated column in the field value in Power BI.
+
+
 
 
