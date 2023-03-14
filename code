@@ -2210,14 +2210,16 @@ RETURN
     )
 
 
-
 Duration (numeric) = 
 VAR DurationText = [Duration (text)]
 RETURN
     VALUE(
         SUBSTITUTE(
-            CLEAN(
-                SUBSTITUTE(DurationText, ":", ".")
+            REPLACE(
+                SUBSTITUTE(DurationText, ":", "."),
+                ".",
+                "",
+                FIND(".", SUBSTITUTE(DurationText, ":", "."))
             ),
             ",",
             "."
