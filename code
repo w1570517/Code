@@ -2173,3 +2173,9 @@ Once you have completed these steps, the visual should display the duration as a
 
 
 
+Duration (numeric) =
+IF(
+    ISNUMBER(VALUE([Duration (text)])),
+    VALUE([Duration (text)]),
+    BLANK()
+)
