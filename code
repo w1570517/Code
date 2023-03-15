@@ -2472,3 +2472,4 @@ RETURN
 // We put the days, hours, and minutes into the proper "place"
 Days * 1440 + Hours * 60 + Minutes
 
+[>=1440]d \d\a\y\s hh\:mm;[>=60]hh\:mm;mm
