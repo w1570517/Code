@@ -2473,3 +2473,7 @@ RETURN
 Days * 1440 + Hours * 60 + Minutes
 
 [>=1440]d \d\a\y\s hh\:mm;[>=60]hh\:mm;mm
+
+
+[>=1440]d\d\ h\h\:mm\m;[>=60]h\h\:mm\m;mm\m
+
