@@ -2431,4 +2431,19 @@ Hours * 100 + Minutes
 
 
 
+Chelsie Eiden's Duration = 
+VAR DurationInMins = SUM(TechData2[Value])
+// There are 60 minutes in an hour
+VAR TotalHours = INT(DurationInMins / 60)
+// Remaining minutes are the remainder of the minutes divided by 60 after subtracting out the hours 
+VAR RemainingMinutes = MOD(DurationInMins, 60)
+// There are 24 hours in a day
+VAR TotalDays = INT(TotalHours / 24)
+// Remaining hours are the remainder of the hours divided by 24 after subtracting out the days
+VAR RemainingHours = MOD(TotalHours, 24)
+// Round up the remaining minutes to get a whole number
+VAR RoundedMinutes = ROUNDUP(RemainingMinutes, 0)
+RETURN
+// We put the days, hours, and minutes into the proper "place"
+TotalDays & "d " & RemainingHours & "h " & RoundedMinutes & "m"
 
