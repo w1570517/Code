@@ -2447,3 +2447,31 @@ RETURN
 // We put the days, hours, and minutes into the proper "place"
 TotalDays & "d " & RemainingHours & "h " & RoundedMinutes & "m"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chelsie Eiden's Duration = 
+VAR DurationInMins = SUM(TechData2[Value])
+// There are 1440 minutes in a day (24 hours x 60 minutes)
+VAR Days = INT(DurationInMins / 1440)
+// There are 60 minutes in an hour
+VAR Hours = INT(MOD(DurationInMins, 1440) / 60)
+// Remaining minutes are the remainder of the minutes divided by 60 after subtracting out the hours 
+VAR Minutes = ROUNDUP(MOD(DurationInMins, 60), 0) // We round up here to get a whole number
+RETURN
+// We put the days, hours, and minutes into the proper "place"
+IF(Days > 0,
+    Days & "d " & FORMAT(Hours, "00") & ":" & FORMAT(Minutes, "00"),
+    FORMAT(Hours, "00") & ":" & FORMAT(Minutes, "00")
+)
