@@ -2477,3 +2477,4 @@ Days * 1440 + Hours * 60 + Minutes
 
 [>=1440]d\d\ h\h\:mm\m;[>=60]h\h\:mm\m;mm\m
 
+FirstDateOfMonth = DATE(YEAR('Calendar'[Date]), MONTH('Calendar'[Date]), 1)
