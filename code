@@ -2542,3 +2542,16 @@ df = df.withColumn("new_beter", when(df.beter.isin(list(mapping.keys())), mappin
 # Show the final dataframe
 df.show()
 
+
+
+from pyspark.sql.functions import when
+
+# Create a dataframe with sample data
+data = [("A", "gf"), ("B", "hj"), ("C", "tr"), ("D", "xyz")]
+df = spark.createDataFrame(data, ["col1", "beter"])
+
+# Use the 'when' function to create a new column 'new_beter' with recoded values
+df = df.withColumn("new_beter", when(df.beter == "gf", "tg").when(df.beter == "hj", "yu").when(df.beter == "tr", "ts").otherwise(df.beter))
+
+# Show the final dataframe
+df.show()
