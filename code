@@ -2484,3 +2484,33 @@ FirstDateOfMonth = DATE(YEAR('Calendar'[Date]), MONTH('Calendar'[Date]), 1)
 
 
 =IF(ISERROR(MATCH(A1, {"Country1","Country2","Country3","Country4"},0)),"No","Yes")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import when
+
+# Create a dataframe with sample data
+data = [("A", "gf"), ("B", "hj"), ("C", "tr"), ("D", "xyz")]
+df = spark.createDataFrame(data, ["col1", "beter"])
+
+# Define a mapping dictionary for recoding values
+mapping = {"gf": "tg", "hj": "yu", "tr": "ts"}
+
+# Use the 'when' function to create a new column 'new_beter' with recoded values
+df = df.withColumn("new_beter", when(df.beter.isin(list(mapping.keys())), mapping[df.beter]).otherwise(df.beter))
+
+# Show the final dataframe
+df.show()
