@@ -2478,3 +2478,9 @@ Days * 1440 + Hours * 60 + Minutes
 [>=1440]d\d\ h\h\:mm\m;[>=60]h\h\:mm\m;mm\m
 
 FirstDateOfMonth = DATE(YEAR('Calendar'[Date]), MONTH('Calendar'[Date]), 1)
+
+
+
+
+
+=IF(ISERROR(MATCH(A1, {"Country1","Country2","Country3","Country4"},0)),"No","Yes")
