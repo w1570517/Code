@@ -2555,3 +2555,19 @@ df = df.withColumn("new_beter", when(df.beter == "gf", "tg").when(df.beter == "h
 
 # Show the final dataframe
 df.show()
+
+
+
+
+
+from pyspark.sql.functions import when, col
+
+# create example dataframe
+df = spark.createDataFrame([(1, None, ''), (2, 'foo', 'bar'), (3, 'baz', None)], ['id', 'c', 'd'])
+
+# add flag column
+df_with_flag = df.withColumn('flag', when(col('c').isNull() | (col('c') == '') | col('d').isNull() | (col('d') == ''), 0).otherwise(1))
+
+# show result
+df_with_flag.show()
+
