@@ -2649,3 +2649,26 @@ df1RegConmp1 = df1RegConmp1.withColumn('total', total_col.cast('string'))
 
 # Show the resulting DataFrame
 df1RegConmp1.show()
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import col, sum, try_cast
+
+cols_to_sum = ['Art_psychotherapist', 'Art_therapist', 'Clinical_psychologist', 
+               'Counselling_psychologist', 'Diagnostic_radiographer', 'Drama_therapist',
+               'Educational_psychologist', 'Health_psychologist', 'Forensic_psychologist',
+               'Music_therapist', 'Occupational_psychologist', 'Orthotist', 'Prosthetist',
+               'Sport_and_exercise_psychologist', 'Therapeutic_radiographer']
+
+total_col = sum([try_cast(col(c), 'integer') for c in cols_to_sum])
+
+df1RegConmp1 = df1RegConmp1.withColumn('total', total_col.cast('string'))
+
+df1RegConmp1.show()
+
