@@ -2571,3 +2571,22 @@ df_with_flag = df.withColumn('flag', when(col('c').isNull() | (col('c') == '') |
 # show result
 df_with_flag.show()
 
+
+
+
+
+
+from pyspark.sql.functions import col, concat, sum
+
+# Assuming your dataframe is called "df"
+df_with_total = df.withColumn("total", concat(
+    sum(col("a")).cast("string"),
+    sum(col("b")).cast("string"),
+    sum(col("c")).cast("string"),
+    sum(col("d")).cast("string"),
+    sum(col("e")).cast("string"),
+    sum(col("f")).cast("string")
+))
+
+# Show the resulting dataframe
+df_with_total.show()
