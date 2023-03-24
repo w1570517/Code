@@ -2623,3 +2623,29 @@ my_df_with_total = my_df.withColumn("total", sum(cols_struct).cast("string"))
 # Show the resulting DataFrame
 my_df_with_total.show()
 
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import col, sum
+
+# Define a list of column names to sum up
+cols_to_sum = ['Art_psychotherapist', 'Art_therapist', 'Clinical_psychologist', 
+               'Counselling_psychologist', 'Diagnostic_radiographer', 'Drama_therapist',
+               'Educational_psychologist', 'Health_psychologist', 'Forensic_psychologist',
+               'Music_therapist', 'Occupational_psychologist', 'Orthotist', 'Prosthetist',
+               'Sport_and_exercise_psychologist', 'Therapeutic_radiographer']
+
+# Cast each column to an integer and sum them up
+total_col = sum([col(c).cast('int') for c in cols_to_sum])
+
+# Add the new column to the DataFrame
+df1RegConmp1 = df1RegConmp1.withColumn('total', total_col.cast('string'))
+
+# Show the resulting DataFrame
+df1RegConmp1.show()
