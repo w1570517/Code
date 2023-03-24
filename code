@@ -2672,3 +2672,27 @@ df1RegConmp1 = df1RegConmp1.withColumn('total', total_col.cast('string'))
 
 df1RegConmp1.show()
 
+
+
+
+
+
+
+
+
+amendfRegConmp = dfRegConmp.withColumn("Art_psychotherapist", when(dfRegConmp["Art_psychotherapist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Art_therapist", when(dfRegConmp["Art_therapist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Clinical_psychologist", when(dfRegConmp["Clinical_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Counselling_psychologist", when(dfRegConmp["Counselling_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Diagnostic_radiographer", when(dfRegConmp["Diagnostic_radiographer"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Drama_therapist", when(dfRegConmp["Drama_therapist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Educational_psychologist", when(dfRegConmp["Educational_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Forensic_psychologist", when(dfRegConmp["Forensic_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Health_psychologist", when(dfRegConmp["Health_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Music_therapist", when(dfRegConmp["Music_therapist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Occupational_psychologist", when(dfRegConmp["Occupational_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Orthotist", when(dfRegConmp["Orthotist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Prosthetist", when(dfRegConmp["Prosthetist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Sport_and_exercise_psychologist", when(dfRegConmp["Sport_and_exercise_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .withColumn("Therapeutic_radiographer", when(dfRegConmp["Therapeutic_radiographer"].isNull(), lit(0)).otherwise(lit(1))) \
+                           .drop('Registration_ID')
