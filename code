@@ -2604,3 +2604,22 @@ my_df_with_total = my_df.withColumn("total", sum(expr("+".join(cols_to_sum)).cas
 # Show the resulting DataFrame
 my_df_with_total.show()
 
+
+
+
+
+
+from pyspark.sql.functions import col, expr, struct, sum
+
+# Define a list of column names to sum up
+cols_to_sum = ["a", "b", "c", "d", "e", "f"]
+
+# Create a struct of all columns to sum up
+cols_struct = struct(*[col(c).cast("int") for c in cols_to_sum])
+
+# Sum up the columns in each row and create a new column called "total"
+my_df_with_total = my_df.withColumn("total", sum(cols_struct).cast("string"))
+
+# Show the resulting DataFrame
+my_df_with_total.show()
+
