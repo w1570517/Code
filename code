@@ -2696,3 +2696,12 @@ amendfRegConmp = dfRegConmp.withColumn("Art_psychotherapist", when(dfRegConmp["A
                            .withColumn("Sport_and_exercise_psychologist", when(dfRegConmp["Sport_and_exercise_psychologist"].isNull(), lit(0)).otherwise(lit(1))) \
                            .withColumn("Therapeutic_radiographer", when(dfRegConmp["Therapeutic_radiographer"].isNull(), lit(0)).otherwise(lit(1))) \
                            .drop('Registration_ID')
+                           
+                           
+                           
+                           
+                           
+                           
+   https://digital.nhs.uk/services/organisation-data-service/export-data-files/csv-downloads/office-for-national-statistics-data          
+                           
+                           
