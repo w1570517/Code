@@ -3027,3 +3027,52 @@ dtest = dtest.groupBy('createdbyname', 'Registration_Name', 'modality') \
 
 # Show the final DataFrame
 dtest.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import array, col, concat, lit, split, when
+
+# Create a DataFrame with sample data
+dtest = spark.createDataFrame([
+    ('User1', 'Patient1', True, False),
+    ('User2', 'Patient2', False, True),
+    ('User3', 'Patient3', True, True),
+], ['createdbyname', 'Registration_Name', 'Prosthetist', 'Diagnostic_radiographer'])
+
+# Transpose the 'Prosthetist' and 'Diagnostic_radiographer' columns into a single column 'modality'
+dtest = dtest.select('createdbyname', 'Registration_Name',
+                     concat(lit('Prosthetist'), lit('_'), col('Prosthetist')).alias('Prosthetist'),
+                     concat(lit('Diagnostic_radiographer'), lit('_'), col('Diagnostic_radiographer')).alias('Diagnostic_radiographer')) \
+             .select('createdbyname', 'Registration_Name', array('Prosthetist', 'Diagnostic_radiographer').alias('modality'))
+
+# Explode the 'modality' array column to get separate rows for each modality
+dtest = dtest.select('createdbyname', 'Registration_Name', explode('modality').alias('modality'))
+
+# Split the 'modality' column into 'modality' and 'value' columns
+dtest = dtest.select('createdbyname', 'Registration_Name', split('modality', '_')[0].alias('modality'),
+                     when(split('modality', '_')[1] == 'true', 1).otherwise(0).alias('modality_value'))
+
+# Group by 'createdbyname', 'Registration_Name', and 'modality', and sum the 'modality_value' column
+dtest = dtest.groupBy('createdbyname', 'Registration_Name', 'modality') \
+             .agg({'modality_value': 'sum'}) \
+             .withColumnRenamed('sum(modality_value)', 'modality_value')
+
+# Show the final DataFrame
+dtest.show()
