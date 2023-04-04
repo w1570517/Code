@@ -2709,4 +2709,23 @@ amendfRegConmp = dfRegConmp.withColumn("Art_psychotherapist", when(dfRegConmp["A
                            https://www.data.gov.uk/dataset/02c0321b-e9a4-4acd-97d9-d7e1914d57bb/national-statistics-postcode-lookup-camden
 
                            https://www.data.gov.uk/dataset/7ec10db7-c8f4-4a40-8d82-8921935b4865/national-statistics-postcode-lookup-uk
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           from pyspark.sql.functions import explode
+
+df = df.selectExpr("a", "b", "explode(array(struct(c, d, e))) as cde")
+
+df = df.selectExpr("a", "b", "cde.c as c", "cde.d as d", "cde.e as e")
+
 
