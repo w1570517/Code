@@ -2741,3 +2741,33 @@ df = df.selectExpr("a", "b", f"explode(array({stack_expr})) as cdet")
 
 df = df.selectExpr("a", "b", "cdet['0'] as c", "cdet['1'] as d", "cdet['2'] as e")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import posexplode
+
+cols_to_transpose = ['c', 'd', 'e']
+
+df = df.selectExpr("a", "b", f"posexplode(array({', '.join(cols_to_transpose)})) as (pos, cde)")
+
+df = df.selectExpr("a", "b", "CASE pos WHEN 0 THEN cde ELSE NULL END as c", 
+                   "CASE pos WHEN 1 THEN cde ELSE NULL END as d", 
+                   "CASE pos WHEN 2 THEN cde ELSE NULL END as e")
+
+
