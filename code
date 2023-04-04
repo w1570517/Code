@@ -2861,3 +2861,30 @@ df = df.withColumn("single", concat_ws(",", *[expr(f"coalesce(`{col}`, '')") for
 
 df.show()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import concat_ws, collect_list, struct
+
+cols_to_transpose = ['prostest', 'redio']
+
+df = df.groupBy("createdbyname", "registrationname").agg(
+  collect_list(struct(*[col(col).alias('modality') for col in cols_to_transpose])).alias("cdelist")
+).withColumn(
+  "single",
+  concat_ws(",",
+    *[expr(f"IF(cde.modality['{col}'] IS NULL, '', cde.modality['{col}'])") for col in cols_to_transpose]
+  )
+).select("createdbyname", "registrationname", "single")
+
+df.show()
