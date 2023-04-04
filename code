@@ -2846,3 +2846,20 @@ df = df.withColumn("single", concat_ws(",", *[expr(f"coalesce({col},'')") for co
 df.show()
 
 
+
+
+
+
+from pyspark.sql.functions import concat_ws, array, expr
+
+cols_to_transpose = ['prostest', 'redio']
+
+df = dftest.withColumn("cde", array(*[expr(f"IF({col}=1,'{col}',NULL)") for col in cols_to_transpose]))
+
+modality_expr = f"filter(cde, x -> x is not NULL)"
+df = df.select("createdbyname", "registrationname", expr(modality_expr).alias("modality"))
+
+df = df.withColumn("single", concat_ws(",", *[expr(f"coalesce({col},'')") for col in cols_to_transpose]))
+
+df.show()
+
