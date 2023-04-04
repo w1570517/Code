@@ -2792,3 +2792,31 @@ df = df.selectExpr("a", "b", "split(cde, ',')[0] as c",
                    "split(cde, ',')[1] as d", 
                    "split(cde, ',')[2] as e")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import array, when, lit
+
+cols_to_transpose = ['c', 'd', 'e']
+
+df = df.selectExpr("a", "b", f"array({', '.join(cols_to_transpose)}) as cde")
+
+for i, col in enumerate(cols_to_transpose):
+    df = df.withColumn(f"modality_{i}", when(df.cde[i] == 1, col).otherwise(None))
+
+modality_cols = [f"modality_{i}" for i in range(len(cols_to_transpose))]
+df = df.selectExpr("a", "b", f"array({', '.join(modality_cols)}) as modality")
+
+df = df.withColumn("modality_value", lit(cols_to_transpose)) \
+       .select("a", "b", "modality", "modality_value")
+
