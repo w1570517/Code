@@ -2771,3 +2771,24 @@ df = df.selectExpr("a", "b", "CASE pos WHEN 0 THEN cde ELSE NULL END as c",
                    "CASE pos WHEN 2 THEN cde ELSE NULL END as e")
 
 
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import concat_ws, array
+
+cols_to_transpose = ['c', 'd', 'e']
+
+df = df.selectExpr("a", "b", f"concat_ws(',', array({', '.join(cols_to_transpose)})) as cde")
+
+df = df.selectExpr("a", "b", "split(cde, ',')[0] as c", 
+                   "split(cde, ',')[1] as d", 
+                   "split(cde, ',')[2] as e")
+
