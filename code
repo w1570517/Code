@@ -2717,15 +2717,13 @@ amendfRegConmp = dfRegConmp.withColumn("Art_psychotherapist", when(dfRegConmp["A
                            
                            
                            
-                           
-                           
-                           
-                           
-                           
-                           from pyspark.sql.functions import explode
+from pyspark.sql.functions import expr
 
-df = df.selectExpr("a", "b", "explode(array(struct(c, d, e))) as cde")
+cols_to_transpose = ['c', 'd', 'e']
 
-df = df.selectExpr("a", "b", "cde.c as c", "cde.d as d", "cde.e as e")
+stack_expr = ', '.join([f"stack(3, '{col}', {col})" for col in cols_to_transpose])
+df = df.selectExpr("a", "b", expr(stack_expr).alias("cdet"))
+
+df = df.selectExpr("a", "b", "cdet.col0 as c", "cdet.col1 as d", "cdet.col2 as e")
 
 
