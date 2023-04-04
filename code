@@ -2727,3 +2727,17 @@ df = df.selectExpr("a", "b", expr(stack_expr).alias("cdet"))
 df = df.selectExpr("a", "b", "cdet.col0 as c", "cdet.col1 as d", "cdet.col2 as e")
 
 
+
+
+
+
+
+from pyspark.sql.functions import expr
+
+cols_to_transpose = ['c', 'd', 'e']
+
+stack_expr = ', '.join([f"stack(3, '{col}', {col})" for col in cols_to_transpose])
+df = df.selectExpr("a", "b", f"explode(array({stack_expr})) as cdet")
+
+df = df.selectExpr("a", "b", "cdet['0'] as c", "cdet['1'] as d", "cdet['2'] as e")
+
