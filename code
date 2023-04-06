@@ -3255,3 +3255,112 @@ edimodalitytransposed = edimodalitytransposed.groupBy(
 ).agg({'modality_value': 'sum'}).withColumnRenamed('sum(modality_value)', 'modality_value')
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import array, col, concat, lit, split, when, explode
+
+# Define a mapping of short names to full names for each modality
+modality_map = {
+    'Art_psychotherapist': 'Art psychotherapist',
+    'Art_therapist': 'Art therapist',
+    'Clinical_psychologist': 'Clinical psychologist',
+    'Counselling_psychologist': 'Counselling psychologist',
+    'Diagnostic_radiographer': 'Diagnostic radiographer',
+    'Drama_therapist': 'Drama therapist',
+    'Educational_psychologist': 'Educational psychologist',
+    'Forensic_psychologist': 'Forensic psychologist',
+    'Health_psychologist': 'Health psychologist',
+    'Music_therapist': 'Music therapist',
+    'Occupational_psychologist': 'Occupational psychologist',
+    'Orthotist': 'Orthotist',
+    'Prosthetist': 'Prosthetist',
+    'Sport_and_exercise_psychologist': 'Sport and exercise psychologist',
+    'Therapeutic_radiographer': 'Therapeutic radiographer'
+}
+
+# Transpose the modality columns into a single column 'modality'
+edimodalitytransposed = df8SurveyresponseFnl.select(
+    'Contact_ID',
+    'Registration_Name',
+    array(
+        *[concat(lit(name), lit('_'), col(name)).alias(name) for name in modality_map.keys()]
+    ).alias('modality')
+).select(
+    'Contact_ID',
+    'Registration_Name',
+    explode('modality').alias('modality')
+).select(
+    'Contact_ID',
+    'Registration_Name',
+    split('modality', '_')[0].alias('modality_short_name'),
+    when(split('modality', '_')[1] == '1', 1).otherwise(0).alias('modality_value')
+)
+
+# Add a column with the full name of each modality
+edimodalitytransposed = edimodalitytransposed.withColumn(
+    'modality_full_name',
+    when(
+        col('modality_short_name').isin(modality_map.keys()),
+        modality_map[col('modality_short_name')]
+    ).otherwise(col('modality_short_name'))
+)
+
+# Group by 'Contact_ID', 'Registration_Name', and 'modality_full_name',
+# and sum the 'modality_value' column
+edimodalitytransposed = edimodalitytransposed.groupBy(
+    'Contact_ID',
+    'Registration_Name',
+    'modality_full_name'
+).agg(
+    {'modality_value': 'sum'}
+).withColumnRenamed(
+    'sum(modality_value)',
+    'modality_value'
+)
+
+# Show the resulting dataframe
+edimodalitytransposed.show()
+
