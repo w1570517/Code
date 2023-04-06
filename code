@@ -3183,3 +3183,75 @@ dtest = dtest.groupBy('createdbyname', 'Registration_Name', 'modality') \
              .withColumnRenamed('sum(modality_value)', 'modality_value')
 dtest.show()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import array, col, concat, lit, split, when,explode
+
+modality_names = {
+    'Art_psychotherapist': 'Art psychotherapist',
+    'Art_therapist': 'Art therapist',
+    'Clinical_psychologist': 'Clinical psychologist',
+    'Counselling_psychologist': 'Counselling psychologist',
+    'Diagnostic_radiographer': 'Diagnostic radiographer',
+    'Drama_therapist': 'Drama therapist',
+    'Educational_psychologist': 'Educational psychologist',
+    'Forensic_psychologist': 'Forensic psychologist',
+    'Health_psychologist': 'Health psychologist',
+    'Music_therapist': 'Music therapist',
+    'Occupational_psychologist': 'Occupational psychologist',
+    'Orthotist': 'Orthotist',
+    'Prosthetist': 'Prosthetist',
+    'Sport_and_exercise_psychologist': 'Sport and exercise psychologist',
+    'Therapeutic_radiographer': 'Therapeutic radiographer'
+}
+
+edimodalitytransposed = df8SurveyresponseFnl.select('Contact_ID', 'Registration_Name', *[
+    concat(lit(name), lit('_'), col(name)).alias(name)
+    for name in modality_names.keys()
+])
+
+edimodalitytransposed = edimodalitytransposed.select(
+    'Contact_ID', 'Registration_Name', 
+    array(*[concat(lit(name), lit('_'), col(name)) for name in modality_names.keys()]).alias('modality')
+).select('Contact_ID', 'Registration_Name', explode('modality').alias('modality'))
+
+edimodalitytransposed = edimodalitytransposed.select(
+    'Contact_ID', 'Registration_Name', 
+    split('modality', '_')[0].alias('modality'),
+    when(split('modality', '_')[1] == '1', 1).otherwise(0).alias('modality_value')
+)
+
+edimodalitytransposed = edimodalitytransposed.replace(modality_names, subset=['modality'])
+
+edimodalitytransposed = edimodalitytransposed.groupBy(
+    'Contact_ID', 'Registration_Name', 'modality'
+).agg({'modality_value': 'sum'}).withColumnRenamed('sum(modality_value)', 'modality_value')
+
+
