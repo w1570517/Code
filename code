@@ -3361,4 +3361,6 @@ edimodalitytransposed = edimodalitytransposed.groupBy(
     'sum(modality_value)', 'modality_value'
 )
 
+df = spark.table("regdb_daily.ftp_Status")
+df.write.mode("overwrite").option("path", "/path/to/location").saveAsTable("regdb_daily.ftp_Status")
 
