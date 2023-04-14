@@ -3364,3 +3364,28 @@ edimodalitytransposed = edimodalitytransposed.groupBy(
 df = spark.table("regdb_daily.ftp_Status")
 df.write.mode("overwrite").option("path", "/path/to/location").saveAsTable("regdb_daily.ftp_Status")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+rom pyspark.sql.functions import when, col
+
+# create a sample dataframe
+df = spark.createDataFrame([(1, None), (2, ''), (None, 'foo'), (4, 'bar')], ['a', 'b'])
+
+# replace missing values with 'unknown'
+df = df.withColumn('a', when(col('a').isNull(), 'unknown').otherwise(col('a')))
+df = df.withColumn('b', when(col('b') == '', 'unknown').otherwise(col('b')))
+
+df.show()
+
