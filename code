@@ -3479,3 +3479,6 @@ Table.SelectColumns(Table.NestedJoin([Applications],{"Contact ID"},[Addresses],{
 
 Table.SelectColumns(Table.NestedJoin("Applications",{"Contact ID"},"Addresses",{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
 
+
+Table.SelectColumns(Table.NestedJoin([Applications],{"Contact ID"},[Addresses],{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
+
