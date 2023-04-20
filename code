@@ -3397,3 +3397,67 @@ df.show()
 
 
 = Table.SelectColumns(Table.NestedJoin(Application,{"Contact ID"},Address,{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OData.Feed("https://hcpcuk" & Environment & ".api.crm4.dynamics.com/api/data/v9.1/", null, [Implementation="2.0"]), hcpcreg_applications_table = Source{[Name="hcpcreg_applications",Signature="table"]}[Data], #"Removed Other Columns" =
+
+Table.SelectColumns(hcpcreg_applications_table,{"hcpcreg_furtherverification", "hcpcreg_dateonapplication2", "hcpcreg_verificationcompleteddate2", "hcpcreg_applicantdob", "hcpcreg_datetoregisterifapplicantrequested2", "hcpcreg_qualificationstartdate", "_hcpcreg_institutionid_value", "_hcpcreg_profession_value", "hcpcreg_name", "hcpcreg_pendingreason", "hcpcreg_routetaken", "hcpcreg_inappeal", "hcpcreg_previousapplicationno", "hcpcreg_isrtprequired", "hcpcreg_practicedoutsideofuk", "hcpcreg_haveyoupreviouslyapplied", "_hcpcreg_professioncycle_value", "hcpcreg_datereceivedstamped2", "_hcpcreg_applicant_value", "statuscode", "hcpcreg_isenglishfirstlanguage", "hcpcreg_rejectedreason", "hcpcreg_declarationofinfochecked", "hcpcreg_applicationid", "hcpcreg_evidenceprovided", "_hcpcreg_registrationid_value", "_createdby_value", "hcpcreg_applicationtype", "hcpcreg_declarationforftp", "statecode", "hcpcreg_processingdate", "hcpcreg_acknowledgementdate", "hcpcreg_qualificationenddate", "createdon", "hcpcreg_scrutinyfee"}),
+#"Renamed Columns" =
+Table.RenameColumns(
+#"Removed Other Columns", {
+
+{"hcpcreg_applicationid" , "Application ID"}, {"_hcpcreg_applicant_value","Contact ID"}, {"_hcpcreg_profession_value","Profession ID"}, {"_hcpcreg_professioncycle_value","Professional Cycle ID"}, {"_hcpcreg_registrationid_value","Registration ID"}, {"_hcpcreg_institutionid_value","Institution ID"}, {"hcpcreg_applicationtype","Application Type ID"}, {"hcpcreg_acknowledgementdate","Acknowledgement Date"}, {"hcpcreg_applicantdob","Applicant DoB"},
+// {"hcpcreg_approvedprogrammeid""Approved programme"},
+{"hcpcreg_name","Application Name"}, {"hcpcreg_dateonapplication2","Date on Application"}, {"hcpcreg_datereceivedstamped2","Received Stamped Date"}, {"hcpcreg_datetoregisterifapplicantrequested2","Date to Register (Applicant Requested)"}, {"hcpcreg_declarationforftp","Declaration of FtP?"}, {"hcpcreg_declarationofinfochecked","Declaration of Info Signed?"}, {"hcpcreg_evidenceprovided","Evidence Provided?"}, {"hcpcreg_furtherverification","Further Verification Needed?"},
+
+{"hcpcreg_haveyoupreviouslyapplied","Previously Applied?"}, {"hcpcreg_inappeal","In Appeal?"}, {"hcpcreg_isenglishfirstlanguage","English First Language"}, {"hcpcreg_isrtprequired","RtP Required?"}, {"hcpcreg_pendingreason","Pending Reason"}, {"hcpcreg_practicedoutsideofuk","Practiced Outside of UK?"}, {"hcpcreg_previousapplicationno","Previous Application Number"}, {"hcpcreg_processingdate","Processing Date"}, {"hcpcreg_qualificationenddate","Qualification End Date"}, {"hcpcreg_qualificationstartdate","Qualification Start Date"}, {"hcpcreg_rejectedreason","Rejected Reason ID"}, {"hcpcreg_scrutinyfee", "Scrutiny Fee"}, {"hcpcreg_routetaken","Route Taken ID"}, {"hcpcreg_verificationcompleteddate2","Verification Completed Date"}, {"createdon","Created Date"}, {"_createdby_value", "Created By"}, {"statecode","State ID"}, {"statuscode","Status ID"}
+
+}
+
+),
+
+#"Added Custom" = Table.AddColumn(#"Renamed Columns", "New or Non-Graduate", each if
+
+[Qualification End Date] = null or [Date on Application]= null or [Received Stamped Date] = null then "" else if [Qualification End Date] > Date.AddYears([Received Stamped Date],-2) then "New Graduate"
+
+else "Non-Graduate"),
+#"Reordered Columns" = Table.ReorderColumns(#"Added Custom",{
+"Application ID", "Contact ID", "Profession ID",
+
+"Professional Cycle ID", "Registration ID", "Institution ID", "Application Type ID", "Acknowledgement Date", "Applicant DoB",
+
+// "Approved programme",
+"Application Name",
+
+"Date on Application", "Received Stamped Date", "Date to Register (Applicant Requested)", "Declaration of FtP?", "Declaration of Info Signed?", "Evidence Provided?", "Further Verification Needed?", "Previously Applied?", "In Appeal?", "English First Language", "RtP Required?", "Pending Reason", "Practiced Outside of UK?", "Previous Application Number", "Processing Date", "Qualification End Date", "Qualification Start Date", "Rejected Reason ID", "Scrutiny Fee", "Route Taken ID", "Verification Completed Date", "Created Date", "Created By", "State ID", "Status ID"
+
+}),
+#"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{
+{"Date on Application", type date}, {"Verification Completed Date", type date}, {"Applicant DoB", type date}, {"Created Date", type date}, {"Received Stamped Date", type date}, {"Qualification Start Date", type date}, {"Qualification End Date", type date}, {"Date to Register (Applicant Requested)", type date}}),
+#"Split Column by Delimiter" = Table.SplitColumn(Table.TransformColumnTypes(#"Changed Type", {{"Acknowledgement Date", type text}}, "en-GB"), "Acknowledgement Date", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.None, false), {"Acknowledgement Date.1", "Acknowledgement Date.2"}), #"Changed Type1" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"Acknowledgement Date.1", type date}, {"Acknowledgement Date.2", type text}}), #"Renamed Columns1" = Table.RenameColumns(#"Changed Type1",{{"Acknowledgement Date.2", "Acknowledgement Time"}}), #"Split Column by Delimiter1" = Table.SplitColumn(Table.TransformColumnTypes(#"Renamed Columns1", {{"Processing Date", type text}}, "en-GB"), "Processing Date", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.None, false), {"Processing Date.1", "Processing Date.2"}), #"Changed Type2" = Table.TransformColumnTypes(#"Split Column by Delimiter1",{{"Processing Date.1", type date}, {"Processing Date.2", type time}}), #"Renamed Columns2" = Table.RenameColumns(#"Changed Type2",{
+
+{"Processing Date.2", "Processing Time"}, {"Processing Date.1", "Processing Date"}, {"Acknowledgement Date.1", "Acknowledgement Date"} } ),
+#"Added Custom1" = Table.AddColumn(#"Renamed Columns2", "Custom", each Table.SelectColumns(Table.NestedJoin(Applications,{"Contact ID"},Addresses,{"Parent ID"}),{"Parent ID"}){0}[Parent ID])
+
+in
+#"Added Custom1"
