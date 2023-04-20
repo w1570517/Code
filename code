@@ -3389,3 +3389,10 @@ df = df.withColumn('b', when(col('b') == '', 'unknown').otherwise(col('b')))
 
 df.show()
 
+
+
+
+
+
+
+= Table.SelectColumns(Table.NestedJoin(Application,{"Contact ID"},Address,{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
