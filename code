@@ -3391,6 +3391,7 @@ df.show()
 
 
 
+= Table.AddColumn(Applications, "Parent ID", each Table.SelectColumns(Table.NestedJoin(Applications,{"Contact ID"},Addresses,{"Parent ID"}),{"Addresses[Parent ID]"}){0}[Addresses[Parent ID]])
 
 
 
