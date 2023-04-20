@@ -3461,3 +3461,7 @@ else "Non-Graduate"),
 
 in
 #"Added Custom1"
+
+
+
+Table.SelectColumns(Table.NestedJoin([Applications],{"Contact ID"},[Addresses],{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
