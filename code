@@ -3482,3 +3482,26 @@ Table.SelectColumns(Table.NestedJoin("Applications",{"Contact ID"},"Addresses",{
 
 Table.SelectColumns(Table.NestedJoin([Applications],{"Contact ID"},[Addresses],{"Parent ID"}),{"Parent ID"}){0}[Parent ID]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import rank, desc
+from pyspark.sql.window import Window
+
+# Assuming your DataFrame is called df and the date column is called 'date' and ID column is called 'id'
+window_spec = Window.partitionBy('id').orderBy(desc('date'))
+ranked_df = df.withColumn('rank', rank().over(window_spec))
+latest_ids = ranked_df.filter('rank == 1').select('id')
+
+
