@@ -3505,3 +3505,37 @@ ranked_df = df.withColumn('rank', rank().over(window_spec))
 latest_ids = ranked_df.filter('rank == 1').select('id')
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from pyspark.sql.functions import when, col
+
+# Define the conditions for the new column
+condition_uk = (col("workregon") == "unknown") & (col("country").isin(["Wales", "England", "United Kingdom", "Northern Ireland"]))
+condition_overseas = ~(col("country").isin(["Wales", "England", "United Kingdom", "Northern Ireland"]))
+
+# Apply the conditions to create the new column
+df = df.withColumn("Groupcol", 
+                   when(condition_uk, "UK")
+                   .when(condition_overseas, "Overseas")
+                   .otherwise(None)  # Replace with any default value if desired
+                  )
+
+
+
