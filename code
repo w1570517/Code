@@ -3555,4 +3555,7 @@ dftest = dfGeocodeFnlPip5.withColumn("UnknownGroup",
                                     .otherwise(None)  # Replace with any default value if desired
                                    )
 
+condition_uk = (col("WorkCountry") == "unknown") & (col("addressWorkCountry").isin(["Wales", "England", "United Kingdom", "Northern Ireland", "Scotland"]) | col("addressWorkCountry").isin(["Wales", "England", "United Kingdom", "Northern Ireland", "Scotland"]))
+condition_ukoverseas = (col("WorkCountry") == "unknown") & col("addressWorkCountry").isin(["Grand Cayman", "Falkland Islands", "Gibraltar", "British Virgin Islands", "Guernsey", "Jersey", "St Helena, South Atlantic Ocean", "Isle of Man", "Virgin Islands"])
+condition_overseas = (col("WorkCountry") == "unknown") & ~(col("addressWorkCountry").isin(["Wales", "England", "United Kingdom", "Scotland", "Northern Ireland"]))
 
