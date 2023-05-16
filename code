@@ -3559,3 +3559,11 @@ condition_uk = (col("WorkCountry") == "unknown") & (col("addressWorkCountry").is
 condition_ukoverseas = (col("WorkCountry") == "unknown") & col("addressWorkCountry").isin(["Grand Cayman", "Falkland Islands", "Gibraltar", "British Virgin Islands", "Guernsey", "Jersey", "St Helena, South Atlantic Ocean", "Isle of Man", "Virgin Islands"])
 condition_overseas = (col("WorkCountry") == "unknown") & ~(col("addressWorkCountry").isin(["Wales", "England", "United Kingdom", "Scotland", "Northern Ireland"]))
 
+
+
+
+ambiguous_column = col("house")
+print(ambiguous_column._jc.qualifiedName())
+
+ambiguous_column = col("dmp.house")
+print(ambiguous_column._jc.qualifiedName())
