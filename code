@@ -3567,3 +3567,12 @@ print(ambiguous_column._jc.qualifiedName())
 
 ambiguous_column = col("dmp.house")
 print(ambiguous_column._jc.qualifiedName())
+
+
+
+
+
+https://www.youtube.com/watch?v=T83OwV-d0AE
+
+
+
