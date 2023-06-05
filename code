@@ -3611,5 +3611,6 @@ RETURN
     )
     & IF(Rounded_Hours > 0, FORMAT(Rounded_Hours, "0") & "hrs,", "")
     & FORMAT(Minutes_Remaining, "0") & "mins"
+    & IF(Minutes_Remaining >= 30, " (rounded)", "")
 
 
