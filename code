@@ -3584,7 +3584,6 @@ https://www.youtube.com/watch?v=T83OwV-d0AE
 
 
 
-
 timetooltips =
 VAR Minutes = SUM('TechData2'[Value])
 VAR Days = INT(Minutes / 1440)
@@ -3594,6 +3593,8 @@ VAR Rounded_Hours =
     IF(Minutes_Remaining >= 30, Hours + 1, Hours)
 VAR Rounded_Days =
     IF(Rounded_Hours >= 24, Days + 1, Days)
+VAR Result_Hours =
+    IF(Minutes_Remaining >= 30, Rounded_Hours + 1, Rounded_Hours)
 RETURN
     SWITCH(
         TRUE(),
@@ -3608,8 +3609,7 @@ RETURN
         TRUE(),
             ""
     )
-    & IF(Rounded_Hours > 0, FORMAT(Rounded_Hours, "0") & "hrs,", "")
-    & FORMAT(Minutes_Remaining, "0") & "mins"
-    & IF(Minutes_Remaining >= 30, " (rounded)", "")
+    & IF(Result_Hours > 0, FORMAT(Result_Hours, "0") & "hrs", "")
+    & IF(Result_Hours > 0, IF(Minutes_Remaining >= 30, " (rounded)", ""), "")
 
 
