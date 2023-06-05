@@ -3585,7 +3585,6 @@ https://www.youtube.com/watch?v=T83OwV-d0AE
 
 
 
-
 timetooltips =
 VAR Minutes = SUM('TechData2'[Value])
 VAR Days = INT(Minutes / 1440)
