@@ -3822,4 +3822,25 @@ IF(
 
 
 
+FinCurrents Value Reformatted =
+VAR CurrentColumn = SELECTEDVALUE(FinanceData[Finance Operation])
+VAR PreviousValue = [FinCurrent Month Value]
+RETURN
+IF(
+    ISBLANK(PreviousValue),
+    "N/A",
+    IF(
+        CurrentColumn = "Forecast surplus/defecit",
+        FORMAT(PreviousValue / 1000, "") & "k",
+        IF(
+            CurrentColumn = "Procurement cost efficiencies",
+            FORMAT(PreviousValue / 1000, "") & "k",
+            IF(
+                CurrentColumn = "Invoices paid on time",
+                FORMAT(PreviousValue, "0%"),
+                "N/A"
+            )
+        )
+    )
+)
 
