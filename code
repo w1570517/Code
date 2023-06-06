@@ -3844,3 +3844,71 @@ IF(
     )
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EstCurrents Value Reformatted =
+VAR CurrentColumn = SELECTEDVALUE(EstatesData[Estate Operation])
+VAR PreviousValue = [EstCurrent Month Value]
+RETURN
+IF(
+    ISBLANK(PreviousValue),
+    "N/A",
+    IF(
+        CurrentColumn = "CO2 emissions",
+        "N/A",
+        IF(
+            CurrentColumn = "Sustainability measure 2",
+            "N/A",
+            IF(
+                CurrentColumn = "Sustainability measure 3",
+                "N/A",
+                IF(
+                    CurrentColumn = "H+S incidents",
+                    FORMAT(PreviousValue + 0, "") & "",
+                    IF(
+                        CurrentColumn = "DSE reimbursements (ytd)",
+                        FORMAT(PreviousValue + 0, "") & "",
+                        IF(
+                            CurrentColumn = "DSE assessments (pcm)",
+                            FORMAT(PreviousValue + 0, "") & "",
+                            IF(
+                                CurrentColumn = "Hearings utilisation",
+                                FORMAT(PreviousValue * 100, "") & "%",
+                                IF(
+                                    CurrentColumn = "Desk utilisation",
+                                    FORMAT(PreviousValue * 100, "") & "%",
+                                    IF(
+                                        CurrentColumn = "Office attendances",
+                                        FORMAT(PreviousValue + 0, ""),
+                                        "N/A"
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
