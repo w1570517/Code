@@ -3734,3 +3734,23 @@ RETURN
         & IF(Rounded_Hours > 0 && (Minutes < 1 || Minutes > 60), ", " & FORMAT(Rounded_Hours, "0") & "hrs", "")
     )
 
+
+
+
+
+
+
+
+
+
+
+SWITCH(
+    TRUE(),
+    OR(ISBLANK([Current Month Value]), [Current Month Value] = BLANK()), "White",
+    OR(ISBLANK([Previous Month Value]), [Previous Month Value] = BLANK()), "White",
+    [Current Month Value] > [Previous Month Value], "Green",
+    [Current Month Value] < [Previous Month Value], "Red",
+    [Current Month Value] = [Previous Month Value], "Green",
+    "TrafficLowLight"
+)
+
