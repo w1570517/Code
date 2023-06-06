@@ -3754,3 +3754,72 @@ SWITCH(
     "TrafficLowLight"
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PeoCurrent Value Reformatted =
+VAR CurrentColumn = SELECTEDVALUE(PeopleData[People Operations])
+VAR PreviousValue = [Current Month Value]
+RETURN
+IF(
+    ISBLANK(PreviousValue),
+    "N/A",
+    IF(
+        CurrentColumn = "Vacancy rate (%)",
+        FORMAT(PreviousValue + 0, "") & "%",
+        IF(
+            CurrentColumn = "Voluntary turnover rate (%)",
+            FORMAT(PreviousValue + 0, 0.0, "") & "%",
+            IF(
+                CurrentColumn = "Employee Satisfaction Score (pulse survey)",
+                FORMAT(PreviousValue * 100, "") & "%",
+                IF(
+                    CurrentColumn = "FTC staff",
+                    FORMAT(PreviousValue + 0, 0.0, ""),
+                    IF(
+                        CurrentColumn = "Internal offers made",
+                        FORMAT(PreviousValue + 0, 0.0, ""),
+                        IF(
+                            CurrentColumn = "Number of campaigns",
+                            FORMAT(PreviousValue + 0, 0.0, ""),
+                            IF(
+                                CurrentColumn = "Employee relations cases",
+                                FORMAT(PreviousValue + 0, 0.0, ""),
+                                IF(
+                                    CurrentColumn = "Permanent staff",
+                                    FORMAT(PreviousValue + 0, 0.0, ""),
+                                    IF(
+                                        CurrentColumn = "Agency staff",
+                                        FORMAT(PreviousValue + 0, 0.0, ""),
+                                        IF(
+                                            CurrentColumn = "Average days to hire",
+                                            FORMAT(PreviousValue + 0, ""),
+                                            "N/A"
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+
+
+
