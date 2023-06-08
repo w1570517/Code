@@ -3912,3 +3912,17 @@ IF(
     )
 )
 
+
+
+
+
+tech2previouse =
+CALCULATE (
+    IF (
+        NOT ( ISBLANK ( [TIMEOUT] ) ),
+        FILTER ( ALL ( 'CALENDER'[DATE] ), 'CALENDAR'[DATES] < MAX ( 'CALENDAR'[DATES] ) )
+    ),
+    BLANK ()
+)
+
+
