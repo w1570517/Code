@@ -3926,4 +3926,5 @@ CALCULATE (
 )
 
 
+df.filter((~df["reg"].isin("1d", "1b")) & (df["deb"] == "1f"))
 
