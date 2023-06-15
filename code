@@ -3928,4 +3928,5 @@ CALCULATE (
 
 df.filter((~df["reg"].isin("1d", "1b")) & (df["deb"] == "1f"))
 result = df.where(df.City == "New York").groupBy("City").count()
+result = df.withColumn("a", when((col("a").isNull()) | (col("a") == ""), col("b")).otherwise(col("a")))
 
