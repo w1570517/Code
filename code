@@ -3929,4 +3929,12 @@ CALCULATE (
 df.filter((~df["reg"].isin("1d", "1b")) & (df["deb"] == "1f"))
 result = df.where(df.City == "New York").groupBy("City").count()
 result = df.withColumn("a", when((col("a").isNull()) | (col("a") == ""), col("b")).otherwise(col("a")))
+# Define the values to find and replace
+values_to_find = ["Mike", "Sarah"]
+replacement_value = "New Name"
 
+# Find and replace values in the "Name" column using isin
+result = df.withColumn("Name", when(col("Name").isin(values_to_find), replacement_value).otherwise(col("Name")))
+
+# Show the result
+result.show()
