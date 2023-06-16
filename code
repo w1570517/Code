@@ -3938,3 +3938,20 @@ result = df.withColumn("Name", when(col("Name").isin(values_to_find), replacemen
 
 # Show the result
 result.show()
+
+
+
+
+
+
+
+
+
+
+
+# Perform a left join and apply a where clause on two columns with cities not equal to New York, London, or Brussels
+cities_to_exclude = ["New York", "London", "Brussels"]
+result = df1.join(df2, (df1.Name == df2.Name) & (df1.Age < 40), "left").where(~df2.City.isin(cities_to_exclude))
+
+# Show the result
+result.show()
