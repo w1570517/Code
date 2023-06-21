@@ -4007,3 +4007,19 @@ df.show(truncate=False)
 
 df = df.withColumn("colC", when((col("colA").isNotNull() & (col("colA") != "")), "Multi_Choice").otherwise(col("colC")))
 
+
+
+
+
+
+
+
+
+
+
+
+df = df.withColumn("colC",
+                   when((col("colA").isNotNull() & (col("colA") != "")), "Multi_Choice")
+                   .when(col("colA").contains("I do not have a disability,long-term condition or important"), "I do not have a disability,long-term condition or important")
+                   .when(col("colA").contains("group chance"), "group chance")
+                   .otherwise(col("colC")))
