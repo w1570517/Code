@@ -4023,3 +4023,18 @@ df = df.withColumn("colC",
                    .when(col("colA").contains("I do not have a disability,long-term condition or important"), "I do not have a disability,long-term condition or important")
                    .when(col("colA").contains("group chance"), "group chance")
                    .otherwise(col("colC")))
+
+
+
+
+
+
+
+df_cleaned = df.select(
+    col("name"),
+    when(trim(col("value")) == "", None).otherwise(col("value")).alias("value")
+)
+
+
+
+
