@@ -3970,6 +3970,11 @@ The resulting DataFrame will have the desired values in colB.
 
 df = df.withColumn("colA", when(col("colA").contains("#"), col("colA")).otherwise(None))
 
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, split, array_distinct, concat_ws
+# Perform the required transformation
+df = df.withColumn("colA", concat_ws("#", array_distinct(split(col("colA"), "#"))))
 
-
+# Show the result
+df.show(truncate=False)
 
