@@ -3968,6 +3968,7 @@ This code creates a DataFrame df with two columns: colA and colB. It then uses t
 The resulting DataFrame will have the desired values in colB.
 
 
+df = df.withColumn("colA", when(col("colA").contains("#"), col("colA")).otherwise(None))
 
 
 
