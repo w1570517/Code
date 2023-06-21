@@ -4037,4 +4037,10 @@ df_cleaned = df.select(
 
 
 
-
+# Trim "invisible" blank or null values to proper null values for all columns
+df_cleaned = df.select(
+    *[
+        when(trim(col(column)) == "", None).otherwise(col(column)).alias(column)
+        for column in df.columns
+    ]
+)
