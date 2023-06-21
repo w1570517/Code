@@ -3956,3 +3956,19 @@ result = df1.join(df2, (df1.Name == df2.Name) & (df1.Age < 40), "left").where(~d
 # Show the result
 result.show()
 https://www.credly.com/badges/e6479bc4-5992-4f23-a899-47e0b36eb569/public_url
+
+
+# Perform the required transformation
+df = df.withColumn("colB", when((col("colB").isNull() | (col("colB") == "")) & (~col("colA").contains("#")), col("colA")).otherwise(col("colB")))
+
+# Show the result
+df.show()
+This code creates a DataFrame df with two columns: colA and colB. It then uses the withColumn function to update colB based on the conditions you mentioned: if colB is null or blank (""), and colA does not contain the character #, it will move the value from colA to colB. Otherwise, the value in colB remains unchanged.
+
+The resulting DataFrame will have the desired values in colB.
+
+
+
+
+
+
