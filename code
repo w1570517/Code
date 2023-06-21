@@ -4005,4 +4005,5 @@ df = df.withColumn("colA", concat_ws("#", sort_array(array_distinct(split(col("c
 df.show(truncate=False)
 
 
+df = df.withColumn("colC", when((col("colA").isNotNull() & (col("colA") != "")), "Multi_Choice").otherwise(col("colC")))
 
