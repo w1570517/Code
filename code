@@ -3978,3 +3978,31 @@ df = df.withColumn("colA", concat_ws("#", array_distinct(split(col("colA"), "#")
 # Show the result
 df.show(truncate=False)
 
+
+
+
+
+
+
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, split, array_distinct, concat_ws, sort_array
+
+# Create a Spark session
+spark = SparkSession.builder.getOrCreate()
+
+# Create a sample DataFrame
+data = [("house#house#rent", None),
+        ("food#food", None),
+        ("sky#sky#key#greate", None)]
+
+df = spark.createDataFrame(data, ["colA", "colB"])
+
+# Perform the required transformation
+df = df.withColumn("colA", concat_ws("#", sort_array(array_distinct(split(col("colA"), "#")))))
+
+# Show the result
+df.show(truncate=False)
+
+
+
