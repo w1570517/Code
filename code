@@ -4044,3 +4044,11 @@ df_cleaned = df.select(
         for column in df.columns
     ]
 )
+
+
+
+
+from pyspark.sql.functions import when
+
+df = df.withColumn("col2", when(df.col1 == "3", "bon").otherwise(df.col2))
+df.show()
