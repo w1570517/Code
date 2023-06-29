@@ -4052,3 +4052,12 @@ from pyspark.sql.functions import when
 
 df = df.withColumn("col2", when(df.col1 == "3", "bon").otherwise(df.col2))
 df.show()
+
+
+
+
+SELECT 
+    eventime,
+    CONVERT(VARCHAR(10), CONVERT(DATE, CONVERT(DATETIMEOFFSET, eventime) AT TIME ZONE 'UTC'), 111) AS date
+FROM 
+    your_table;
