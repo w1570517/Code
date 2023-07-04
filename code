@@ -4178,8 +4178,6 @@ WHERE
 
 
 
-
-
 WITH DeduplicatedData AS (
     SELECT
         USERID,
@@ -4213,9 +4211,13 @@ SELECT
     DD.MONTH,
     DD.QUARTER,
     DD.TIME,
-    CASE WHEN L.LastEventTime IS NULL THEN 0 ELSE DATEDIFF(DAY, L.LastEventTime, DD.EVENTTIME) END AS DaysSinceLastAttendance
+    CASE WHEN L.LastEventTime IS NULL THEN 0 ELSE DATEDIFF(DAY, L.LastEventTime, DD.EVENTTIME) END AS DaysSinceLastAttendance,
+    CASE WHEN DD.RowNumber = 1 THEN 1 ELSE 0 END AS OfficepresentCount
 FROM
     DeduplicatedData AS DD
 LEFT JOIN
-    LastAttendance AS L ON DD.USERID = L.USERID AND DD.EVENTTIME = L.LastEventTime;
+    LastAttendance AS L ON DD.USERID = L.USERID AND DD.EVENTTIME = L.LastEventTime
+WHERE
+    DD.RowNumber = 1 AND
+    CASE WHEN L.LastEventTime IS NULL THEN 0 ELSE DATEDIFF(DAY, L.LastEventTime, DD.EVENTTIME) END > 0;
 
