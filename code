@@ -4423,3 +4423,52 @@ DIVIDE(
         )
     )
 ) * 100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OfficePresentPercentage = 
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(
+            DISTINCT(
+                FILTER(
+                    Table1,
+                    Table1[officepresent] = 1 &&
+                    WEEKDAY(Table1[datetime],2) <= 5
+                )
+            )
+        ),
+        DISTINCT(Table1[Emp Name])
+    ),
+    CALCULATE(
+        COUNTROWS(
+            DISTINCT(
+                FILTER(
+                    Table1,
+                    WEEKDAY(Table1[datetime],2) <= 5
+                )
+            )
+        ),
+        DISTINCT(Table1[Emp Name])
+    )
+) * 100
