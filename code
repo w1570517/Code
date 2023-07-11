@@ -4394,3 +4394,32 @@ CALCULATE(
         WEEKDAY(Table1[datetime],2) <= 5
     )
 )
+
+
+
+
+
+
+
+
+
+
+
+
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(Table1),
+        FILTER(
+            Table1,
+            Table1[officepresent] = 1 &&
+            WEEKDAY(Table1[datetime],2) <= 5
+        )
+    ),
+    CALCULATE(
+        COUNTROWS(Table1),
+        FILTER(
+            Table1,
+            WEEKDAY(Table1[datetime],2) <= 5
+        )
+    )
+) * 100
