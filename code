@@ -4374,3 +4374,23 @@ SELECT
 
 FROM
     OfficeAttendance
+
+
+
+
+
+
+
+
+
+
+
+OfficePresentMondayToFriday = 
+CALCULATE(
+    COUNTROWS(Table1),
+    FILTER(
+        Table1,
+        Table1[officepresent] = 1 &&
+        WEEKDAY(Table1[datetime],2) <= 5
+    )
+)
