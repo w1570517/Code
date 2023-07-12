@@ -4623,3 +4623,32 @@ DIVIDE(
     )
 )
 
+
+
+
+
+
+
+
+
+
+UserWorkingDays = 
+    SUMMARIZECOLUMNS(
+        OfficeDoorReport[UserID],
+        "WorkingDays", CALCULATE(COUNTROWS(OfficeDoorReport),
+            WEEKDAY(OfficeDoorReport[Date], 2) <= 5
+        )
+    )
+
+
+TotalWorkingDays = CALCULATE(COUNTROWS(OfficeDoorReport),
+    WEEKDAY(OfficeDoorReport[Date], 2) <= 5
+)
+
+
+PercentageOfTimeInOffice = 
+    DIVIDE(
+        COUNTROWS(UserWorkingDays),
+        [TotalWorkingDays]
+    )
+
