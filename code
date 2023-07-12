@@ -4612,65 +4612,16 @@ DIVIDE(
 
 
 
-
-
-PercentageOfTimeInOffice =
-DIVIDE(
-    SUM(OfficeDoorReport[OfficePresentCount]),
-    CALCULATE(
-        SUM(OfficeDoorReport[IsWorkingDay]),
-        OfficeDoorReport[OfficePresentCount] >= 0
-    )
-)
-
-
-
-
-
-
-
-
-
-
-UserWorkingDays = 
-    SUMMARIZECOLUMNS(
-        OfficeDoorReport[UserID],
-        "WorkingDays", CALCULATE(COUNTROWS(OfficeDoorReport),
-            WEEKDAY(OfficeDoorReport[Date], 2) <= 5
-        )
-    )
-
-
-UserWorkingDays = 
-    ADDCOLUMNS(
-        SUMMARIZE(
-            OfficeDoorReport,
-            OfficeDoorReport[UserID],
-            "WorkingDays", CALCULATE(COUNTROWS(OfficeDoorReport),
-                WEEKDAY(OfficeDoorReport[Date], 2) <= 5
-            )
-        ),
-        "UserID", OfficeDoorReport[UserID],
-        "WorkingDays", [WorkingDays]
-    )
-
-
-
-
-
-
-
-
-
-
-TotalWorkingDays = CALCULATE(COUNTROWS(OfficeDoorReport),
-    WEEKDAY(OfficeDoorReport[Date], 2) <= 5
-)
-
-
 PercentageOfTimeInOffice = 
-    DIVIDE(
-        COUNTROWS(UserWorkingDays),
-        [TotalWorkingDays]
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(OfficeDoorReport),
+        OfficeDoorReport[OfficePresentCount] = 1,
+        WEEKDAY(OfficeDoorReport[Date], 2) <= 5
+    ),
+    CALCULATE(
+        COUNTROWS(OfficeDoorReport),
+        WEEKDAY(OfficeDoorReport[Date], 2) <= 5
     )
+)
 
