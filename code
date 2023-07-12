@@ -4547,3 +4547,42 @@ DIVIDE(
     )
 )
 
+
+
+
+
+
+
+
+
+
+
+
+Office Presence Percentage = 
+DIVIDE(
+    CALCULATE(
+        COUNTROWS('Table 1'),
+        'Table 1'[office present] = 1 &&
+        'Table 1'[eventtime] >= MIN('Table 1'[eventtime]) &&
+        'Table 1'[eventtime] <= MAX('Table 1'[eventtime]) &&
+        WEEKDAY('Table 1'[eventtime], 2) <= 5
+    ),
+    CALCULATE(
+        COUNTROWS('Table 1'),
+        'Table 1'[eventtime] >= MIN('Table 1'[eventtime]) &&
+        'Table 1'[eventtime] <= MAX('Table 1'[eventtime]) &&
+        WEEKDAY('Table 1'[eventtime], 2) <= 5,
+        ALLEXCEPT('Table 1', 'Table 1'[user id])
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
