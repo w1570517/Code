@@ -4668,3 +4668,25 @@ DIVIDE(
         WEEKDAY(OfficeDoorReport[Date], 2) <= 5
     )
 )
+
+
+
+
+
+
+
+TotalWorkingDays = CALCULATE(COUNTROWS(OfficeDoorReport), WEEKDAY(OfficeDoorReport[Date], 2) <= 5)
+
+TotalOfficePresentCount = CALCULATE(SUM(OfficeDoorReport[OfficePresentCount]), OfficeDoorReport[OfficePresentCount] = 1)
+
+
+PercentageOfTimeInOffice = DIVIDE([TotalOfficePresentCount], [TotalWorkingDays])
+
+
+
+
+
+
+
+
+
