@@ -4696,25 +4696,27 @@ CALCULATE(
 
 
 
-PercentageOfTimeInOffice = 
-DIVIDE(
-    SUM(OfficeDoorReport[OfficePresentCount]),
-    COUNTROWS(OfficeDoorReport) * 5
-)
-
-
-
-
-Percentage of office present = FORMAT ( DIVIDE ( SUM ( Table [Col] ), COUNTROWS ( FILTER ( Table, WEEKDAY ( Table [Date] ) < 6 ) ) ), “0.00%” )
-
-
-Percentage of Customers (Weekly) = 
-VAR TotalCustomers = CALCULATE(DISTINCTCOUNT('Table'[CustomerID]), WEEKDAY('Table'[Date]) <= 5)
-VAR PurchasedCustomers = CALCULATE(DISTINCTCOUNT('Table'[CustomerID]), 'Table'[Purchase] = 1, WEEKDAY('Table'[Date]) <= 5)
+Percentage of Customers (Weekly) =
+VAR TotalCustomers =
+    CALCULATE(
+        DISTINCTCOUNT(OfficeDoorReport[UserID]),
+        WEEKDAY(OfficeDoorReport[Date to Event Time]) <= 5
+    )
+VAR PurchasedCustomers =
+    CALCULATE(
+        DISTINCTCOUNT(OfficeDoorReport[UserID]),
+        OfficeDoorReport[Purchase] = 1,
+        WEEKDAY(OfficeDoorReport[Date to Event Time]) <= 5
+    )
 RETURN
     IF(
         TotalCustomers = 0,
         BLANK(),
-        DIVIDE(PurchasedCustomers, TotalCustomers) * 100
+        IF(
+            PurchasedCustomers = 0,
+            0,
+            DIVIDE(PurchasedCustomers, TotalCustomers) * 100
+        )
     )
+
 
