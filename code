@@ -4720,3 +4720,18 @@ RETURN
     )
 
 
+
+
+PercentageOfficeAttendance_Week = 
+DIVIDE(
+    SUM(OfficeDoorReport[officePresentCount]),
+    COUNTROWS(OfficeDoorReport) * 7
+) * 100
+
+
+
+PercentageOfficeAttendance_Month = 
+DIVIDE(
+    SUM(OfficeDoorReport[officePresentCount]),
+    COUNTROWS(OfficeDoorReport) * DAY(EOMONTH(MAX(OfficeDoorReport[EVENTIME]), 0))
+) * 100
