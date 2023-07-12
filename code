@@ -4701,3 +4701,12 @@ DIVIDE(
     SUM(OfficeDoorReport[OfficePresentCount]),
     COUNTROWS(OfficeDoorReport) * 5
 )
+
+
+
+
+Percentage of office present = FORMAT ( DIVIDE ( SUM ( Table [Col] ), COUNTROWS ( FILTER ( Table, WEEKDAY ( Table [Date] ) < 6 ) ) ), “0.00%” )
+
+
+
+
