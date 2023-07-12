@@ -4594,19 +4594,15 @@ DIVIDE(
 
 
 
-
 PercentageOfTimeInOffice =
 DIVIDE(
     CALCULATE(
-        SUM(OfficeDoorReport[OfficePresentCount]),
+        COUNTROWS(OfficeDoorReport),
         OfficeDoorReport[OfficePresentCount] = 1
     ),
-    COUNTROWS(
-        FILTER(
-            OfficeDoorReport,
-            NOT(ISBLANK(OfficeDoorReport[Date]))
-        )
+    CALCULATE(
+        COUNTROWS(OfficeDoorReport),
+        WEEKDAY(OfficeDoorReport[Date], 2) <= 5
     )
 )
-
 
