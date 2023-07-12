@@ -4708,24 +4708,13 @@ DIVIDE(
 Percentage of office present = FORMAT ( DIVIDE ( SUM ( Table [Col] ), COUNTROWS ( FILTER ( Table, WEEKDAY ( Table [Date] ) < 6 ) ) ), “0.00%” )
 
 
-
-Percentage of Customers (Weekly) =
-IF(
-    CALCULATE(
-        DISTINCTCOUNT('Table'[CustomerID]),
-        WEEKDAY('Table'[Date]) <= 5
-    ) = 0,
-    BLANK(),
-    DIVIDE(
-        CALCULATE(
-            DISTINCTCOUNT('Table'[CustomerID]),
-            'Table'[Purchase] = 1,
-            WEEKDAY('Table'[Date]) <= 5
-        ),
-        CALCULATE(
-            DISTINCTCOUNT('Table'[CustomerID]),
-            WEEKDAY('Table'[Date]) <= 5
-        )
-    ) * 100
-)
+Percentage of Customers (Weekly) = 
+VAR TotalCustomers = CALCULATE(DISTINCTCOUNT('Table'[CustomerID]), WEEKDAY('Table'[Date]) <= 5)
+VAR PurchasedCustomers = CALCULATE(DISTINCTCOUNT('Table'[CustomerID]), 'Table'[Purchase] = 1, WEEKDAY('Table'[Date]) <= 5)
+RETURN
+    IF(
+        TotalCustomers = 0,
+        BLANK(),
+        DIVIDE(PurchasedCustomers, TotalCustomers) * 100
+    )
 
