@@ -4641,6 +4641,28 @@ UserWorkingDays =
     )
 
 
+UserWorkingDays = 
+    ADDCOLUMNS(
+        SUMMARIZE(
+            OfficeDoorReport,
+            OfficeDoorReport[UserID],
+            "WorkingDays", CALCULATE(COUNTROWS(OfficeDoorReport),
+                WEEKDAY(OfficeDoorReport[Date], 2) <= 5
+            )
+        ),
+        "UserID", OfficeDoorReport[UserID],
+        "WorkingDays", [WorkingDays]
+    )
+
+
+
+
+
+
+
+
+
+
 TotalWorkingDays = CALCULATE(COUNTROWS(OfficeDoorReport),
     WEEKDAY(OfficeDoorReport[Date], 2) <= 5
 )
