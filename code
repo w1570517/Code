@@ -4696,3 +4696,8 @@ CALCULATE(
 
 
 
+PercentageOfTimeInOffice = 
+DIVIDE(
+    SUM(OfficeDoorReport[OfficePresentCount]),
+    COUNTROWS(OfficeDoorReport) * 5
+)
