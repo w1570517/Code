@@ -4709,13 +4709,13 @@ Percentage of office present = FORMAT ( DIVIDE ( SUM ( Table [Col] ), COUNTROWS 
 
 
 
-
-Percentage of Customers (Weekly) = 
+Percentage of Customers (Weekly) =
 IF(
     CALCULATE(
         DISTINCTCOUNT('Table'[CustomerID]),
         WEEKDAY('Table'[Date]) <= 5
-    ) <> 0,
+    ) = 0,
+    BLANK(),
     DIVIDE(
         CALCULATE(
             DISTINCTCOUNT('Table'[CustomerID]),
@@ -4726,7 +4726,6 @@ IF(
             DISTINCTCOUNT('Table'[CustomerID]),
             WEEKDAY('Table'[Date]) <= 5
         )
-    ) * 100,
-    BLANK()
+    ) * 100
 )
 
