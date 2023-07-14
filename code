@@ -4787,3 +4787,32 @@ IF (
     )
 
 
+
+
+
+
+
+
+
+
+
+
+Title Text =
+IF (
+    ISFILTERED ( Drill1 ),
+    IF (
+        HASONEVALUE ( Drill1[Category] ),
+        "Drill 1: " & VALUES ( Drill1[Category] ),
+        ""
+    )
+    & IF (
+        HASONEVALUE ( Drill1[Dept] ),
+        " Dept: " & VALUES ( Drill1[Dept] ),
+        ""
+    ),
+    CONCATENATEX ( VALUES ( Drill1[Category] ), Drill1[Category], ", " ) & " | " & CONCATENATEX ( VALUES ( Drill1[Dept] ), Drill1[Dept], ", " )
+)
+
+
+
+
