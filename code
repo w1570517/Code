@@ -4759,5 +4759,31 @@ IF (
 
 
 
+Title Text =
+IF (
+    HASONEVALUE ( Drill1[Category] ),
+    "Drill 1: " & VALUES ( Drill1[Category] ),
+    ""
+)
+    & IF (
+        HASONEVALUE ( Drill1[Dept] ),
+        " Dept: " & VALUES ( Drill1[Dept] ),
+        ""
+    )
+    & IF (
+        HASONEVALUE ( Drill2[Category] ),
+        " Drill 2: " & VALUES ( Drill2[Category] ),
+        ""
+    )
+    & IF (
+        HASONEVALUE ( Drill2[Month] ),
+        " Month: " & VALUES ( Drill2[Month] ),
+        ""
+    )
+    & IF (
+        HASONEVALUE ( Drill2[Week] ),
+        " Week: " & VALUES ( Drill2[Week] ),
+        ""
+    )
 
 
