@@ -4735,3 +4735,29 @@ DIVIDE(
     SUM(OfficeDoorReport[officePresentCount]),
     COUNTROWS(OfficeDoorReport) * DAY(EOMONTH(MAX(OfficeDoorReport[EVENTIME]), 0))
 ) * 100
+
+
+
+
+
+
+
+
+
+Title Text =
+IF (
+    ISFILTERED ( Drill1 ),
+    "Drill 1: " & CONCATENATEX ( VALUES ( Drill1 ), Drill1, ", " ),
+    ""
+)
+    & IF (
+        ISFILTERED ( Drill2 ),
+        " Drill 2: " & CONCATENATEX ( VALUES ( Drill2 ), Drill2, ", " ),
+        ""
+    )
+
+
+
+
+
+
