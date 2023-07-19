@@ -4815,4 +4815,5 @@ IF (
 
 
 
+df = df.withColumn("cola1", when((col("col_a").isNull()) | (col("col_a") == ""), 1).otherwise(0))
 
