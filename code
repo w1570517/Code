@@ -4818,3 +4818,10 @@ IF (
 df = df.withColumn("cola1", when((col("col_a").isNull()) | (col("col_a") == ""), 1).otherwise(0))
 (~col("age").between(20, 80)) | (col("age").isNull()), 1).otherwise(0))
 ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'), 1).otherwise(0))
+
+
+
+Last30Days = 
+VAR TodayDate = TODAY()
+VAR DaysDifference = DATEDIFF([Date], TodayDate, DAY)
+RETURN IF(DaysDifference >= -30 && DaysDifference <= 0, "Last 30 Days", "Not in Last 30 Days")
