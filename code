@@ -4847,3 +4847,33 @@ RETURN IF(DaysDifference >= -60 && DaysDifference <= 0, "Last 60 Days", "Not in 
 
 ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') |
                                  ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\.[a-zA-Z]{2,}$'), 1).otherwise(0))
+
+
+
+
+
+
+
+invalid_characters = '@\'":;\\/£$€¥'
+
+# Add a new column 'cola1' and set it as 1 if 'col_a', 'col_b', or 'col_c' is null, blank, or doesn't contain any letter from A to Z
+# Also, check the 'age' column to see if it's not between 20 and 80 (inclusive) or if it's null/missing
+# Additionally, check the 'email' column to see if it contains any of the invalid characters or does not contain the '@' symbol
+df = df.withColumn("cola1", when((col("col_a").isNull()) | (col("col_a") == "") | 
+                                 (col("col_b").isNull()) | (col("col_b") == "") | 
+                                 (col("col_c").isNull()) | (col("col_c") == "") |
+                                 ~col("col_a").rlike("[A-Za-z]") |
+                                 ~col("col_b").rlike("[A-Za-z]") |
+                                 ~col("col_c").rlike("[A-Za-z]") |
+                                 (~col("age").between(20, 80)) | (col("age").isNull()) |
+                                 col("email").rlike(f"[{invalid_characters}]") |
+                                 ~col("email").contains("@"), 1).otherwise(0))
+
+
+
+
+
+
+
+
+
