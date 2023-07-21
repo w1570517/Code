@@ -4904,6 +4904,19 @@ The code will now correctly flag the provided invalid email addresses as 1 in th
 
 
 
+ConditionalFormattingMeasure = 
+IF(
+    OR(
+        MAX('YourTableName'[a]) = 1,
+        MAX('YourTableName'[b]) = 1,
+        MAX('YourTableName'[c]) = 1,
+        MAX('YourTableName'[d]) = 1,
+        MAX('YourTableName'[e]) = 1,
+        MAX('YourTableName'[f]) = 1
+    ),
+    1,
+    BLANK()
+)
 
 
 
