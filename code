@@ -4825,3 +4825,16 @@ Last30Days =
 VAR TodayDate = TODAY()
 VAR DaysDifference = DATEDIFF([Date], TodayDate, DAY)
 RETURN IF(DaysDifference >= -30 && DaysDifference <= 0, "Last 30 Days", "Not in Last 30 Days")
+
+
+
+
+
+Last60Days =
+VAR TodayDate = TODAY()
+VAR DaysDifference = DATEDIFF([Date], TodayDate, DAY)
+RETURN IF(DaysDifference >= -60 && DaysDifference <= 0, "Last 60 Days", "Not in Last 60 Days")
+
+
+
+
