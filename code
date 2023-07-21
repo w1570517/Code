@@ -4840,3 +4840,10 @@ RETURN IF(DaysDifference >= -60 && DaysDifference <= 0, "Last 60 Days", "Not in 
                                  ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\.[a-zA-Z]{2,}$'), 1).otherwise(0))
 
 ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'), 1).otherwise(0))
+
+
+
+
+
+~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') |
+                                 ~col("email").rlike(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}\.[a-zA-Z]{2,}$'), 1).otherwise(0))
