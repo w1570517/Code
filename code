@@ -4919,5 +4919,18 @@ IF(
 )
 
 
+MeasureName = 
+VAR ProfessionValue = SELECTEDVALUE('YourTableName'[profession])
+VAR LevelValue1 = SELECTEDVALUE('YourTableName'[level col 1])
+VAR LevelValue2 = SELECTEDVALUE('YourTableName'[level col 2])
+
+RETURN
+IF(
+    (ProfessionValue = "teacher" && LevelValue1 = "senior") || (ProfessionValue = "teacher" && LevelValue2 = "junior") ||
+    (ProfessionValue = "police" && LevelValue1 = "senior") || (ProfessionValue = "police" && LevelValue2 = "junior") ||
+    (ProfessionValue = "army" && LevelValue1 = "senior"),
+    1,
+    0
+)
 
 
