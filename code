@@ -4960,12 +4960,16 @@ spark = SparkSession.builder.appName("Check and Flag").getOrCreate()
 # Load your DataFrame (replace 'your_data_file.csv' with your actual file path or use 'spark.createDataFrame()' if you have a list or dictionary)
 df = spark.read.csv("your_data_file.csv", header=True, inferSchema=True)
 
-# Define the regular expression pattern to check for special characters in 'col_a'
-special_char_pattern = r'[^\w\s]'
+# Define the regular expression pattern to validate email addresses
+email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+# Define the characters to check for in the col_a column
+invalid_characters_col_a = '@!#$%^&*()_+{}:"<>?/.,;'
 
 # Add a new column 'cola1' and set it as 1 if 'col_a', 'col_b', or 'col_c' is null, blank, or doesn't contain any letter from A to Z
 # Also, check the 'age' column to see if it's not between 20 and 80 (inclusive) or if it's null/missing
 # Additionally, check the 'email' column to see if it matches the proper email address format
+# Check the 'col_a' column to see if it contains any of the invalid characters
 df = df.withColumn("cola1", when((col("col_a").isNull()) | (col("col_a") == "") | 
                                  (col("col_b").isNull()) | (col("col_b") == "") | 
                                  (col("col_c").isNull()) | (col("col_c") == "") |
@@ -4973,10 +4977,8 @@ df = df.withColumn("cola1", when((col("col_a").isNull()) | (col("col_a") == "") 
                                  ~col("col_b").rlike("[A-Za-z]") |
                                  ~col("col_c").rlike("[A-Za-z]") |
                                  (~col("age").between(20, 80)) | (col("age").isNull()) |
-                                 ~col("email").rlike(email_pattern), 1).otherwise(0))
-
-# Add a new column 'special_char_flag' and set it as 1 if 'col_a' contains special characters, otherwise set to 0
-df = df.withColumn("special_char_flag", when(col("col_a").rlike(special_char_pattern), 1).otherwise(0))
+                                 ~col("email").rlike(email_pattern) |
+                                 col("col_a").rlike(f"[{invalid_characters_col_a}]"), 1).otherwise(0))
 
 # Show the resulting DataFrame
 df.show()
@@ -4986,9 +4988,6 @@ df.show()
 
 # Don't forget to stop the SparkSession
 spark.stop()
-
-
-
 
 
 
