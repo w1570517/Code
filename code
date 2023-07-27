@@ -4990,5 +4990,34 @@ df.show()
 spark.stop()
 
 
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, datediff, expr, when
+
+# Assuming you already have a SparkSession created
+spark = SparkSession.builder.getOrCreate()
+
+# Sample DataFrame with columns registrant_id, birthdate, and date_registered
+# Replace this with your actual DataFrame
+data = [
+    (1, '1990-05-15', '2023-07-25'),
+    (2, '1985-10-20', '2023-07-25'),
+    (3, '2005-02-10', '2023-07-25'),
+    # Add more data as needed
+]
+
+df = spark.createDataFrame(data, ['registrant_id', 'birthdate', 'date_registered'])
+
+# Convert date strings to date type
+df = df.withColumn('birthdate', col('birthdate').cast('date'))
+df = df.withColumn('date_registered', col('date_registered').cast('date'))
+
+# Calculate the age of the registrant at the date of registration
+df = df.withColumn('age_at_registration', datediff(col('date_registered'), col('birthdate')) / 365)
+
+# Create a new column 'checkvalid' based on the age condition
+df = df.withColumn('checkvalid', when((col('age_at_registration') >= 20) & (col('age_at_registration') <= 80), 1).otherwise(0))
+
+# Show the result
+df.show()
 
 
