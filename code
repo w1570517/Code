@@ -5046,3 +5046,22 @@ IF (
     0
 )
 
+Measure = 
+IF (
+    COUNTROWS(
+        FILTER(
+            'YourTableName',
+            ( 'YourTableName'[ColA] = "school" && 'YourTableName'[ColB] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "school" && 'YourTableName'[ColC] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "school" && 'YourTableName'[ColD] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "hospital" && 'YourTableName'[ColB] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "hospital" && 'YourTableName'[ColC] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "hospital" && 'YourTableName'[ColE] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "shopping mall" && 'YourTableName'[ColB] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "shopping mall" && 'YourTableName'[ColC] = TRUE ) ||
+            ( 'YourTableName'[ColA] = "shopping mall" && 'YourTableName'[ColE] = TRUE )
+        )
+    ) > 0,
+    1,
+    0
+)
