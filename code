@@ -5119,3 +5119,23 @@ IF(
     1,
     0
 )
+
+
+
+
+
+
+
+
+
+
+
+ResultMeasure_Both = 
+VAR CurrentColumn = SELECTEDVALUE('YourTableName'[Column])
+RETURN
+SWITCH(
+    TRUE(),
+    CurrentColumn = "col thep" && 'YourTableName'[profession] = "school" && 'YourTableName'[thep] = TRUE(), 1,
+    CurrentColumn = "col thep2" && 'YourTableName'[profession] = "school" && 'YourTableName'[thep2] = TRUE(), 1,
+    0
+)
