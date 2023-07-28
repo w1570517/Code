@@ -5139,3 +5139,48 @@ SWITCH(
     CurrentColumn = "col thep2" && 'YourTableName'[profession] = "school" && 'YourTableName'[thep2] = TRUE(), 1,
     0
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ResultMeasure_Both = 
+VAR HasProfessionSchool = 
+    CALCULATE(
+        COUNTROWS('YourTableName'),
+        'YourTableName'[profession] = "school"
+    )
+VAR HasThep1True = 
+    CALCULATE(
+        COUNTROWS('YourTableName'),
+        'YourTableName'[thep] = TRUE()
+    )
+VAR HasThep2True = 
+    CALCULATE(
+        COUNTROWS('YourTableName'),
+        'YourTableName'[thep2] = TRUE()
+    )
+RETURN
+    IF(
+        HASONEVALUE('YourTableName'[Column]),
+        IF(
+            HasProfessionSchool > 0 &&
+            (HASONEVALUE('YourTableName'[thep]) && HasThep1True > 0) ||
+            (HASONEVALUE('YourTableName'[thep2]) && HasThep2True > 0),
+            1,
+            0
+        ),
+        BLANK()
+    )
