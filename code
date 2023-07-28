@@ -5021,3 +5021,28 @@ df = df.withColumn('checkvalid', when((col('age_at_registration') >= 20) & (col(
 df.show()
 
 
+
+
+
+
+
+
+
+
+
+
+Measure = 
+IF (
+    ( 'TableName'[ColA] = "school" && 'TableName'[ColB] = TRUE ) ||
+    ( 'TableName'[ColA] = "school" && 'TableName'[ColC] = TRUE ) ||
+    ( 'TableName'[ColA] = "school" && 'TableName'[ColD] = TRUE ) ||
+    ( 'TableName'[ColA] = "hospital" && 'TableName'[ColB] = TRUE ) ||
+    ( 'TableName'[ColA] = "hospital" && 'TableName'[ColC] = TRUE ) ||
+    ( 'TableName'[ColA] = "hospital" && 'TableName'[ColE] = TRUE ) ||
+    ( 'TableName'[ColA] = "shopping mall" && 'TableName'[ColB] = TRUE ) ||
+    ( 'TableName'[ColA] = "shopping mall" && 'TableName'[ColC] = TRUE ) ||
+    ( 'TableName'[ColA] = "shopping mall" && 'TableName'[ColE] = TRUE ),
+    1,
+    0
+)
+
