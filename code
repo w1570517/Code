@@ -5065,3 +5065,32 @@ IF (
     1,
     0
 )
+
+
+
+
+
+
+
+
+
+
+
+
+Measure = 
+IF (
+    (
+        'YourTableName'[ColA] = "school" && (
+            'YourTableName'[ColB] = TRUE || 'YourTableName'[ColC] = TRUE || 'YourTableName'[ColD] = TRUE )
+    ) ||
+    (
+        'YourTableName'[ColA] = "hospital" && (
+            'YourTableName'[ColB] = TRUE || 'YourTableName'[ColC] = TRUE || 'YourTableName'[ColE] = TRUE )
+    ) ||
+    (
+        'YourTableName'[ColA] = "shopping mall" && (
+            'YourTableName'[ColB] = TRUE || 'YourTableName'[ColC] = TRUE || 'YourTableName'[ColE] = TRUE )
+    ),
+    1,
+    0
+)
