@@ -5094,3 +5094,16 @@ IF (
     1,
     0
 )
+
+
+
+
+
+
+
+ResultMeasure = 
+IF(
+    COUNTROWS(FILTER('reg', 'reg'[profession] = "school" && 'reg'[thep] = TRUE())) > 0,
+    1,
+    0
+)
