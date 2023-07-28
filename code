@@ -5184,3 +5184,30 @@ RETURN
         ),
         BLANK()
     )
+
+
+
+
+
+
+
+
+
+Measure =
+VAR Result =
+    SWITCH (
+        TRUE (),
+        'reg'[ColA] = "school"
+            && ( 'reg'[ColB] = TRUE || 'reg'[ColC] = TRUE || 'reg'[ColD] = TRUE ), 1,
+        'reg'[ColA] = "hospital"
+            && ( 'reg'[ColB] = TRUE || 'reg'[ColC] = TRUE || 'reg'[ColE] = TRUE ), 1,
+        'reg'[ColA] = "shopping mall"
+            && ( 'reg'[ColB] = TRUE || 'reg'[ColC] = TRUE || 'reg'[ColE] = TRUE ), 1,
+        0
+    )
+RETURN
+    Result
+
+
+
+
