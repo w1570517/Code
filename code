@@ -5247,3 +5247,30 @@ SUMX(
 )
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+MeasureName = 
+SUMX(
+    Sheet1,
+    IF(
+        (Sheet1[profession ] = "school" && Sheet1[ab] = FALSE) ||
+        (Sheet1[profession ] = "medical" && Sheet1[ac] = TRUE) ||
+        (Sheet1[profession ] = "medical" && Sheet1[ad] = FALSE) ||
+        (Sheet1[profession ] = "medical" && Sheet1[af] = FALSE),
+        1,
+        0
+    )
+)
+
+
