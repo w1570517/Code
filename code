@@ -5211,3 +5211,39 @@ RETURN
 
 
 
+
+
+
+
+
+
+
+
+
+
+CombinedMeasure = 
+SUMX(
+    Sheet1,
+    IF(
+        (
+            (Sheet1[profession ] = "school" || 
+             Sheet1[profession ] = "medical" || 
+             Sheet1[profession ] = "Cleaner" || 
+             Sheet1[profession ] = "Farmer"
+            ) &&
+            Sheet1[ab] = TRUE
+        ) ||
+        (
+            (Sheet1[profession ] = "school" || 
+             Sheet1[profession ] = "medical" || 
+             Sheet1[profession ] = "Cleaner" || 
+             Sheet1[profession ] = "Farmer"
+            ) &&
+            Sheet1[ac] = TRUE
+        ),
+        1,
+        0
+    )
+)
+
+
