@@ -5316,6 +5316,14 @@ df.show()
 
 
 
+PercentageOfGrandTotal = 
+DIVIDE(
+    [TotalOfficePresentCount],
+    CALCULATE(
+        [TotalOfficePresentCount],
+        ALL('OfficeDoorReport'[USERID])
+    )
+)
 
 
 
