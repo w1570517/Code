@@ -5326,4 +5326,14 @@ DIVIDE(
 )
 
 
+PercentageOfGrandTotalByDepartment = 
+DIVIDE(
+    [TotalOfficePresentCount],
+    CALCULATE(
+        [TotalOfficePresentCount],
+        ALLEXCEPT('OfficeDoorReport', 'Department'[DepartmentName]),
+        USERELATIONSHIP('OfficeDoorReport'[DepartmentID], 'Department'[DepartmentID])
+    ),
+    0
+)
 
