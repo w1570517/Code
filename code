@@ -5384,3 +5384,16 @@ IF(
     FALSE,
     YourTableName[EmailColumn] = USERPRINCIPALNAME() || RIGHT(YourTableName[EmailColumn], 10) = "@yahoo.com"
 )
+
+
+
+
+
+
+Role1Filter = 
+    FILTER(
+        YourTableName, 
+        YourTableName[Email] = USERPRINCIPALNAME() || 
+        CONTAINSSTRING("JACK@BURRO@YAHOO, MANGO@YAHOO.COM, BECK@YAHOO.COM", YourTableName[Email])
+    )
+
