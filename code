@@ -5357,3 +5357,25 @@ Date and Time Data Type: The "Date and Time" data type stores date and time info
 
 
 Multi-Line Text Data Type: The "Multi-Line Text" data type is used to store longer text content that spans multiple lines. It's suitable for capturing more extensive descriptions, comments, or notes where users can input paragraphs of text. This data type allows for a more detailed and structured input compared to the "Single Line of Text" data type.
+
+
+
+
+
+
+
+
+
+
+FILTER(
+    YourTableName, 
+    OR(
+        ISBLANK(YourTableName[EmailColumn]), -- Filter rows with blank email
+        YourTableName[EmailColumn] = USERPRINCIPALNAME() -- Filter rows with matching email
+    )
+)
+
+
+
+
+
