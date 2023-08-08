@@ -5337,3 +5337,17 @@ DIVIDE(
     0
 )
 
+
+
+
+
+
+
+
+
+
+Text Data Type: The "Text" data type is used to store alphanumeric characters, such as letters, numbers, and symbols, in a single line of text. It's suitable for capturing short pieces of information like names, titles, or short descriptions.
+
+Option Set Data Type: The "Option Set" data type allows you to define a list of predefined options, and users can select one of these options from a dropdown list. It's useful for capturing categorical data or preferences where a fixed set of choices is available, such as selecting a preferred contact method.
+
+Date and Time Data Type: The "Date and Time" data type stores date and time information. It can include both the date and time components, or just the date. It's commonly used to record timestamps, birthdates, appointment schedules, and other time-related information
