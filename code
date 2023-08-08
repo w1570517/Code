@@ -5379,3 +5379,8 @@ FILTER(
 
 
 
+IF(
+    ISBLANK(YourTableName[EmailColumn]),
+    FALSE,
+    YourTableName[EmailColumn] = USERPRINCIPALNAME() || RIGHT(YourTableName[EmailColumn], 10) = "@yahoo.com"
+)
