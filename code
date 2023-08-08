@@ -5351,3 +5351,9 @@ Text Data Type: The "Text" data type is used to store alphanumeric characters, s
 Option Set Data Type: The "Option Set" data type allows you to define a list of predefined options, and users can select one of these options from a dropdown list. It's useful for capturing categorical data or preferences where a fixed set of choices is available, such as selecting a preferred contact method.
 
 Date and Time Data Type: The "Date and Time" data type stores date and time information. It can include both the date and time components, or just the date. It's commonly used to record timestamps, birthdates, appointment schedules, and other time-related information
+
+
+
+
+
+Multi-Line Text Data Type: The "Multi-Line Text" data type is used to store longer text content that spans multiple lines. It's suitable for capturing more extensive descriptions, comments, or notes where users can input paragraphs of text. This data type allows for a more detailed and structured input compared to the "Single Line of Text" data type.
