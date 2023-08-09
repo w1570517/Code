@@ -5449,3 +5449,17 @@ IF (
     'StaffListDict'[Email] = USERPRINCIPALNAME ()
 )
 
+
+
+
+
+
+
+
+
+Top % Employee = 
+VAR TopEmployeeRow =
+    TOPN(1, OfficeDoorReport, [ % employee ], DESC)
+RETURN
+    SELECTEDVALUE(TopEmployeeRow[ % employee ])
+
