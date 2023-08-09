@@ -5396,4 +5396,7 @@ Role1Filter =
         YourTableName[Email] = USERPRINCIPALNAME() || 
         CONTAINSSTRING("JACK@BURRO@YAHOO, MANGO@YAHOO.COM, BECK@YAHOO.COM", YourTableName[Email])
     )
+FILTER(StaffListDict, 
+    CONTAINSSTRING(StaffListDict[Email], USERPRINCIPALNAME())
+)
 
