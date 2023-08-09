@@ -5429,3 +5429,23 @@ ROW(
     )
 )
 
+
+
+
+
+
+
+
+
+
+
+IF (
+    OR (
+        'StaffListDict'[Email] = "JACK@BURRO@YAHOO",
+        'StaffListDict'[Email] = "MANGO@YAHOO.COM",
+        'StaffListDict'[Email] = "BECK@YAHOO.COM"
+    ),
+    TRUE (),
+    'StaffListDict'[Email] = USERPRINCIPALNAME ()
+)
+
