@@ -5464,3 +5464,27 @@ VAR AvgTopEmployeeValue =
 RETURN
     AvgTopEmployeeValue
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Top 10 % Employee Column = 
+VAR TopEmployees =
+    TOPN(10, OfficeDoorReport, [ % employee ], DESC)
+RETURN
+    IF(
+        RANKX(TopEmployees, [ % employee ], , DESC) <= 10,
+        [ % employee ],
+        BLANK()
+    )
+
+
