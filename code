@@ -5400,3 +5400,13 @@ FILTER(StaffListDict,
     CONTAINSSTRING(StaffListDict[Email], USERPRINCIPALNAME())
 )
 
+FilteredStaffList = 
+FILTER(
+    StaffLisDict,
+    NOT(
+        CONTAINSSTRING(
+            StaffLisDict[Email Staff],
+            USERNAME()
+        )
+    )
+)
