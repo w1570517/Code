@@ -5419,18 +5419,13 @@ FILTER(
 
 
 
-= 
-VAR CurrentUser = USERNAME()  // Get the username of the current user
-VAR UserPrincipalName = "USERPRINCPLENAME"  // Define the user principal name to compare with
-
-RETURN
-IF (
-    HASONEVALUE('Data'[Email Staff]),  // Check if there's a single value for the user's email
-    IF (
-        CurrentUser = UserPrincipalName,  // Check if the current user is the USERPRINCPLENAME
-        ALL('Data'),  // If true, show all records
-        BLANK()  // If false, show no records
-    ),
-    BLANK()  // If there's no single value for the user's email, show no records
+EVALUATE
+ROW(
+    "Allowed",
+    OR(
+        USERNAME() = "JACK@BURRO@YAHOO",
+        USERNAME() = "MANGO@YAHOO.COM",
+        USERNAME() = "BECK@YAHOO.COM"
+    )
 )
 
