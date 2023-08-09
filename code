@@ -5410,3 +5410,19 @@ FILTER(
         )
     )
 )
+
+
+
+
+
+
+
+
+
+
+
+= IF(
+    StaffListDict[Email Staff] = USERNAME(),
+    TRUE(),
+    FALSE()
+)
