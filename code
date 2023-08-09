@@ -5456,10 +5456,11 @@ IF (
 
 
 
-
-Top % Employee = 
-VAR TopEmployeeRow =
-    TOPN(1, OfficeDoorReport, [ % employee ], DESC)
+Top 10 Avg % Employee = 
+VAR TopEmployees =
+    TOPN(10, OfficeDoorReport, [ % employee ], DESC)
+VAR AvgTopEmployeeValue =
+    AVERAGEX(TopEmployees, [ % employee ])
 RETURN
-    SELECTEDVALUE(TopEmployeeRow[ % employee ])
+    AvgTopEmployeeValue
 
