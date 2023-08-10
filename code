@@ -5531,35 +5531,18 @@ RETURN Top19Table
 
 
 
-Top 10 Office = 
-VAR SelectedFullNames = VALUES(StaffListDict[Full Name])
-VAR SelectedDepartments = VALUES(StaffListDict[Department])
-VAR Top10Offices = 
+Top 10 Office by Department Measure = 
+VAR SelectedTop10 =
     TOPN(
         10,
-        ALLSELECTED(OfficeDoorReport[OfficeName]),
-        [Total OfficePresentCount],
-        DESC
+        FILTER(ALL(StaffListDict), StaffListDict[Department] IN VALUES(StaffListDict[Department])),
+        [TotalOfficePresentCount], DESC,
+        StaffListDict[Full Name], ASC
     )
 RETURN
     CALCULATE(
-        [Total OfficePresentCount],
-        FILTER(
-            Top10Offices,
-            COUNTROWS(
-                INTERSECT(
-                    VALUES(StaffListDict[Full Name]),
-                    SelectedFullNames
-                )
-            ) > 0
-            &&
-            COUNTROWS(
-                INTERSECT(
-                    VALUES(StaffListDict[Department]),
-                    SelectedDepartments
-                )
-            ) > 0
-        )
+        [TotalOfficePresentCount],
+        SelectedTop10
     )
 
 
