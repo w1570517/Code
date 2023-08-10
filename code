@@ -5488,3 +5488,16 @@ RETURN
     )
 
 
+Top 19 = 
+VAR TotalOfficePresentCount = CALCULATE(SUM(OfficeDoorReport[OfficePresentCount]))
+RETURN
+IF (
+    COUNTROWS(
+        FILTER(
+            OfficeDoorReport,
+            [OfficePresentCount] >= TotalOfficePresentCount
+        )
+    ) <= 19,
+    TRUE,
+    FALSE
+)
