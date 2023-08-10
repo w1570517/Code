@@ -5528,21 +5528,17 @@ RETURN Top19Table
 
 
 
-
-
-
-Top 10 Office by Department Measure = 
-VAR SelectedTop10 =
-    TOPN(
-        10,
-        FILTER(ALL(StaffListDict), StaffListDict[Department] IN VALUES(StaffListDict[Department])),
-        [TotalOfficePresentCount], DESC,
-        StaffListDict[Full Name], ASC
-    )
+Top 10 Office = 
+VAR SelectedColumn = IF(ISFILTERED(StaffListDict[Department]), StaffListDict[Department], StaffListDict[Full Name])
+VAR SelectedMeasure = IF(ISFILTERED(StaffListDict[Department]), [TotalDepartmentPresentCount], [TotalOfficePresentCount])
 RETURN
     CALCULATE(
-        [TotalOfficePresentCount],
-        SelectedTop10
+        SelectedMeasure,
+        TOPN(
+            10,
+            ALLSELECTED(SelectedColumn),
+            SelectedMeasure,
+            DESC
+        ),
+        VALUES(SelectedColumn)
     )
-
-
