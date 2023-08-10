@@ -5501,3 +5501,25 @@ IF (
     TRUE,
     FALSE
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Top 19 = 
+VAR Top19Table = 
+    TOPN(
+        19, 
+        SUMMARIZE(OfficeDoorReport, OfficeDoorReport[OfficeName], OfficeDoorReport[OfficePresentCount]),
+        [Total OfficePresentCount], DESC
+    )
+RETURN Top19Table
