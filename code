@@ -5523,3 +5523,32 @@ VAR Top19Table =
         [Total OfficePresentCount], DESC
     )
 RETURN Top19Table
+
+
+
+
+
+
+
+
+Top 10 Office = 
+VAR SelectedFullNames = VALUES(StaffListDict[Full Name])
+VAR SelectedDepartments = VALUES(Department)
+VAR Top10Offices = 
+    TOPN(
+        10,
+        ALLSELECTED(StaffListDict[Full Name]),
+        [TotalOfficePresentCount],
+        DESC
+    )
+RETURN
+    CALCULATE(
+        [TotalOfficePresentCount],
+        FILTER(Top10Offices, 
+            OR(
+                COUNTROWS(FILTER(SelectedFullNames, [Full Name] = Top10Offices[Full Name])) > 0,
+                COUNTROWS(FILTER(SelectedDepartments, [Department] = Top10Offices[Department])) > 0
+            )
+        )
+    )
+
