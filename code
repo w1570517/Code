@@ -5542,3 +5542,59 @@ RETURN
         ),
         VALUES(SelectedColumn)
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Top 10 Office and Department = 
+VAR SelectedDepartment = SELECTEDVALUE(StaffListDict[depatment])
+
+RETURN
+SUMX(
+    VALUES(StaffListDict[Full Name]),
+    CALCULATE(
+        [TotalOfficePresentCount],
+        TOPN(
+            10,
+            ALLSELECTED(StaffListDict[Full Name]),
+            [TotalOfficePresentCount],
+            DESC
+        ),
+        VALUES(StaffListDict[Full Name])
+    )
+) + 
+IF(ISBLANK(SelectedDepartment), 0, 
+    SUMX(
+        FILTER(VALUES(StaffListDict[depatment]), StaffListDict[depatment] = SelectedDepartment),
+        CALCULATE(
+            [TotalOfficePresentCount],
+            TOPN(
+                10,
+                ALLSELECTED(StaffListDict[depatment]),
+                [TotalOfficePresentCount],
+                DESC
+            ),
+            VALUES(StaffListDict[depatment])
+        )
+    )
+)
