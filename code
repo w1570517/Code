@@ -5605,15 +5605,8 @@ IF(ISBLANK(SelectedDepartment), 0,
 
 
 
-
-
-
-
-
-
-
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, when, regexp_extract
+from pyspark.sql.functions import col, when, regexp_replace, regexp_extract
 
 # Assuming you already have a SparkSession created
 spark = SparkSession.builder.getOrCreate()
@@ -5623,8 +5616,9 @@ spark = SparkSession.builder.getOrCreate()
 data = [
     (1, '1990-05-15', '2023-07-25', '1234567890', '9876543210'),
     (2, '1985-10-20', '2023-07-25', 'abc123', '9876543210'),  # Contains letters and digits less than 7
-    (3, '2005-02-10', '2023-07-25', '123456', None),  # Null phone2
+    (3, '2005-02-10', '2023-07-25', '123 456', None),  # Null phone2
     (4, '1998-09-03', '2023-07-25', None, 'xyz'),  # Null phone1, Contains letters
+    (5, '1980-04-18', '2023-07-25', '01 752 774 747', '1234567890'),  # Purely numeric with spaces
     # Add more data as needed
 ]
 
@@ -5634,78 +5628,24 @@ df = spark.createDataFrame(data, ['registrant_id', 'birthdate', 'date_registered
 df = df.withColumn('birthdate', col('birthdate').cast('date'))
 df = df.withColumn('date_registered', col('date_registered').cast('date'))
 
+# Replace spaces in phone numbers and extract numeric digits
+df = df.withColumn('phone1_cleaned', regexp_replace(col('phone1'), ' ', ''))
+df = df.withColumn('phone2_cleaned', regexp_replace(col('phone2'), ' ', ''))
+
 # Create a new column 'phone_check' based on the specified conditions
 df = df.withColumn('phone_check', 
     when(
-        (col('phone1').isNull()) | 
-        (col('phone1').rlike('[a-zA-Z]')) | 
-        (regexp_extract(col('phone1'), r'\d+', 0).cast('int') < 7),
+        (col('phone1_cleaned').isNull()) | 
+        (col('phone1_cleaned').rlike('[a-zA-Z]')) | 
+        (regexp_extract(col('phone1_cleaned'), r'\d+', 0).cast('int') < 7),
         1
     ).when(
-        (col('phone2').isNull()) | 
-        (col('phone2').rlike('[a-zA-Z]')) | 
-        (regexp_extract(col('phone2'), r'\d+', 0).cast('int') < 7),
+        (col('phone2_cleaned').isNull()) | 
+        (col('phone2_cleaned').rlike('[a-zA-Z]')) | 
+        (regexp_extract(col('phone2_cleaned'), r'\d+', 0).cast('int') < 7),
         1
     ).otherwise(0)
 )
 
 # Show the result
 df.show()
-
-
-
-
-
-r'^\d+
-
-
-
-
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, udf
-from pyspark.sql.types import IntegerType
-
-# Define a UDF to perform the custom check
-def phone_check_udf(phone1, phone2):
-    if (phone1 is None or any(c.isalpha() for c in phone1) or any(c.isdigit() and int(c) < 7 for c in phone1)):
-        return 1
-    elif (phone2 is None or any(c.isalpha() for c in phone2) or any(c.isdigit() and int(c) < 7 for c in phone2)):
-        return 1
-    else:
-        return 0
-
-# Assuming you already have a SparkSession created
-spark = SparkSession.builder.getOrCreate()
-
-# Sample DataFrame with columns registrant_id, birthdate, date_registered, phone1, and phone2
-# Replace this with your actual DataFrame
-data = [
-    (1, '1990-05-15', '2023-07-25', '1234567890', '9876543210'),
-    (2, '1985-10-20', '2023-07-25', 'abc123', '9876543210'),  # Contains letters and digits less than 7
-    (3, '2005-02-10', '2023-07-25', '123456', None),  # Null phone2
-    (4, '1998-09-03', '2023-07-25', None, 'xyz'),  # Null phone1, Contains letters
-    (5, '1980-01-01', '2023-07-25', '01 752 774 747', '9876543210'),  # Clear phone number
-    # Add more data as needed
-]
-
-df = spark.createDataFrame(data, ['registrant_id', 'birthdate', 'date_registered', 'phone1', 'phone2'])
-
-# Convert date strings to date type
-df = df.withColumn('birthdate', col('birthdate').cast('date'))
-df = df.withColumn('date_registered', col('date_registered').cast('date'))
-
-# Register the UDF
-phone_check = udf(phone_check_udf, IntegerType())
-
-# Create a new column 'phone_check' based on the custom UDF
-df = df.withColumn('phone_check', phone_check(col('phone1'), col('phone2')))
-
-# Show the result
-df.show()
-
-
-
-
-
-
-
