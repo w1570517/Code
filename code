@@ -5568,3 +5568,44 @@ SUMX(
     COUNTA('ACTIVE Renewals'[Renewal Status])
 ) / SUMX(ALLSELECTED('ACTIVE Renewals'), COUNTA('ACTIVE Renewals'[Renewal Status]))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cumulative percentage running total by calendar date =
+VAR MaxSelectedDate = MAX('Calendar'[Date])
+VAR RunningTotalCount =
+    SUMX(
+        FILTER(
+            ALLSELECTED('Calendar'[Date]),
+            'Calendar'[Date] <= MaxSelectedDate
+        ),
+        COUNTA('ACTIVE Renewals'[Renewal Status])
+    )
+VAR TotalCount =
+    SUMX(
+        ALLSELECTED('ACTIVE Renewals'),
+        COUNTA('ACTIVE Renewals'[Renewal Status])
+    )
+RETURN
+DIVIDE(RunningTotalCount, TotalCount, 0)
+
