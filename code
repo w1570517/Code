@@ -5722,6 +5722,22 @@ df.show()
 
 
 
+running percentage by calendar date = 
+VAR TotalRenewals =
+    CALCULATE (
+        COUNTA('ACTIVE Renewals'[Renewal Status]),
+        ALLSELECTED('Calendar'[Date])
+    )
+VAR RunningRenewals =
+    CALCULATE (
+        COUNTA('ACTIVE Renewals'[Renewal Status]),
+        FILTER (
+            ALLSELECTED('Calendar'[Date]),
+            ISNORAFTER('Calendar'[Date], MAX('Calendar'[Date]), DESC)
+        )
+    )
+RETURN
+    DIVIDE(RunningRenewals, TotalRenewals)
 
 
 
