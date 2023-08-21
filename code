@@ -5562,28 +5562,20 @@ RETURN
 
 
 
-running percentage total by calendar date = 
-VAR MaxDate = MAX('Calandar'[Date])
-VAR SelectedDates =
-    FILTER(
-        ALLSELECTED('Calandar'),
-        'Calandar'[Date] <= MaxDate
-    )
-VAR RunningRenewals =
-    CALCULATE(
-        COUNTA('ACTIVE Renewals'[Renewal Status]),
-        FILTER(
-            ALL('Calandar'),
-            'Calandar'[Date] <= MaxDate
+Percentage Running Total =
+VAR MaxDate = MAX('Calendar'[Date])
+RETURN
+    SUMX (
+        FILTER (
+            ALLSELECTED('Calendar'[Date]),
+            'Calendar'[Date] <= MaxDate
+        ),
+        IF (
+            ISBLANK([Renewal Status]),
+            0,
+            COUNTA('ACTIVE Renewals'[Renewal Status]) / COUNTROWS('ACTIVE Renewals')
         )
     )
-VAR TotalRenewals =
-    CALCULATE(
-        COUNTA('ACTIVE Renewals'[Renewal Status]),
-        SelectedDates
-    )
-RETURN
-    DIVIDE(RunningRenewals, TotalRenewals)
 
 
 
