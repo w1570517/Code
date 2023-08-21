@@ -5609,3 +5609,39 @@ VAR TotalCount =
 RETURN
 DIVIDE(RunningTotalCount, TotalCount, 0)
 
+
+
+
+
+
+
+
+
+
+
+
+running percentage by calendar date =
+VAR _Total =
+    CALCULATE (
+        COUNTA('ACTIVE Renewals'[Renewal Status]),
+        ALLSELECTED('Calendar')
+    )
+VAR _Percentage =
+    DIVIDE (
+        COUNTA('ACTIVE Renewals'[Renewal Status]),
+        [_Total]
+    )
+VAR _WasteValue =
+    COUNTA('ACTIVE Renewals'[Renewal Status])
+RETURN
+    IF (
+        HASONEVALUE('Calendar'[Date]),
+        CALCULATE (
+            [_Percentage],
+            FILTER (
+                ALL ('Calendar'),
+                'Calendar'[Date] >= MAX ('Calendar'[Date])
+            )
+        )
+    )
+
