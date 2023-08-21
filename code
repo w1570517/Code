@@ -5560,8 +5560,6 @@ RETURN
 
 
 
-
-
 Percentage Running Total =
 VAR MaxDate = MAX('Calendar'[Date])
 RETURN
@@ -5571,11 +5569,12 @@ RETURN
             'Calendar'[Date] <= MaxDate
         ),
         IF (
-            ISBLANK([Renewal Status]),
+            ISBLANK([Renewal Count]),
             0,
-            COUNTA('ACTIVE Renewals'[Renewal Status]) / COUNTROWS('ACTIVE Renewals')
+            [Renewal Count] / CALCULATE(
+                SUM('ACTIVE Renewals'[Renewal Count]),
+                ALLSELECTED('Calendar')
+            )
         )
     )
-
-
 
