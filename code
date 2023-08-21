@@ -5620,7 +5620,7 @@ DIVIDE(RunningTotalCount, TotalCount, 0)
 
 
 
-running percentage by calendar date =
+running percentage by calendar date = 
 VAR _Total =
     CALCULATE (
         COUNTA('ACTIVE Renewals'[Renewal Status]),
@@ -5632,7 +5632,7 @@ VAR _Percentage =
         [_Total]
     )
 VAR _WasteValue =
-    COUNTA('ACTIVE Renewals'[Renewal Status])
+    SUM('ACTIVE Renewals'[Renewal Status])
 RETURN
     IF (
         HASONEVALUE('Calendar'[Date]),
@@ -5644,4 +5644,5 @@ RETURN
             )
         )
     )
+
 
