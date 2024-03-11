@@ -5646,3 +5646,81 @@ RETURN
     )
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: 
+
+# dataset = pandas.DataFrame(Symbol, USD.percent_change_1h,USD.percent_change_60d,USD.percent_change_7d,USD.percent_change_30d)
+# dataset = dataset.drop_duplicates()
+
+# Paste or type your script code here:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+# Filter rows where the "Symbol" is in the specified list
+selected_symbols = ['MATIC', 'BTC', 'ETH', 'ONE', 'GRT', 'HIVE', 'BNB', 'HBAR', 'ADA', 'CHER', 'MBOX', 'SFM', 'HOLDEX','SOL','DOGE','PEPE']
+dataset= dataset[dataset['Symbol'].isin(selected_symbols)]
+
+
+dataset.set_index('Symbol', inplace=True)
+
+# Specify different colors for each metric
+colors = ['turquoise', 'seagreen', 'crimson', 'blue']
+
+# Specify different markers for low and high
+markers = ['8', '8', '_', '_']
+
+# Create a scatter plot with circles for each metric using matplotlib
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.set_facecolor('#BBE621')
+for idx, (color, marker) in enumerate(zip(colors, markers)):
+    # Increase marker size for 'profit_low' and 'profit_high'
+    marker_size = 500 if marker in ['_', '|'] else 100
+    ax.scatter(dataset.index, dataset.iloc[:, idx], color=color, marker=marker, s=marker_size, linewidth=7, label=f"{dataset.columns[idx]}")
+
+# Draw a vertical line for each x-axis point
+for Symbol in dataset.index:
+    low = dataset.loc[Symbol, 'USD.percent_change_1h']
+    high = dataset.loc[Symbol, 'USD.percent_change_60d']
+    ax.plot([Symbol, Symbol], [low, high], color='black', linestyle='solid', linewidth=2)
+
+
+
+# Set labels and title
+ax.set_xlabel('Coint Symbol')
+ax.set_ylabel('Percent Change ')
+ax.set_title('Price Change')
+
+# Add a legend below the x-axis
+ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.09), ncol=len(dataset.columns))
+
+# Show the plot
+plt.show()
+
+
