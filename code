@@ -1,4 +1,29 @@
 
+
+
+
+NLPostedNominalTran
+SYSAccountingPeriod
+NLNominalAccount
+NLCostCentre
+NLDepartment
+POPInvoiceCreditLine
+POPOrderReturnLine
+POPOrderReturn
+PLSupplierAccount
+PLSupplierLocation
+PLSupplierContact
+PLSupplierContactValue
+PLSupplierBank
+PLPaymentGroup
+
+
+
+
+
+
+
+
 This document serves as a guide for developers and technical support personnel seeking to understand the database structure of Sage 200 2015. It details the relationships between various database tables for core system functions such as the Sales Ledger, Purchase Ledger, Cash Book, and Nominal Ledger. Additionally, it provides insights into the data organization for Sales Order Processing, Purchase Order Processing, Stock management, Pricing, Bill of Materials, and Project Accounting, including Timesheets and Expenses. The guide also includes a comprehensive list of lookup tables and their associated values, which control system functionality.
 
 I need to get historical data on GHG REGARDIN PURSHING GOODS AND SERVICES WHICH TABLE SHOULD I USE
