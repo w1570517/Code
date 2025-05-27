@@ -2,21 +2,45 @@
 
 
 
-NLPostedNominalTran
-SYSAccountingPeriod
-NLNominalAccount
-NLCostCentre
-NLDepartment
-POPInvoiceCreditLine
-POPOrderReturnLine
-POPOrderReturn
-PLSupplierAccount
-PLSupplierLocation
-PLSupplierContact
-PLSupplierContactValue
-PLSupplierBank
-PLPaymentGroup
-
+SELECT
+    POPIcl.InvoiceCreditQuantity,
+    POPIcl.LineTotalValue,
+    POPIcl.LineTaxValue,
+    POPIcl.DiscountPercentSpecified,
+    PORL.ItemCode,
+    PORL.ItemDescription,
+    PORL.LineQuantity AS OriginalLineQuantity,
+    PORL.BuyingUnitPrice,
+    PORL.LineTotalValue AS OriginalLineTotalValue,
+    PORL.LineTaxValue AS OriginalLineTaxValue,
+    PORL.NominalAccountRef,     -- Nominal Account Reference from the Order Line
+    PORL.NominalCostCentre,     -- Nominal Cost Centre from the Order Line
+    PORL.NominalDepartment,     -- Nominal Department from the Order Line
+    ST.Code AS StockItemCode,
+    ST.Name AS StockItemName,
+    STT.StockitemTypeName AS ItemCategory,
+    POR.DocumentNo AS PurchaseOrderNumber, -- Purchase Order Header Number
+    POR.DocumentDate AS PurchaseOrderDate, -- Purchase Order Header Date
+    PSA.SupplierAccountNumber,  -- Supplier Account Number
+    PSA.SupplierAccountName,    -- Supplier Account Name
+    PPG.Name AS PaymentGroupName -- Supplier Payment Group Name
+FROM
+    POPInvoiceCreditLine AS POPIcl
+INNER JOIN
+    POPOrderReturnLine AS PORL ON POPIcl.POPOrderReturnLineID = PORL.POPOrderReturnLineID -- Links invoice line back to order line [82, Diagram: Purchase Invoices 38]
+LEFT JOIN
+    POPOrderReturn AS POR ON PORL.POPOrderReturnId = POR.POPOrderReturnId -- Links order line to the order header [2]
+LEFT JOIN
+    PLSupplierAccount AS PSA ON POR.SupplierId = PSA.PLSupplierAccountId -- Links order header to the Supplier Account [2, 3]
+LEFT JOIN
+    PLPaymentGroup AS PPG ON PSA.PLPaymentGroupId = PPG.PLPaymentGroupId -- Links Supplier Account to its Payment Group [3]
+LEFT JOIN
+    POPStandardItemLink AS PSIL ON PORL.POPOrderReturnLineID = PSIL.POPOrderReturnLineID AND PORL.LineTypeId = 0 -- Links order line to standard item details for LineTypeId 0 [93, Diagram: Purchase Orders 34]
+LEFT JOIN
+    StockItem AS ST ON PSIL.ItemID = ST.ItemID -- Links standard item details to the Stock Item record [93, Diagram: Purchase Orders 34, Diagram: Stock Items 40]
+LEFT JOIN
+    StockItemType AS STT ON ST.StockItemTypeId = STT.StockItemTypeId -- Links Stock Item to its Type lookup table [34, 105, Diagram: Stock Items 40]
+;
 
 
 
