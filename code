@@ -1,1 +1,88 @@
 
+This document serves as a guide for developers and technical support personnel seeking to understand the database structure of Sage 200 2015. It details the relationships between various database tables for core system functions such as the Sales Ledger, Purchase Ledger, Cash Book, and Nominal Ledger. Additionally, it provides insights into the data organization for Sales Order Processing, Purchase Order Processing, Stock management, Pricing, Bill of Materials, and Project Accounting, including Timesheets and Expenses. The guide also includes a comprehensive list of lookup tables and their associated values, which control system functionality.
+
+I need to get historical data on GHG REGARDIN PURSHING GOODS AND SERVICES WHICH TABLE SHOULD I USE
+
+Based on the sources provided, to get historical data regarding purchasing goods and services in Sage 200, you should primarily look at tables related to the Purchase Ledger and Purchase Order Processing modules.
+Specifically, for archived Purchase Ledger transactions, the relevant table is the PLHistoricalSupplierTran table. Each PLSupplierAccount record can link to many PLHistoricalSupplierTran records on PLSupplierAccountId.
+For current Purchase Ledger transactions (which become historical over time before being archived), the data is held in the PLPostedSupplierTran table. A PLSupplierAccount record links to many PLPostedSupplierTran records on PLSupplierAccountId.
+The Purchase Order Processing (POP) module also contains significant data about purchasing goods and services. While the sources don't explicitly mention separate archived tables for POP data like they do for PL, the primary tables for orders, receipts, and invoices represent the history of these activities:
+•
+POP Orders are held in the POPOrderReturn (header) and POPOrderReturnLine (line details) tables. The order number is in POPOrderReturn.DocumentNo. These link to the PLSupplierAccount record via POPOrderReturn.SupplierId and PLSupplierAccount.PLSupplierAccountId.
+•
+POP Receipts are held in the POPReceiptReturn and POPReceiptReturnLine tables. These link back to the POPOrderReturnLine records. For traceable items received, there are additional links through TracePOPRcptRtnLine, TraceableBinItem, and TraceableItem to get specific batch or serial numbers.
+•
+POP Invoices are held in the POPInvoiceCreditLine table. These also link back to the POPOrderReturnLine records. For traceable items invoiced, links go through TracePOPInvCredLine, TraceableBinItem, and TraceableItem to get specific batch or serial numbers. If an order line has both a receipt and an invoice, the POPRcptRetInvCredLine table links the POPReceiptReturnLine and POPInvoiceCreditLine records.
+Additionally, postings from Purchase Invoices and Credits can be made to the Project Accounting module. These entries are stored in the PCProjectEntry table and can be linked back to their source (like a POPOrderReturnLine) using the SourceEntryID and the PCProjectEntryDescriptor lookup table which identifies the source as 'Purchase Invoice' or 'Purchase Credit'.
+You might also find relevant contextual information in lookup tables, such as the NatureOfTransactionCode table, which includes codes like 'Purchases goods and related services' and 'Purchases non related services'.
+Regarding the term "GHG", this specific acronym or concept is not mentioned anywhere in the provided source document.
+How do i write a typical  sql script to retrive all purchasing goods and service,imagine
+
+Based on the sources provided and our conversation history, when seeking historical data regarding purchasing goods and services in Sage 200, you should primarily look at the tables associated with the Purchase Ledger and Purchase Order Processing (POP) modules.
+Here's a breakdown of the relevant tables and how you might construct a query, keeping in mind the database structure described in the sources:
+1. Historical Purchase Ledger Transactions:
+For historical transactions that have been posted to the Purchase Ledger and subsequently archived, the key table is PLHistoricalSupplierTran. This table holds records of past supplier transactions, including values and dates. It links to the supplier account.
+•
+Each PLSupplierAccount record can link to many PLHistoricalSupplierTran records on the PLSupplierAccountId field.
+This table provides the financial history of your purchases from a ledger perspective, showing the value and date of invoices and credits that have been processed and archived. However, the sources do not indicate that this table contains specific details about the individual goods or services purchased (like item codes or descriptions) or a direct link back to the original purchase order lines.
+2. Purchase Order Processing (POP) Data (Including Historical Events):
+The POP module contains detailed records about the purchase process, from ordering to receiving and invoicing. While the source doesn't explicitly mention a separate historical table for POP data in the same way it does for the Purchase Ledger (PLHistoricalSupplierTran), the completed or partially completed records within the POP tables themselves represent historical events (e.g., an order placed on a certain date, an invoice received on another date).
+To get details about the specific goods and services purchased, including item codes, descriptions, quantities, and values at the time of invoicing, you would typically query the POP invoice line table: POPInvoiceCreditLine. This table links back to the original purchase order line and header.
+Here's how the relevant POP tables are linked:
+•
+The main purchase order header is stored in the POPOrderReturn table, containing overall order information and linking to the supplier. It links to a PLSupplierAccount record via POPOrderReturn.SupplierId matching PLSupplierAccount.PLSupplierAccountId. The order number is in POPOrderReturn.DocumentNo.
+•
+Each line item on a purchase order is stored in a POPOrderReturnLine record, linked to the POPOrderReturn header by POPOrderReturnId. This table contains details like ItemCode, ItemDescription, LineQuantity, UnitBuyingPrice, LineTotalValue, and LineTaxValue.
+•
+If a line is a "Standard Item" (POPOrderReturnLine.LineTypeId = 0), it links to a StockItem record via the POPStandardItemLink table. The StockItem table contains details about the item, including its StockItemTypeId.
+•
+The POPInvoiceCreditLine table holds details for each invoiced line item associated with a purchase order. It links back to the POPOrderReturnLine by POPOrderReturnLineID and contains the invoiced quantity (InvoiceCreditQuantity), values (LineTotalValue, LineTaxValue), and the InvoiceCreditDate.
+To differentiate between 'goods' and 'services', you could potentially use the StockItemTypeId from the StockItem table, if the purchased items are standard stock items. The StockItemType lookup table defines types like 'Stock' (likely goods) and 'Service/Labour' (services). You could also use the LineTypeID on the POPOrderReturnLine table, which links to the OrderReturnLineType lookup table to identify 'Standard Items', 'Free Text Items', 'Additional Charges', etc..
+Example SQL Script for Historical Invoiced Goods and Services (from POP):
+Drawing on the table structures and relationships described in the sources, a typical SQL script to retrieve historical data about invoiced goods and services from the POP module could look something like this:
+SELECT
+    POPIcl.InvoiceCreditDate, -- The date the invoice was processed [14]
+    POR.DocumentNo AS POPOrderNumber, -- The Purchase Order number [10]
+    PLA.SupplierAccountNumber, -- The supplier's account number [17]
+    PLA.SupplierAccountName, -- The supplier's name [17]
+    PORL.ItemCode, -- The code for the item/service on the order line [10]
+    PORL.ItemDescription, -- Description of the item/service [10]
+    ORTL.Name AS LineTypeDescription, -- Describes the type of line (e.g., Standard Item, Free Text Item) [16]
+    ST.StockItemTypeName AS ItemCategory, -- If a stock item, its category (e.g., Stock, Service/Labour) [13]
+    POPIcl.InvoiceCreditQuantity, -- The quantity that was invoiced for this line [14]
+    PORL.UnitBuyingPrice, -- The unit buying price from the order line [10]
+    POPIcl.LineTotalValue, -- The total value of this invoiced line [14]
+    POPIcl.LineTaxValue -- The tax value applied to this invoiced line [14]
+FROM
+    POPInvoiceCreditLine AS POPIcl -- Starting with the POP Invoice Lines [7, 8]
+INNER JOIN
+    POPOrderReturnLine AS PORL ON POPIcl.POPOrderReturnLineID = PORL.POPOrderReturnLineID -- Link to the Purchase Order Line [8]
+INNER JOIN
+    POPOrderReturn AS POR ON PORL.POPOrderReturnID = POR.POPOrderReturnID -- Link to the Purchase Order Header [7]
+INNER JOIN
+    PLSupplierAccount AS PLA ON POR.SupplierId = PLA.PLSupplierAccountId -- Link the Order Header to the Supplier Account [9]
+LEFT JOIN
+    POPStandardItemLink AS PSIL ON PORL.POPOrderReturnLineID = PSIL.POPOrderReturnLineID -- Link to the Standard Item Link (only exists for standard items) [9]
+LEFT JOIN
+    StockItem AS ST ON PSIL.ItemID = ST.ItemID -- Link to the Stock Item table (only for standard items) [9]
+LEFT JOIN
+    StockItemType AS STT ON ST.StockItemTypeId = STT.StockItemTypeId -- Link to the Stock Item Type lookup to get the category name [13]
+LEFT JOIN
+    OrderReturnLineType AS ORTL ON PORL.LineTypeID = ORTL.OrderReturnLineTypeId -- Link to the Order Return Line Type lookup to get the line type name [16]
+WHERE
+    POPIcl.InvoiceCreditDate <= 'YYYY-MM-DD' -- Filter by invoice date to get historical data. Replace 'YYYY-MM-DD' with your desired date cutoff.
+    -- Optional: Add further filtering here if you only want specific types (e.g., only 'Stock' or 'Service/Labour')
+    -- AND (STT.StockItemTypeName = 'Stock' OR STT.StockItemTypeName = 'Service/Labour')
+ORDER BY
+    POPIcl.InvoiceCreditDate, POR.DocumentNo, PORL.PrintSequenceNumber; -- Order for readability
+This script retrieves details for each line on a purchase invoice that has been recorded in the POP module. By filtering on POPIcl.InvoiceCreditDate, you can define what "historical" means for your query.
+Regarding GHG (Greenhouse Gas) Data:
+The provided source document, "Understanding the Sage 200 2015 Database.pdf", does not contain any information about GHG (Greenhouse Gas) or related environmental data fields or tables. The database structure described focuses on financial accounting, stock management, sales and purchase order processing, project accounting, and time and expenses. Therefore, based on the information given, Sage 200's standard database structure as described does not include data points specifically for tracking or reporting on the greenhouse gas impact of purchased goods and services.
+To obtain GHG data related to purchases, you would likely need to:
+1.
+Store this information externally in a separate system.
+2.
+Customize the Sage 200 database (which is outside the scope of the provided sources and typically requires accreditation) to add fields for GHG data, potentially linked to stock items, purchase order lines, or supplier records.
+3.
+Integrate Sage 200 data with a third-party sustainability tracking tool.
+In summary, while the PLHistoricalSupplierTran table holds historical financial ledger data and the POP tables like POPInvoiceCreditLine provide historical detail on invoiced items/services, neither source explicitly mentions how to track or retrieve GHG data within the standard Sage 200 database structure described.
