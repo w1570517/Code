@@ -483,7 +483,76 @@ SYSAccountingPeriod
 
 
 
+SELECT TOP 10
+    POPIcl.InvoiceCreditQuantity,
+    POPIcl.LineTotalValue AS InvoiceLineTotal,
+    POPIcl.LineTaxValue AS InvoiceLineTax,
+    POPIcl.DiscountedUnitPrice,
+    PORL.ItemCode,
+    PORL.ItemDescription,
+    PORL.LineQuantity AS OriginalLineQuantity,
+    PORL.UnitBuyingPrice,
+    PORL.LineTotalValue AS OriginalLineTotalValue,
+    PORL.LineTaxValue AS OriginalLineTaxValue,
+    PORL.NominalAccountRef,
+    PORL.NominalCostCentre,
+    PORL.NominalDepartment,
+    ST.Code AS StockItemCode,
+    ST.Name AS StockItemName,
+    STT.StockitemTypeName AS ItemCategory,
+    POR.DocumentNo AS PurchaseOrderNumber,
+    POR.DocumentDate AS PurchaseOrderDate,
+    PSA.SupplierAccountNumber,
+    PSA.SupplierAccountName,
+    PPG.PLPaymentGroupID,
+    PPG.Description AS PaymentGroupDescription,
+    PCE.GoodsAmountInBaseCurrency AS [Net Value],
+    PCE.Narrative,
+    D.Name AS [Source],
+    POR.DocumentNo AS [Reference],
+    PCE.TransactionDate AS [Date],
+    PLT.PostedDate AS [Posted Date],
+    PCE.NominalAccountNumber AS [Account Code]
 
+    -- Add your custom columns from new tables here
+    -- Example: NL.NLAccountId, FY.YearNumber, AP.PeriodStartDate, NLTran.DebitValue
+
+FROM
+    POPInvoiceCreditLine AS POPIcl
+
+    LEFT JOIN POPOrderReturnLine AS PORL 
+        ON POPIcl.POPOrderReturnLineID = PORL.POPOrderReturnLineID
+    LEFT JOIN POPOrderReturn AS POR 
+        ON PORL.POPOrderReturnId = POR.POPOrderReturnId
+    LEFT JOIN PLSupplierAccount AS PSA 
+        ON POR.SupplierId = PSA.PLSupplierAccountId
+    LEFT JOIN PLPaymentGroup AS PPG 
+        ON PSA.PLPaymentGroupId = PPG.PLPaymentGroupId
+    LEFT JOIN POPStandardItemLink AS PSIL 
+        ON PORL.POPOrderReturnLineID = PSIL.POPOrderReturnLineID 
+        AND PORL.LineTypeId = 0
+    LEFT JOIN StockItem AS ST 
+        ON PSIL.ItemID = ST.ItemID
+    LEFT JOIN StockItemType AS STT 
+        ON ST.StockItemTypeId = STT.StockItemTypeId
+    LEFT JOIN PCProjectEntry AS PCE 
+        ON PORL.POPOrderReturnLineID = PCE.SourceEntryID
+    LEFT JOIN PCProjectEntryDescriptor AS D 
+        ON PCE.PCProjectEntryDescriptorID = D.PCProjectEntryDescriptorID
+        AND D.[Key] = 'Purchase Order'
+    LEFT JOIN PLPostedSupplierTran AS PLT 
+        ON PSA.PLSupplierAccountId = PLT.PLSupplierAccountId
+        AND PLT.DocumentNo = POR.DocumentNo
+
+    -- New Joins Added Below
+    LEFT JOIN NLPostedNominalTran AS NLTran 
+        ON PLT.PLDocumentId = NLTran.OriginatingDocumentId
+    LEFT JOIN NLNominalAccount AS NL 
+        ON NLTran.NLNominalAccountId = NL.NLNominalAccountId
+    LEFT JOIN SYSAccountingPeriod AS AP 
+        ON NLTran.SYSAccountingPeriodId = AP.SYSAccountingPeriodId
+    LEFT JOIN SYSFinancialYear AS FY 
+        ON AP.SYSFinancialYearId = FY.SYSFinancialYearId;
 
 
 
