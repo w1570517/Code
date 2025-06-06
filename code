@@ -576,3 +576,112 @@ FROM
 
 
 
+
+
+
+
+
+
+
+Based on the provided sources, you can construct an SQL query to identify suppliers with invoice credits by linking the supplier account information to the purchase order invoice/credit line details.
+Here's how you can approach this, drawing on the database structure described in the sources:
+1.
+Supplier Accounts: Supplier details are primarily held in the PLSupplierAccount table.
+2.
+Purchase Orders: Purchase order headers are in the POPOrderReturn table. The POPOrderReturn record links to the PLSupplierAccount record via POPOrderReturn.SupplierId linking to PLSupplierAccount.PLSupplierAccountId.
+3.
+Purchase Order Lines: Details of each order line are in POPOrderReturnLine records, which link to the POPOrderReturn header on POPOrderReturnId.
+4.
+Purchase Order Invoices/Credits: Information relating to POP invoices and credits is held in POPInvoiceCreditLine records, which link to the corresponding POPOrderReturnLine records on POPOrderReturnLineID. The source notes that there is often no separate invoice 'header' record (POPInvCredDispute) unless the invoice is in dispute. The POPInvoiceCreditLine table contains details like the quantity (InvoiceCreditQuantity) and value (LineTotalValue) of the invoice/credit line, as well as the InvoiceCreditDate.
+5.
+Identifying Credit Notes: The type of invoice/credit (Invoice or Credit) is indicated by the POPInvoiceCreditTypeId field within the POPInvoiceCreditLine table, which links to the POPInvoiceCreditType look-up table. According to the look-up table, a POPInvoiceCreditTypeId of 1 corresponds to 'Credit'.
+Therefore, to find suppliers with invoice credits, you would join these tables and filter for POPInvoiceCreditLine records where POPInvoiceCreditTypeId equals 1.
+Here is an example SQL query based on this structure:
+SELECT
+    SA.SupplierAccountNumber, -- Supplier Account Number from PLSupplierAccount
+    SA.SupplierAccountName, -- Supplier Account Name from PLSupplierAccount [1]
+    ORet.DocumentNo AS PurchaseOrderNumber, -- Corresponding Purchase Order number from POPOrderReturn [2]
+    ICL.InvoiceCreditDate, -- Date of the Invoice/Credit Line from POPInvoiceCreditLine [5]
+    ICL.InvoiceCreditQuantity, -- Quantity on the Invoice/Credit Line from POPInvoiceCreditLine [5]
+    ICL.LineTotalValue -- Total value for this line from POPInvoiceCreditLine [5]
+FROM
+    PLSupplierAccount AS SA -- Start with the Supplier Account table [1]
+INNER JOIN
+    POPOrderReturn AS ORet ON SA.PLSupplierAccountId = ORet.SupplierId -- Link Supplier Account to Purchase Order header [3]
+INNER JOIN
+    POPOrderReturnLine AS ORetL ON ORet.POPOrderReturnId = ORetL.POPOrderReturnId -- Link Purchase Order header to line [8]
+INNER JOIN
+    POPInvoiceCreditLine AS ICL ON ORetL.POPOrderReturnLineId = ICL.POPOrderReturnLineId -- Link Purchase Order line to Invoice/Credit line [4]
+WHERE
+    ICL.POPInvoiceCreditTypeId = 1 -- Filter for records where the type is 'Credit' [6, 7]
+ORDER BY
+    SA.SupplierAccountName, ICL.InvoiceCreditDate; -- Order the results for readability
+This query selects the supplier account number, supplier account name, the purchase order number associated with the credit, the date, quantity, and value of the credit line. It joins the necessary tables (PLSupplierAccount, POPOrderReturn, POPOrderReturnLine, POPInvoiceCreditLine) using the specified foreign keys and filters the results to include only 'Credit' types from the POPInvoiceCreditLine table.
+Important Considerations:
+•
+The sources note that Purchase orders migrated from Line 50 or Line 100 will not have certain traceable item links related to invoices/credits (TracePOPInvCredLine) as these links were not created during data conversion. However, the primary links used in the query above (PLSupplierAccount -> POPOrderReturn -> POPOrderReturnLine -> POPInvoiceCreditLine) should exist if the invoice/credit was processed through POP.
+•
+This query specifically looks at invoice credits linked to Purchase Orders processed through the POP module. It may not capture credits entered directly into the Purchase Ledger (PLPostedSupplierTran) without a corresponding POP order line, although the sources do discuss various posted transactions in the Purchase Ledger. The source does not explicitly detail the structure of non-POP invoice credits within the PLPostedSupplierTran context or how to differentiate credit notes from invoices solely within PLPostedSupplierTran based on a type ID. However, PLPostedSupplierTran does have a SYSTraderTranTypeId field, which could potentially indicate the transaction type, but the provided look-up tables (SYSTraderTranType) list type '5' as 'Credit Note'. A more comprehensive query might involve examining PLPostedSupplierTran records where SYSTraderTranTypeId is 5 and linking them back to PLSupplierAccount.Based on the provided sources, you can construct an SQL query to identify suppliers with invoice credits by linking the supplier account information to the purchase order invoice/credit line details.
+Here's how you can approach this, drawing on the database structure described in the sources:
+1.
+Supplier Accounts: Supplier details are primarily held in the PLSupplierAccount table.
+2.
+Purchase Orders: Purchase order headers are in the POPOrderReturn table. The POPOrderReturn record links to the PLSupplierAccount record via POPOrderReturn.SupplierId linking to PLSupplierAccount.PLSupplierAccountId.
+3.
+Purchase Order Lines: Details of each order line are in POPOrderReturnLine records, which link to the POPOrderReturn header on POPOrderReturnId.
+4.
+Purchase Order Invoices/Credits: Information relating to POP invoices and credits is held in POPInvoiceCreditLine records, which link to the corresponding POPOrderReturnLine records on POPOrderReturnLineID. The source notes that there is often no separate invoice 'header' record (POPInvCredDispute) unless the invoice is in dispute. The POPInvoiceCreditLine table contains details like the quantity (InvoiceCreditQuantity) and value (LineTotalValue) of the invoice/credit line, as well as the InvoiceCreditDate.
+5.
+Identifying Credit Notes: The type of invoice/credit (Invoice or Credit) is indicated by the POPInvoiceCreditTypeId field within the POPInvoiceCreditLine table, which links to the POPInvoiceCreditType look-up table. According to the look-up table, a POPInvoiceCreditTypeId of 1 corresponds to 'Credit'.
+Therefore, to find suppliers with invoice credits, you would join these tables and filter for POPInvoiceCreditLine records where POPInvoiceCreditTypeId equals 1.
+Here is an example SQL query based on this structure:
+SELECT
+    SA.SupplierAccountNumber, -- Supplier Account Number from PLSupplierAccount
+    SA.SupplierAccountName, -- Supplier Account Name from PLSupplierAccount [1]
+    ORet.DocumentNo AS PurchaseOrderNumber, -- Corresponding Purchase Order number from POPOrderReturn [2]
+    ICL.InvoiceCreditDate, -- Date of the Invoice/Credit Line from POPInvoiceCreditLine [5]
+    ICL.InvoiceCreditQuantity, -- Quantity on the Invoice/Credit Line from POPInvoiceCreditLine [5]
+    ICL.LineTotalValue -- Total value for this line from POPInvoiceCreditLine [5]
+FROM
+    PLSupplierAccount AS SA -- Start with the Supplier Account table [1]
+INNER JOIN
+    POPOrderReturn AS ORet ON SA.PLSupplierAccountId = ORet.SupplierId -- Link Supplier Account to Purchase Order header [3]
+INNER JOIN
+    POPOrderReturnLine AS ORetL ON ORet.POPOrderReturnId = ORetL.POPOrderReturnId -- Link Purchase Order header to line [8]
+INNER JOIN
+    POPInvoiceCreditLine AS ICL ON ORetL.POPOrderReturnLineId = ICL.POPOrderReturnLineId -- Link Purchase Order line to Invoice/Credit line [4]
+WHERE
+    ICL.POPInvoiceCreditTypeId = 1 -- Filter for records where the type is 'Credit' [6, 7]
+ORDER BY
+    SA.SupplierAccountName, ICL.InvoiceCreditDate; -- Order the results for readability
+This query selects the supplier account number, supplier account name, the purchase order number associated with the credit, the date, quantity, and value of the credit line. It joins the necessary tables (PLSupplierAccount, POPOrderReturn, POPOrderReturnLine, POPInvoiceCreditLine) using the specified foreign keys and filters the results to include only 'Credit' types from the POPInvoiceCreditLine table.
+Important Considerations:
+•
+The sources note that Purchase orders migrated from Line 50 or Line 100 will not have certain traceable item links related to invoices/credits (TracePOPInvCredLine) as these links were not created during data conversion. However, the primary links used in the query above (PLSupplierAccount -> POPOrderReturn -> POPOrderReturnLine -> POPInvoiceCreditLine) should exist if the invoice/credit was processed through POP.
+•
+This query specifically looks at invoice credits linked to Purchase Orders processed through the POP module. It may not capture credits entered directly into the Purchase Ledger (PLPostedSupplierTran) without a corresponding POP order line, although the sources do discuss various posted transactions in the Purchase Ledger. The source does not explicitly detail the structure of non-POP invoice credits within the PLPostedSupplierTran context or how to differentiate credit notes from invoices solely within PLPostedSupplierTran based on a type ID. However, PLPostedSupplierTran does have a SYSTraderTranTypeId field, which could potentially indicate the transaction type, but the provided look-up tables (SYSTraderTranType) list type '5' as 'Credit Note'. A more comprehensive query might involve examining PLPostedSupplierTran records where SYSTraderTranTypeId is 5 and linking them back to PLSupplierAccount.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
