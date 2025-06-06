@@ -672,7 +672,17 @@ This query specifically looks at invoice credits linked to Purchase Orders proce
 
 
 
-
+SELECT
+    SA.SupplierAccountNumber,           -- Supplier Account Number from the Supplier Account table [8]
+    SA.SupplierAccountName,             -- Supplier Account Name from the Supplier Account table [8]
+    SUM(PST.PurControlValueInBaseCurrency) AS TotalPostedNetValue -- Sums the transaction value in base currency for each supplier [9]
+FROM
+    PLSupplierAccount AS SA             -- Selects data from the Supplier Account table [8]
+INNER JOIN
+    PLPostedSupplierTran AS PST ON SA.PLSupplierAccountId = PST.PLSupplierAccountId -- Links supplier accounts to their posted transactions [4]
+GROUP BY
+    SA.SupplierAccountNumber,           -- Groups the results by supplier account number [8]
+    SA.SupplierAccountName;  
 
 
 
