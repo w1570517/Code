@@ -671,19 +671,147 @@ This query specifically looks at invoice credits linked to Purchase Orders proce
 
 
 
-
+Based on the information in the sources and our previous conversation, the term "net value for purchase goods" can be interpreted in a few different ways depending on the stage of the purchase process you are interested in (e.g., ordered, invoiced, or posted to the ledger). A "senior engineer" understands these nuances and selects the appropriate data source.
+Here are a few SQL queries representing different interpretations, drawing directly from the database structure described in the sources:
+Interpretation 1: Net Value on Purchase Orders (Value when Ordered)
+This query retrieves the total net value of all Purchase Orders, typically grouped by supplier. This represents the value agreed upon when the order was placed, regardless of whether the goods have been received or invoiced yet.
+•
+Source Tables: PLSupplierAccount (for supplier details), POPOrderReturn (the purchase order header).
+•
+Key Fields:
+◦
+PLSupplierAccount.SupplierAccountNumber [9, Diagram: Supplier Details] and PLSupplierAccount.SupplierAccountName [9, Diagram: Supplier Details] for identifying the supplier.
+◦
+POPOrderReturn.TotalNetValue for the total net value of the order [9, Diagram: Purchase Orders].
+◦
+POPOrderReturn.SupplierId to link to the supplier account [126, Diagram: Purchase Orders].
+◦
+POPOrderReturn.POPOrderReturnTypeId to filter specifically for Purchase Orders (ID 0) [9, 125, 126, POPOrderReturnType lookup 37, 97].
 SELECT
-    SA.SupplierAccountNumber,           -- Supplier Account Number from the Supplier Account table [8]
-    SA.SupplierAccountName,             -- Supplier Account Name from the Supplier Account table [8]
-    SUM(PST.PurControlValueInBaseCurrency) AS TotalPostedNetValue -- Sums the transaction value in base currency for each supplier [9]
-FROM
-    PLSupplierAccount AS SA             -- Selects data from the Supplier Account table [8]
-INNER JOIN
-    PLPostedSupplierTran AS PST ON SA.PLSupplierAccountId = PST.PLSupplierAccountId -- Links supplier accounts to their posted transactions [4]
-GROUP BY
-    SA.SupplierAccountNumber,           -- Groups the results by supplier account number [8]
-    SA.SupplierAccountName;  
+    -- Supplier Information
+    SA.SupplierAccountNumber, -- Supplier's unique account number [9, Diagram: Supplier Details]
+    SA.SupplierAccountName,   -- Supplier's name [9, Diagram: Supplier Details]
 
+    -- Aggregated Purchase Order Net Value
+    SUM(PO.TotalNetValue) AS TotalPurchaseOrderNetValue -- Sums the TotalNetValue from the purchase orders [9, Diagram: Purchase Orders]
+
+FROM
+    -- Base Supplier Table
+    PLSupplierAccount AS SA     -- Selects data from the main supplier account table [3, 9, Diagram: Supplier Details, 80]
+
+INNER JOIN
+    -- Links Suppliers to Purchase Orders
+    POPOrderReturn AS PO ON SA.PLSupplierAccountId = PO.SupplierId -- Links suppliers to their purchase orders using SupplierId [126, Diagram: Purchase Orders]
+
+WHERE
+    -- Filters for records that are specifically Purchase Orders
+    PO.POPOrderReturnTypeId = 0 -- Uses the lookup ID for Purchase Orders (0 = Purchase Order) [9, 125, 126, POPOrderReturnType lookup 37, 97]
+
+GROUP BY
+    -- Groups results by supplier
+    SA.SupplierAccountNumber,
+    SA.SupplierAccountName;
+Interpretation 2: Net Value of Posted Purchase Invoices (Value Posted to Purchase Ledger)
+This query retrieves the total net value from purchase invoices that have been posted to the Purchase Ledger. This reflects the financial value recorded against the supplier account.
+•
+Source Tables: PLSupplierAccount (for supplier details), PLPostedSupplierTran (posted supplier transactions) [3, 12, Diagram: Supplier Posted Transactions, 84], SYSTraderTranType (lookup for transaction types).
+•
+Key Fields:
+◦
+PLSupplierAccount.SupplierAccountNumber [3, Diagram: Supplier Details] and PLSupplierAccount.SupplierAccountName [3, Diagram: Supplier Details].
+◦
+PLPostedSupplierTran.PurControlValueInBaseCurrency for the transaction value in the base currency [3, Diagram: Supplier Posted Transactions, 84].
+◦
+PLPostedSupplierTran.PLSupplierAccountId to link to the supplier account [3, Diagram: Supplier Posted Transactions, 84].
+◦
+PLPostedSupplierTran.SYSTraderTranTypeId to link to the transaction type lookup [3, Diagram: Supplier Posted Transactions, 84].
+◦
+SYSTraderTranType.Name to identify the transaction type (e.g., 'Invoice'). An Invoice has SYSTraderTranTypeId 4.
+SELECT
+    -- Supplier Information
+    SA.SupplierAccountNumber,           -- Supplier Account Number [3, Diagram: Supplier Details]
+    SA.SupplierAccountName,             -- Supplier Account Name [3, Diagram: Supplier Details]
+
+    -- Aggregated Posted Invoice Net Value
+    -- Uses PurControlValueInBaseCurrency for value in the company's base currency
+    SUM(PST.PurControlValueInBaseCurrency) AS TotalPostedInvoiceNetValue -- Sums the transaction value for posted transactions [3, Diagram: Supplier Posted Transactions, 84]
+
+FROM
+    -- Base Supplier Table
+    PLSupplierAccount AS SA             -- Selects data from the Supplier Account table [3, 9, Diagram: Supplier Details, 80]
+
+INNER JOIN
+    -- Links Supplier Accounts to their Posted Transactions
+    PLPostedSupplierTran AS PST ON SA.PLSupplierAccountId = PST.PLSupplierAccountId -- Links supplier accounts to their posted transactions [3, Diagram: Supplier Posted Transactions, 84]
+
+INNER JOIN
+    -- Links Posted Transactions to their Transaction Type definition
+    SYSTraderTranType AS STT ON PST.SYSTraderTranTypeId = STT.SYSTraderTranTypeId -- Links to the transaction type lookup table [4, 5]
+
+WHERE
+    -- Filters for posted transactions that are specifically 'Invoice' type
+    STT.Name = 'Invoice' -- Filter by the Name from the lookup table [4, 5]
+    -- Alternatively, you could filter by the ID: PST.SYSTraderTranTypeId = 4 [4, 5]
+
+GROUP BY
+    -- Groups results by supplier
+    SA.SupplierAccountNumber,
+    SA.SupplierAccountName;
+Interpretation 3: Net Value of Posted Purchase Invoice Lines (Aggregated Item-Level Value)
+This query retrieves the total net value based on the individual lines of posted purchase invoices within the POP module. This gives a view of the value from the perspective of the specific items invoiced. Note that the source indicates a header record (POPInvCredDispute) only exists if the invoice is in dispute, so joining directly from the line table is necessary for all invoices.
+•
+Source Tables: PLSupplierAccount, POPOrderReturn, POPOrderReturnLine, POPInvoiceCreditLine (posted invoice line details) [9, 37, Diagram: Purchase Invoices, 133].
+•
+Key Fields:
+◦
+PLSupplierAccount.SupplierAccountNumber [3, Diagram: Supplier Details] and PLSupplierAccount.SupplierAccountName [3, Diagram: Supplier Details].
+◦
+POPInvoiceCreditLine.LineTotalValue for the net value of each line [9, Diagram: Purchase Invoices, 133].
+◦
+POPOrderReturn.SupplierId to link to the supplier account [126, Diagram: Purchase Orders].
+◦
+POPOrderReturn.POPOrderReturnTypeId to filter for Purchase Orders (ID 0) [126, Diagram: Purchase Orders, 132].
+◦
+POPOrderReturnLineID to link order lines to invoice lines [133, Diagram: Purchase Invoices].
+◦
+POPInvoiceCreditLine.INVInvoiceCreditTypeid to filter for Invoice Lines (ID 0) [POPInvoiceCreditType lookup 36, 97, 133].
+SELECT
+    -- Supplier Information
+    SA.SupplierAccountNumber,               -- Supplier Account Number [3, Diagram: Supplier Details]
+    SA.SupplierAccountName,                 -- Supplier Account Name [3, Diagram: Supplier Details]
+
+    -- Aggregated Posted Invoice Line Net Value
+    SUM(PICL.LineTotalValue) AS TotalInvoicedLineNetValue -- Sums the net value for each invoice line [9, Diagram: Purchase Invoices, 133]
+
+FROM
+    -- Base Supplier Table
+    PLSupplierAccount AS SA                 -- Selects data from the Supplier Account table [3, 9, Diagram: Supplier Details, 80]
+
+INNER JOIN
+    -- Links Suppliers to their Purchase Orders
+    POPOrderReturn AS PO ON SA.PLSupplierAccountId = PO.SupplierId -- Links suppliers to their purchase orders using SupplierId [126, Diagram: Purchase Orders]
+
+INNER JOIN
+    -- Links Purchase Orders to their Lines
+    POPOrderReturnLine AS PORL ON PO.POPOrderReturnId = PORL.POPOrderReturnId -- Links purchase orders to their lines [9, 125, Diagram: Purchase Orders]
+
+INNER JOIN
+    -- Links Order Lines to Posted Invoice Lines
+    -- This connection represents the invoicing of items from a purchase order line
+    POPInvoiceCreditLine AS PICL ON PORL.POPOrderReturnLineID = PICL.POPOrderReturnLineID -- Links order lines to posted invoice lines [133, Diagram: Purchase Invoices]
+
+WHERE
+    -- Filters for original Purchase Orders (as opposed to Returns)
+    PO.POPOrderReturnTypeId = 0 -- Uses the lookup ID for Purchase Orders (0 = Purchase Order) [9, 125, 126, POPOrderReturnType lookup 37, 97, 132]
+    AND PICL.INVInvoiceCreditTypeid = 0 -- Filters for Invoice Lines (0 = Invoice) [POPInvoiceCreditType lookup 36, 97, 133]
+
+GROUP BY
+    -- Groups results by supplier
+    SA.SupplierAccountNumber,
+    SA.SupplierAccountName;
+As a senior engineer, you'll need to select the query that aligns with the specific business requirement for "net value for purchase goods" – whether that refers to the initial order value, the value posted to the ledger, or the sum of the values on the individual invoice lines. Each query provides a distinct perspective drawn from the detailed structure described in the sources.
+Start typing...
+1 source
 
 
 
