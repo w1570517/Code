@@ -819,6 +819,25 @@ Start typing...
 
 
 
+SELECT *
+FROM (
+    SELECT 
+        formID,
+        formField,
+        value
+    FROM ftpdb_daily.dbo.dim_formfields
+    WHERE 
+        formField LIKE '%Registrant''s employment status%' 
+        OR formField LIKE '%Profession%'
+) AS Filtered
+PIVOT (
+    MAX(value)
+    FOR formField IN ([Registrant's employment status], [Profession])
+) AS PivotedTable;
+
+
+
+
 
 
 
