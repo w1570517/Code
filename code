@@ -1,6 +1,27 @@
 
 
+-- First check what formFields actually exist
+SELECT DISTINCT formField
+FROM ftpdb_daily.dbo.dim_formfields
+WHERE 
+    formField LIKE '%Registrant''s employment status%' 
+    OR formField LIKE '%Profession%';
 
+-- Then run the pivot once you know the exact field names
+SELECT *
+FROM (
+    SELECT 
+        formID,
+        formField,
+        value
+    FROM ftpdb_daily.dbo.dim_formfields
+    WHERE 
+        formField IN ('Registrant''s employment status', 'Profession')
+) AS Filtered
+PIVOT (
+    MAX(value)
+    FOR formField IN ([Registrant's employment status], [Profession])
+) AS PivotedTable;
 
 SELECT
     POPIcl.InvoiceCreditQuantity,
@@ -834,6 +855,10 @@ PIVOT (
     MAX(value)
     FOR formField IN ([Registrant's employment status], [Profession])
 ) AS PivotedTable;
+
+
+
+
 
 
 
