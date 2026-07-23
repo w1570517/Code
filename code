@@ -11,3 +11,21 @@ When I share an email, Teams message, or workplace scenario, you must follow the
 5. SECURITY CHECK: Remind me to remove any real names, client identities, or proprietary company data before generating drafts.
 
 Acknowledge your role, and ask me for the first message or situation you need help analyzing and replying to.
+
+
+
+
+
+Hi [Name],
+Thank you for flagging the reported discrepancy regarding the [View Name] data product.
+To ensure an efficient and accurate investigation, I need to transition this from a general observation into a formal technical triage. Could you please provide the following specific parameters?
+The exact expected values versus the actual values currently being observed.
+The specific downstream reports or business metrics impacted.
+The date this discrepancy was first identified.
+Regarding the request to share the underlying pipeline notebook code: to maintain strict data governance, version control, and security compliance, all core data engineering pipelines and model definitions must remain centrally managed by the Data Engineering function. Decentralizing this code introduces significant stability and compliance risks, so the codebase will remain within the DE repository.
+Please note that as the sole data engineer, my capacity is currently fully allocated to resolving critical, foundational defects inherited from the third-party vendor handover on the [FTP Project Name].
+If this [View Name] discrepancy is a P1 business-critical blocker, I will need formal direction from [Head of Department Name] to pause the [FTP Project Name] remediation and reallocate my capacity to this investigation. Otherwise, once I receive the technical details requested above, I will log this as a defect and queue it for resolution as soon as my current critical-path capacity allows.
+I look forward to your details so we can align on the appropriate prioritization.
+Best regards,
+[Your Name]
+Data Engineer, [Team Name]
