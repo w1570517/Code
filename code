@@ -345,7 +345,15 @@ Final suggested progress levels
 
 
 
+Registration Data Model — Design Preparation and Data Mapping
 
+I have also contributed to the preparatory work for the new Registration data model, helping establish the technical foundation required for the project ahead of its planned implementation.
+
+My contribution has included mapping fields defined within the design specification to the corresponding underlying Registration database objects and source fields that will be required to build the model. This involved analysing the existing Registration data structures, identifying appropriate source-to-target relationships and helping ensure that the proposed design can be traced back to the relevant underlying source data.
+
+I have also contributed technical knowledge around how Registration data can be linked with FTP data, identifying potential relationships between the two data domains. This is important for supporting future integrated reporting and analysis where information needs to be understood across the Registration and FTP lifecycle.
+
+Completing this preparatory mapping and technical analysis in advance helps reduce implementation uncertainty, identify potential integration considerations early and provide the project with a clearer starting point when development begins in the coming months.
 
 
 
