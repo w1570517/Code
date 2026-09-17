@@ -24,3 +24,340 @@ Chiogor
 
 
 
+
+
+
+
+
+Annual Performance Development Review — Mid-Year Review
+Step 2 — Review: Last Six Months and Forward Look
+What have been your key achievements and successes over the past six months?
+
+Over the past six months, I have continued to deliver across my core Data Engineering responsibilities while supporting wider departmental and organisational priorities. I have worked collaboratively across Insight & Analytics (IA), FTP/Business Change, Office Services and the wider team, balancing operational platform support with strategic data development, data quality, governance and stakeholder requirements.
+
+My focus has been on ensuring the reliability and continuity of the data platform, delivering trusted and usable data to business teams, progressing the FTP data model, proactively identifying data-quality issues and continuously improving our data engineering practices.
+
+Data Platform Reliability, Monitoring and Optimisation
+
+A key area of responsibility has been the proactive monitoring, maintenance, troubleshooting and optimisation of the Azure data platform.
+
+I have monitored Azure Synapse and ADF pipelines, investigated failures and implemented technical remediation to minimise disruption to downstream reporting and analytics.
+
+For example, infrastructure changes, network changes and Spark runtime upgrades have affected existing Bronze and Silver Registration pipelines and associated ETL notebooks. I investigated the failures, identified the underlying dependencies and updated notebook code and processing logic to operate effectively with the updated platform configuration.
+
+Where appropriate, I have used these incidents as opportunities to improve or optimise existing processing rather than simply restoring previous functionality.
+
+This work has helped maintain the reliability and continuity of business-critical data flows used by downstream reporting and analytical processes.
+
+Insight & Analytics Support and Curated Data
+
+I have continued to provide ongoing Data Engineering support to the Insight & Analytics team, helping ensure that analysts can access reliable, appropriately structured and business-ready data.
+
+This has included:
+
+Developing the Modality curated view and Modality Active curated view.
+Providing ongoing technical and data support for the FTP Council Report.
+Supporting colleagues in identifying and accessing datasets held within the data platform.
+Investigating and resolving data issues affecting downstream reporting.
+Supporting data-quality pipelines, ETL processes and notebooks used to monitor data quality across Registration, FTP and Education data sources.
+
+This support has helped bridge the gap between underlying technical data structures and the information required by analysts for reporting and organisational decision-making.
+
+FTP Data Model Design, Build and Remediation
+
+A significant area of delivery during the review period has been my contribution to the new FTP data model.
+
+I supported the initiative from the initial BEAM process and requirements mapping through to implementation of the dimensional model, including the development and review of dimensions and facts.
+
+Following implementation, I actively participated in validation and structural review of the model. Where limitations were identified within aspects of the initial design, I contributed to analysing the underlying issues and have taken ownership of elements of the remediation work.
+
+This has included creating new data objects, addressing structural limitations and optimising elements of the model to improve its suitability for business reporting and future development.
+
+I also supported the business proof-of-concept and first phase of User Acceptance Testing (UAT) by reviewing supporting documentation, contributing to KPI definition and developing curated datasets required for testing.
+
+The first phase of UAT was successfully completed, providing an important milestone towards wider use of the FTP data model.
+
+My current focus is on progressing the remaining remediation and optimisation activities and helping ensure that the model provides a reliable and scalable foundation for FTP reporting and analytics.
+
+Office Services and Door Control Reporting
+
+I have expanded my cross-business contribution through ongoing support to the Office Services team, particularly around the monthly Door Control reporting process and the Power BI dashboards used to support office-attendance monitoring.
+
+I have maintained and updated the reporting solution with the latest available data and investigated dashboard and upstream source-data failures.
+
+Where issues appeared to originate from the underlying data source rather than the reporting layer, I investigated the associated processes within Azure Synapse and proactively engaged Microsoft technical support to support root-cause investigation.
+
+This involved looking across the end-to-end data flow rather than treating the visible Power BI failure in isolation.
+
+I also enhanced the underlying Door Control data by developing a curated dataset incorporating HR employee numbers.
+
+This provides a more consistent identifier for linking office-attendance information with relevant HR records and improves the usability of the dataset for downstream analysis and reporting.
+
+FTP Data Quality and Business Change Support
+
+I have proactively supported FTP/Business Change with the investigation, identification and remediation of data-quality issues.
+
+This has included performing analysis of EDI-related FTP fields, identifying data-quality concerns and proposing potential corrective actions.
+
+I also identified schema discrepancies affecting key regulatory fields within the FTP Case Update source data. I highlighted the issue, considered its potential downstream implications and proposed an approach for remediation.
+
+This work demonstrates a proactive approach to data quality by identifying issues within source and transformation layers before they become embedded within curated datasets and downstream reporting.
+
+Data Governance and Data Quality
+
+Alongside specific FTP data-quality investigations, I have continued contributing to the wider Data Governance and Data Quality objectives.
+
+My contribution has included supporting Microsoft Purview activities, assisting with FTP Minimum Data Set mapping, supporting curated datasets used for data-quality monitoring and contributing to the wider approach for incorporating data-quality monitoring into FTP data.
+
+I have also supported the handover and continued enhancement of the existing Data Quality reporting solution, including incorporating additional MDS fields to address evolving business requirements.
+
+These activities contribute towards improving the visibility, consistency and reliability of organisational data and strengthening the foundation for future governance and quality initiatives.
+
+DataOps and DevOps Adoption
+
+I have continued to apply DataOps and DevOps principles across the development and operation of the data platform.
+
+This includes maintaining the established Bronze, Silver and Gold medallion architecture across Registration and FTP data sources, supporting consistent approaches to data ingestion, transformation and consumption.
+
+I have also continued using our DevOps platform and deployment processes for the development and management of data solutions, including the FTP data model and ADF pipelines across Development, UAT and Production environments.
+
+Combined with proactive platform monitoring, troubleshooting and optimisation, this supports a more controlled, maintainable and scalable approach to managing our data solutions.
+
+Data Platform Security
+
+I have also made initial progress towards strengthening Data Platform Security through the development and demonstration of a data-masking proof-of-concept.
+
+The POC explored how sensitive information could be appropriately masked to reduce the risk of unauthorised exposure.
+
+I demonstrated and communicated the approach to the team as a potential foundation for future work, particularly where third-party suppliers may require appropriately controlled access while supporting future data-model development.
+
+This provides a foundation for further work around data classification, access controls, masking and tokenisation as the organisation's data platform continues to develop.
+
+Knowledge Transfer and Business Continuity
+
+I have actively supported knowledge transfer and business continuity throughout the review period.
+
+I have shared knowledge with colleagues covering:
+
+Data-platform monitoring and daily checks.
+Troubleshooting common data-pipeline failures.
+FTP Council reporting processes.
+Data Quality reporting and dashboards.
+Relevant platform processes and supporting datasets.
+
+This helps broaden operational knowledge across the team, supports continuity of important data services and makes key processes more accessible to colleagues.
+
+Team Upskilling and Knowledge Sharing
+
+I have also proactively contributed to the wider team's professional development.
+
+I identified and shared a Microsoft AI Skills certification opportunity available at no external training cost, providing colleagues with an opportunity to develop additional Microsoft and AI capabilities.
+
+This complemented my wider knowledge-sharing activities and supported continuous technical development across the team in a cost-effective way.
+
+Continuous Professional Development and AI Capability
+
+From a personal development perspective, I successfully completed the Microsoft Certified: Agentic AI Business Solutions Architect (AB-100) certification.
+
+This has strengthened my understanding of enterprise AI architecture, agentic solutions, automation and the governance considerations associated with implementing AI within business environments.
+
+This capability complements my existing Data Engineering expertise and provides additional knowledge that could support future opportunities around automated data-quality monitoring, intelligent workflow automation and AI-assisted data operations.
+
+Challenges and Obstacles
+What challenges or obstacles have you encountered during the past six months, and how have you addressed or managed them?
+
+One of the key challenges during the review period has been maintaining reliable data services while the underlying technology, infrastructure and business requirements continue to evolve.
+
+Changes such as network configuration and Spark runtime upgrades can affect established pipelines and ETL notebooks. When these issues have occurred, I have taken a structured troubleshooting approach by reviewing pipeline execution, identifying root causes, assessing dependencies, updating code where required and validating the resulting data before downstream consumption.
+
+Where possible, I have also used these incidents as opportunities to optimise the affected processes rather than simply restoring previous functionality.
+
+Another area that has required careful management has been balancing a broad range of Data Engineering priorities across operational support and strategic project delivery.
+
+As the Data Engineering resource supporting multiple areas of the business, my responsibilities have ranged from maintaining and troubleshooting critical data pipelines and supporting downstream reporting, through to progressing the FTP data model, investigating data-quality issues and responding to evolving requirements from Insight & Analytics, FTP/Business Change and Office Services.
+
+I have managed these competing priorities by focusing on business impact and urgency, proactively monitoring critical data processes and maintaining effective communication with stakeholders. This has enabled me to respond to operational issues while continuing to progress longer-term objectives around data modelling, governance, security and platform improvement.
+
+Another challenge has been diagnosing reporting problems where the visible failure originates from an upstream dependency. For example, while supporting the Office Services Door Control reporting solution, I investigated issues across Power BI and the underlying Synapse data source. Where specialist investigation was required, I proactively engaged Microsoft technical support to support root-cause analysis.
+
+The FTP data model has also presented technical challenges. During validation and structural review, limitations were identified within aspects of the initial design. I have approached these constructively by investigating the underlying modelling issues and taking ownership of elements of the remediation, including creating and modifying data objects and optimising aspects of the model.
+
+Data quality has similarly required continued investigation because issues can originate from source systems, schema definitions, transformation processes or changing business requirements. My approach has been to analyse and document issues, assess their potential downstream impact, communicate findings with relevant stakeholders and propose potential remediation.
+
+I have also supported greater team resilience through knowledge transfer, sharing knowledge around platform monitoring, pipeline troubleshooting, FTP reporting and data-quality processes.
+
+Managing this breadth of responsibilities has further strengthened my ability to prioritise effectively, work independently, take end-to-end ownership and maintain focus across immediate operational requirements and longer-term strategic objectives.
+
+Looking Ahead — Next Six Months
+What support, development, opportunities or resources would help you achieve your objectives and continue to perform effectively?
+
+Over the next six months, I would like to continue developing my contribution across data architecture, DataOps/DevOps, data governance, data quality, security, stakeholder-focused data solutions and emerging AI capabilities.
+
+A key priority will be completing the outstanding remediation and optimisation of the FTP data model and supporting its transition into wider business use. Continued engagement with business stakeholders will help ensure that the model and associated curated datasets remain aligned with reporting requirements and agreed KPIs.
+
+For the newer Data Platform Security and Data Governance & Quality objectives, I would welcome continued opportunities to work collaboratively with relevant security, governance, business and technical stakeholders to ensure solutions align with organisational standards and priorities.
+
+I would also like to continue strengthening DataOps and DevOps practices, particularly around deployment, testing, monitoring, documentation and maintainability of data solutions.
+
+Following completion of the Agentic AI Business Solutions Architect certification, I would welcome opportunities to explore appropriate and controlled proof-of-concepts where AI and automation could provide measurable organisational value, particularly around data-quality monitoring, anomaly identification, metadata and governance processes, workflow automation and operational data-platform support.
+
+Continued access to relevant technical learning resources, environments and cross-team collaboration opportunities will support these objectives and my ongoing professional development.
+
+Step 3 — Development Activities
+Continuous Learning
+How did this activity go?
+
+I have continued to invest in professional development across modern Data Engineering, cloud technologies, data modelling, governance and emerging AI capabilities.
+
+I have applied this learning directly to my day-to-day responsibilities, including troubleshooting and optimising Azure Synapse pipelines, adapting ETL processes following Spark/runtime changes, supporting dimensional data modelling, strengthening data-quality processes and improving my understanding of data governance and platform operations.
+
+This continuous development has helped me respond effectively to technical challenges and contribute across an increasingly broad range of departmental objectives.
+
+Advanced AI Training
+How did this activity go?
+
+I have made significant progress against this development objective by successfully completing the Microsoft Certified: Agentic AI Business Solutions Architect (AB-100) certification.
+
+The certification has strengthened my understanding of enterprise AI solutions, agentic architectures, workflow automation and governance considerations associated with introducing AI into organisational processes.
+
+My next development step is to complement this knowledge with further practical development around agent orchestration, adaptive workflows, semantic/vector search and integration between AI capabilities and modern data architectures.
+
+My longer-term objective is to identify appropriate practical use cases where these capabilities could improve data-quality monitoring, operational efficiency and reliability of data services.
+
+Step 4 — Performance Objectives
+Objective 1 — Data Platform Adoption: DevOps and DataOps
+
+Suggested mid-year progress: 75%
+
+I have continued to embed DataOps and DevOps principles within the development and operation of the data platform.
+
+I have maintained the established Bronze, Silver and Gold medallion architecture across Registration and FTP data sources, supporting consistent approaches to ingestion, transformation and consumption.
+
+I have also used our DevOps platform and deployment processes to support development of data solutions, including the FTP data model and ADF pipelines across Development, UAT and Production environments.
+
+Alongside development activity, I have applied DataOps principles through proactive pipeline monitoring, troubleshooting and optimisation. This has included resolving failures resulting from infrastructure and Spark runtime changes and updating ETL processing where required to maintain reliable downstream data services.
+
+The objective remains ongoing, with further opportunities to strengthen standardisation, deployment, testing, monitoring and operational practices across the platform.
+
+Objective 2 — Support New Data Model Design and Build
+
+Suggested mid-year progress: 85%
+
+I have made substantial progress against this objective through my contribution to the design, implementation, validation and optimisation of the new FTP data model.
+
+I supported the initial BEAM process and requirements mapping and contributed to implementation of the dimensional model, including dimensions and facts.
+
+Following implementation, I participated in validation and structural review. Where limitations were identified, I contributed to analysing the underlying issues and have taken ownership of elements of the remediation work, including creating new data objects, addressing structural limitations and optimising the model.
+
+I also supported the business proof-of-concept and first phase of UAT through documentation review, KPI definition and creation of curated datasets required for testing. The first phase of UAT was successfully completed.
+
+The remaining work is primarily focused on completing remediation and optimisation and supporting continued adoption of the model for business reporting and analytics.
+
+Objective 3 — Data Platform Security
+
+Suggested mid-year progress: 25%
+
+I have made initial progress against this objective by developing and demonstrating a proof-of-concept for data masking to explore how sensitive information can be appropriately protected.
+
+The approach was demonstrated and communicated to the team and provides a foundation for considering how sensitive data could be protected, particularly where third-party suppliers may require appropriately controlled access during future data-model development.
+
+The next phase will be to build on this work through appropriate data classification, access controls and masking/tokenisation requirements aligned with organisational security and governance standards.
+
+Objective 4 — Data Governance & Quality
+
+Suggested mid-year progress: 35%
+
+I have actively contributed to this objective through technical data-quality investigation, monitoring, data mapping and collaboration with business stakeholders.
+
+My work has included supporting Microsoft Purview activities, FTP Minimum Data Set mapping, curated datasets used for data-quality monitoring and enhancement of the existing Data Quality reporting solution with additional MDS fields.
+
+I have also supported FTP/Business Change with specific data-quality investigations. This has included analysing EDI-related FTP fields, identifying data-quality concerns and proposing potential corrective actions.
+
+In addition, I identified schema discrepancies affecting key regulatory fields within the FTP Case Update source data, communicated the issue and proposed a potential remediation approach.
+
+These activities support improved visibility, consistency and reliability of data used for downstream reporting and organisational decision-making.
+
+Objective 5 — Business & Stakeholder Data Alignment
+
+Suggested mid-year progress: 30%
+
+I have made progress against this objective through direct collaboration with Insight & Analytics, FTP/Business Change and Office Services, translating stakeholder requirements into usable data products and supporting operational reporting.
+
+For Office Services, I have supported the monthly Door Control reporting process and maintained the Power BI solution used to support office-attendance monitoring. This has included updating data, troubleshooting dashboard and upstream Synapse failures and engaging Microsoft technical support where further root-cause investigation was required.
+
+I also enhanced the underlying Door Control data by developing a curated dataset incorporating HR employee numbers, providing a more consistent mechanism for linking attendance information with relevant HR records.
+
+For FTP and Insight & Analytics, I have developed curated datasets, supported the FTP Council Report, contributed to KPI definition and UAT for the FTP data model and continued resolving data issues affecting downstream reporting.
+
+These activities demonstrate my focus on understanding stakeholder requirements and converting them into reliable and reusable data solutions that support operational reporting and organisational decision-making.
+
+Step 5 — Behaviours and Values in Practice
+Selected Value — Innovative
+
+I believe Innovative best represents the approach I have taken during this review period.
+
+I have consistently looked beyond maintaining existing solutions and proactively identified opportunities to improve data processes, resolve underlying technical problems and strengthen the services provided to business users.
+
+A strong example has been my work on the FTP data model. During validation and structural review, limitations were identified within aspects of the initial design. I actively contributed to investigating these issues and have taken ownership of elements of the remediation work, including developing new data objects and optimising aspects of the model.
+
+I have demonstrated the same approach when responding to platform issues. Where Spark/runtime or infrastructure changes have affected ETL processes, I have investigated root causes and adapted or optimised processing rather than simply treating the immediate symptom.
+
+My development of a data-masking proof-of-concept demonstrates a proactive approach to anticipating future security requirements, while my enhancement of the Door Control dataset with HR employee identifiers demonstrates how I have looked for practical ways to make existing organisational data more useful.
+
+I have also demonstrated continuous improvement through identifying data-quality and schema issues within FTP data and proposing potential remediation before those issues become further embedded in downstream processes.
+
+Finally, I have invested in future capability through successfully completing the Microsoft Certified: Agentic AI Business Solutions Architect (AB-100) certification and have supported colleagues' development by identifying and sharing a Microsoft AI Skills certification opportunity available at no external training cost.
+
+Overall, these examples demonstrate a solution-focused and continuous-improvement mindset, with a willingness to take ownership of challenges, explore new approaches and apply technology in ways that support wider organisational objectives.
+
+Step 6 — Overall Performance
+Overall summary of performance and progress to date
+
+During this review period, I believe I have delivered strong progress across both my core Data Engineering responsibilities and wider departmental objectives, balancing operational platform reliability with strategic project delivery, stakeholder support, data quality and continuous improvement.
+
+A significant focus has been maintaining the reliability and continuity of the data platform. I have proactively monitored and troubleshot pipelines, resolved failures and adapted ETL processes in response to infrastructure, network and Spark/runtime changes, helping maintain the availability of data required for downstream reporting and analytics.
+
+Alongside operational responsibilities, I have made a substantial contribution to the FTP data model, supporting the initiative from BEAM requirements mapping and dimensional modelling through implementation, validation, structural review, remediation and business UAT. As the work has progressed, I have taken increasing ownership of resolving structural issues and optimising the model.
+
+I have continued to provide extensive support to Insight & Analytics, including developing curated datasets, supporting the FTP Council Report, resolving data issues and contributing to data-quality monitoring.
+
+My contribution has also extended across other business areas. For Office Services, I have maintained and troubleshot the Door Control reporting solution, investigated upstream Synapse data issues, engaged Microsoft technical support where appropriate and enhanced the underlying data through development of a curated dataset incorporating HR employee numbers.
+
+For FTP/Business Change, I have proactively supported data-quality investigations, including analysis of EDI-related fields and identification of schema discrepancies affecting regulatory data, while proposing potential remediation approaches.
+
+I have contributed to wider Data Governance, Data Quality and Data Security priorities through Purview support, Minimum Data Set mapping, data-quality reporting enhancements and development of a data-masking proof-of-concept.
+
+Managing a broad range of Data Engineering priorities across operational support and strategic delivery has required effective prioritisation, independent problem-solving and end-to-end ownership. I have balanced immediate operational requirements with longer-term development objectives while maintaining focus on business impact and continuity of data services.
+
+Beyond my individual technical delivery, I have supported team resilience and capability development through knowledge transfer covering platform monitoring, pipeline troubleshooting, FTP reporting and data-quality processes. I have also proactively shared relevant technical development opportunities with colleagues where these could support team capability at no external training cost.
+
+From a professional-development perspective, successfully completing the Microsoft Certified: Agentic AI Business Solutions Architect (AB-100) certification has expanded my capability into enterprise and agentic AI solutions and complements my existing Data Engineering expertise.
+
+For the remainder of the review period, my priorities are to complete outstanding FTP data-model remediation and optimisation; further strengthen DataOps and DevOps practices; progress Data Platform Security and Data Governance & Quality objectives; continue delivering stakeholder-focused data solutions; and explore appropriate opportunities where AI and automation could provide measurable value to data operations.
+
+Overall, I believe my contribution during this review period demonstrates technical capability, proactive problem-solving, ownership, collaboration, adaptability, continuous improvement, knowledge sharing and a consistent focus on delivering reliable data solutions that support organisational objectives.
+
+Final suggested progress levels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
