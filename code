@@ -362,7 +362,30 @@ Completing this preparatory mapping and technical analysis in advance helps redu
 
 
 
+Hi Aitor,
 
+Thanks for getting in touch.
+
+From a data engineering perspective, I would suggest that team members who will be using SQL should have an appropriate level of SQL knowledge or training before working directly with the databases. For colleagues who already have SQL experience, there are also some considerations specific to our current data environment.
+
+In particular, please exercise caution around the tables used within our data ingestion, Silver and curated layers. These form part of the wider data engineering processes, and unintended DDL operations such as dropping or altering objects could affect downstream processes. We are currently working towards implementing more restrictive permissions to provide additional protection around these areas, but until those controls are fully in place, I would recommend limiting direct access to colleagues who are comfortable and experienced with SQL.
+
+For IA analytical work, I would recommend using the IA shared database wherever possible, as this provides a more appropriate area for the team's analytical SQL work.
+
+I would still advise caution when making structural changes within the IA shared database. In particular, please avoid accidentally dropping existing views. Some of these currently do not have readily available copies, so recreating a deleted view could require additional investigation and development time.
+
+Longer term, I think the appropriate approach would be to restrict DDL permissions where users only need to query or analyse data, while providing the necessary permissions for their analytical work. This should reduce the risk of accidental deletion or modification of database objects.
+
+For query performance, users should also be mindful when running queries against large datasets — for example, filtering to the data required, selecting only necessary columns, using joins carefully and avoiding unnecessarily large transformations or aggregations.
+
+For any particularly large or recurring transformations, I would recommend discussing these with the Data Engineering team first so that we can determine the most appropriate way of implementing them.
+
+In relation to licensing/infrastructure costs and any formal approval requirements, I think these would need to be confirmed with the relevant platform/infrastructure owner, as this will depend on the underlying service and current organisational arrangements.
+
+Happy to provide further technical guidance where required.
+
+Kind regards,
+Chiogor
 
 
 
