@@ -1,8 +1,13 @@
-SELECT
-    SERVERPROPERTY('EngineEdition') AS EngineEdition,
-    SERVERPROPERTY('Edition') AS Edition,
-    DB_NAME() AS DatabaseName;
-
-Also run:
-SELECT DATABASEPROPERTYEX(DB_NAME(), 'Edition') AS DatabaseEdition,
-       DATABASEPROPERTYEX(DB_NAME(), 'ServiceObjective') AS ServiceObjective;
+CRAN: https://cran.r-project.org/
+CRAN Package Checks: https://cran.r-project.org/web/checks/
+CRAN Package Policies: https://cran.r-project.org/web/packages/policies.html
+Bioconductor: https://www.bioconductor.org/
+Bioconductor Packages: https://www.bioconductor.org/packages/
+rOpenSci: https://ropensci.org/
+rOpenSci Software Peer Review: https://ropensci.org/software-review/
+R-universe: https://r-universe.dev/
+R-universe Documentation: https://docs.r-universe.dev/
+Posit Package Manager: https://packagemanager.posit.co/
+Posit Package Manager Documentation: https://docs.posit.co/rspm/
+GitHub: https://github.com/
+R Project: https://www.r-project.org/
